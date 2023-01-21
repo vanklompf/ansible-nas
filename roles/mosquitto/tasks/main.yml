@@ -8,11 +8,21 @@
     - "{{ mosquitto_data_directory }}/data"
     - "{{ mosquitto_data_directory }}/log"
 
-- name: Template mosquitto.conf
+- name: Default mosquitto.conf
   copy:
     src: mosquitto.conf
     dest: "{{ mosquitto_data_directory }}/config/mosquitto.conf"
   register: mosquitto_conf
+
+- name: Register user defined mosquitto config
+  local_action: stat path="{{ inventory_dir }}/mosquitto"
+  register: mosquitto_user_config
+
+- name: Copy user defined mosquitto config
+  copy:
+    src: "{{ inventory_dir }}/mosquitto/"
+    dest: "{{ mosquitto_data_directory }}/config/"
+  when: mosquitto_user_config.stat.exists
 
 - name: Create Mosquitto container
   docker_container:
@@ -20,7 +30,7 @@
     image: eclipse-mosquitto:latest
     pull: true
     volumes:
-      - "{{ mosquitto_data_directory }}/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:rw"
+      - "{{ mosquitto_data_directory }}/config:/mosquitto/config:rw"
       - "{{ mosquitto_data_directory }}/data:/mosquitto/data:rw"
       - "{{ mosquitto_data_directory }}/log:/mosquitto/log:rw"
     ports:
