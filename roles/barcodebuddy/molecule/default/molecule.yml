@@ -1,0 +1,8 @@
+---
+provisioner:
+  inventory:
+    group_vars:
+      all:
+        barcodebuddy_enabled: true
+        grocy_enabled: true
+        grocy_hostname: grocy
