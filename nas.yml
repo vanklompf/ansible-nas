@@ -91,6 +91,10 @@
       tags:
         - deluge
 
+    - role: ddns_updater
+      tags:
+        - ddns_updater
+
     - role: dokuwiki
       tags:
         - dokuwiki
