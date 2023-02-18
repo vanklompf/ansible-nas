@@ -51,6 +51,10 @@
       tags:
         - airsonic
 
+    - role: authelia
+      tags:
+        - authelia
+
     - role: authentik
       tags:
         - authentik
@@ -63,6 +67,10 @@
       tags:
         - bazarr
 
+    - role: beets
+      tags:
+        - beets
+
     - role: booksonic
       tags:
         - booksonic
@@ -70,6 +78,10 @@
     - role: calibre
       tags:
         - calibre
+
+    - role: claper
+      tags:
+        - claper
 
     - role: cloudcmd
       tags:
@@ -394,7 +406,6 @@
     - role: stats
       tags:
         - stats
-      when: (stats_enabled | default(False))
 
     - role: syncthing
       tags:

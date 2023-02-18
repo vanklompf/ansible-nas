@@ -1,9 +1,9 @@
 # Ansible NAS
 
-[![CI](https://github.com/davestephens/ansible-nas/workflows/CI/badge.svg)](https://github.com/davestephens/ansible-nas/actions?query=workflow%3ACI)
-[![Integration](https://github.com/davestephens/ansible-nas/workflows/Integration/badge.svg)](https://github.com/davestephens/ansible-nas/actions?query=workflow%3AIntegration)
+[![CI](https://github.com/anarion80/ansible-nas/workflows/CI/badge.svg)](https://github.com/anarion80/ansible-nas/actions?query=workflow%3ACI)
+[![Integration](https://github.com/anarion80/ansible-nas/workflows/Integration/badge.svg)](https://github.com/anarion80/ansible-nas/actions?query=workflow%3AIntegration)
 [![Gitter chat](https://img.shields.io/gitter/room/ansible-nas/chat.svg?logo=gitter&style=flat-square)](https://gitter.im/Ansible-NAS/Chat)
-[![license](https://img.shields.io/github/license/DAVFoundation/api_doc.svg?style=flat-square)](https://github.com/davestephens/ansible-nas/blob/master/LICENSE)
+[![license](https://img.shields.io/github/license/DAVFoundation/api_doc.svg?style=flat-square)](https://github.com/anarion80/ansible-nas/blob/master/LICENSE)
 [![Ko-fi](https://img.shields.io/static/v1.svg?label=ko-fi&message=Buy%20Me%20A%20Coffee&color=orange&style=flat-square&logo=buy-me-a-coffee)](https://ko-fi.com/davestephens)
 
 After getting burned by broken FreeNAS updates one too many times, I figured I could do a much better job myself using just a stock Ubuntu install, some clever Ansible config and a bunch of Docker containers.
@@ -17,12 +17,14 @@ If you have a spare domain name you can configure applications to be accessible 
 ## Available Applications
 
 * [Airsonic](https://airsonic.github.io/) - catalog and stream music
+* [Authelia](https://www.authelia.com/) - The Single Sign-On Multi-Factor portal for web apps
 * [Authentik](https://goauthentik.io/) - an open-source Identity Provider focused on flexibility and versatility
 * [Barcode Buddy](https://github.com/Forceu/barcodebuddy/) - Barcode system for Grocy
 * [Bazarr](https://github.com/morpheus65535/bazarr) - companion to Radarr and Sonarr for downloading subtitles
-* [Bitwarden](https://github.com/dani-garcia/vaultwarden) - Password Manger (Technically Vaultwarden, a lightweight implementation in Rust)
+* [Beets](https://beets.io/) - media library management system for obsessive music geeks
 * [Booksonic](https://booksonic.org/) - The selfhosted audiobook server
 * [Calibre-web](https://github.com/janeczku/calibre-web) - Provides a clean interface for browsing, reading and downloading eBooks using an existing Calibre database.
+* [Claper](https://claper.co/) - The ultimate tool to interact with your audience
 * [Code Server](https://code.visualstudio.com/) - Powerful IDE from Microsoft accessible through the browser
 * [Cloud Commander](https://cloudcmd.io/) - A dual panel file manager with integrated web console and text editor
 * [Cloudflare DDNS](https://hub.docker.com/r/joshuaavalon/cloudflare-ddns/) - automatically update Cloudflare with your IP address
@@ -52,6 +54,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Home Assistant](https://www.home-assistant.io) - Open source home automation
 * [Homebridge](https://github.com/nfarina/homebridge) - Emulate the iOS HomeKit API
 * [Immich](https://immich.app/) - Self-hosted photo and video backup solution directly from your mobile phone.
+* [Influxdb](https://github.com/influxdata/influxdb) - Time series database used for stats collection
 * [Jackett](https://github.com/Jackett/Jackett) - API Support for your favorite torrent trackers
 * [Jellyfin](https://jellyfin.github.io) - The Free Software Media System
 * [Joomla](https://www.joomla.org/) - Open source content management system
