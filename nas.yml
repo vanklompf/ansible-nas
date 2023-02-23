@@ -51,6 +51,10 @@
       tags:
         - airsonic
 
+    - role: authelia
+      tags:
+        - authelia
+
     - role: authentik
       tags:
         - authentik
@@ -63,6 +67,10 @@
       tags:
         - bazarr
 
+    - role: beets
+      tags:
+        - beets
+
     - role: booksonic
       tags:
         - booksonic
@@ -70,6 +78,10 @@
     - role: calibre
       tags:
         - calibre
+
+    - role: claper
+      tags:
+        - claper
 
     - role: cloudcmd
       tags:
@@ -131,15 +143,31 @@
       tags:
         - flame
 
+    - role: flarum
+      tags:
+        - flarum
+
     - role: freshrss
       tags:
         - freshrss
       when: (freshrss_enabled | default(False))
 
+    - role: frigate
+      tags:
+        - frigate
+
+    - role: gaps
+      tags:
+        - gaps
+
     - role: get_iplayer
       tags:
         - get_iplayer
       when: (get_iplayer_enabled | default(False))
+
+    - role: ghost
+      tags:
+        - ghost
 
     - role: gitea
       tags:
@@ -159,6 +187,10 @@
       tags:
         - gotify
       when: (gotify_enabled | default(False))
+
+    - role: graylog
+      tags:
+        - graylog
 
     - role: grocy
       tags:
@@ -193,6 +225,10 @@
         - homebridge
       when: (homebridge_enabled | default(False))
 
+    - role: huginn
+      tags:
+        - huginn
+
     - role: immich
       tags:
         - immich
@@ -212,6 +248,14 @@
         - joomla
       when: (joomla_enabled | default(False))
 
+    - role: kavita
+      tags:
+        - kavita
+
+    - role: keycloak
+      tags:
+        - keycloak
+
     - role: komga
       tags:
         - komga
@@ -222,6 +266,18 @@
         - krusader
       when: (krusader_enabled | default(False))
 
+    - role: lazylibrarian
+      tags:
+        - lazylibrarian
+
+    - role: libreddit
+      tags:
+        - libreddit
+
+    - role: librephotos
+      tags:
+        - librephotos
+
     - role: lidarr
       tags:
         - lidarr
@@ -231,6 +287,14 @@
       tags:
         - mealie
       when: (mealie_enabled | default(False))
+
+    - role: memos
+      tags:
+        - memos
+
+    - role: mergerfs
+      tags:
+        - mergerfs
 
     - role: minecraft-server
       tags:
@@ -261,6 +325,10 @@
       tags:
         - mymediaforalexa
       when: (mymediaforalexa_enabled | default(False))
+
+    - role: mysql
+      tags:
+        - mysql
 
     - role: n8n
       tags:
@@ -326,6 +394,10 @@
         - paperless_ng
       when: (paperless_ng_enabled | default(False))
 
+    - role: phpmyadmin
+      tags:
+        - phpmyadmin
+
     - role: piwigo
       tags:
         - piwigo
@@ -361,6 +433,10 @@
         - radarr
       when: (radarr_enabled | default(False))
 
+    - role: rclone
+      tags:
+        - rclone
+
     - role: route53_ddns
       tags:
         - route53_ddns
@@ -394,7 +470,6 @@
     - role: stats
       tags:
         - stats
-      when: (stats_enabled | default(False))
 
     - role: syncthing
       tags:
