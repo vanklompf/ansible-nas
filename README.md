@@ -72,42 +72,60 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Libreddit](https://github.com/libreddit/libreddit) - Private front-end for Reddit
 * [Librephotos](https://github.com/LibrePhotos/librephotos) - self-hosted open source photo
 * [Lidarr](https://github.com/lidarr/Lidarr) - Music collection manager for Usenet and BitTorrent users
+* [Loki](https://grafana.com/oss/loki/) - multi-tenant log aggregation system (via stats role).
+* [Mattermost](https://mattermost.com/) - open source platform for secure collaboration across the entire software development lifecycle
 * [MariaDB](https://mariadb.org/) - one of the most popular open source relational databases
 * [Mealie](https://hay-kot.github.io/mealie/) - A self-hosted recipe manager and meal planner
 * [Memos](https://usememos.com/) - An open-source memo hub with knowledge management and social networking
 * [Minecraft Server](https://www.minecraft.net/) - Server edition of the popular building and exploring game
+* [Minetest Server](https://www.minetest.net/) - An open source voxel game engine server
 * [MiniDLNA](https://sourceforge.net/projects/minidlna/) - simple media server which is fully compliant with DLNA/UPnP-AV clients
 * [Miniflux](https://miniflux.app/) - An RSS news reader
 * [Mosquitto](https://mosquitto.org) - An open source MQTT broker
+* [Moviematch](https://github.com/LukeChannings/moviematch) - MovieMatch for Plex
 * [Mylar](https://github.com/evilhero/mylar) - An automated Comic Book downloader (cbr/cbz) for use with SABnzbd, NZBGet and torrents
 * [MyMediaForAlexa](https://www.mymediaalexa.com/) - Lets you stream your music collection to your alexa device
 * [MySql](https://www.mysql.com/) - The world's most popular open source database
 * [n8n](https://n8n.io/) - Nodemation, a node based workflow and automation service like IFTTT.
 * [navidrome](https://www.navidrome.org/) - Modern Music Server and Streamer compatible with Subsonic/Airsonic
 * [netboot.xyz](https://netboot.xyz/) - a PXE boot server
+* [Netbox](https://netbox.dev/) - The premiere source of truth powering network automation
 * [Netdata](https://my-netdata.io/) - An extremely comprehensive system monitoring solution
 * [Nextcloud](https://nextcloud.com/) - A self-hosted Dropbox alternative
+* [Node-RED](https://nodered.org/) - A programming tool for wiring together hardware devices, APIs and online services
 * [Nomad](https://www.nomadproject.io/) - A simple and flexible scheduler and software orchestrator
 * [NZBget](https://nzbget.net/) - The most efficient usenet downloader
+* [Nzbhydra2](https://github.com/theotherp/nzbhydra2) - Usenet meta search
 * [Octoprint](https://octoprint.org/) - Control and monitor your 3D printer
 * [Ombi](https://ombi.io/) - web application that automatically gives your users the ability to request content
 * [openHAB](https://www.openhab.org/) - A vendor and technology agnostic open source automation software for your home
+* [openLDAP](https://www.openldap.org/) - An open source implementation of the Lightweight Directory Access Protocol
 * [Organizr](https://organizr.app/) - ORGANIZR aims to be your one stop shop for your Servers Frontend.
 * [overseerr](https://docs.overseerr.dev) - open source software application for managing requests for your media library
 * [Paperless_ng](https://github.com/jonaswinkler/paperless-ng) - Scan, index and archive all your physical documents
+* [Photofield](https://github.com/SmilyOrg/photofield) - Experimental fast photo viewer
+* [Photoprism](https://www.photoprism.app/) - An AI-Powered Photos App for the Decentralized Web
+* [PhotoStructure](https://photostructure.com/) - Your new home for all your photos & videos
 * [PhpMyAdmin](https://www.phpmyadmin.net/) - a tool intended to handle the administration of MySQL over the Web
 * [Piwigo](https://piwigo.org/) - Photo Gallery Software
 * [Plex](https://www.plex.tv/) - Plex Media Server
+  * [Plex Autoscan](https://github.com/Cloudbox/autoscan) - automatic Plex library updates
+  * [Plex Meta Manager](https://metamanager.wiki) - Python script to update metadata information for items in plex
 * [Portainer](https://portainer.io/) - for managing Docker and running custom images
 * [Prometheus](https://prometheus.io/) - Time series database and monitoring system (via stats role).
 * [Prowlarr](https://github.com/Prowlarr/Prowlarr) - Indexer aggregator for Sonarr, Radarr, Lidarr, etc.
 * [pyLoad](https://pyload.net/) - A download manager with a friendly web-interface
 * [PyTivo](http://pytivo.org) - An HMO and GoBack server for TiVos.
 * [Radarr](https://radarr.video/) - for organising and downloading movies
+* [Releasebell](https://github.com/anarion80/releasebell) - Starred GitHub repositories notifications
+* [Restic](https://restic.net/) - A modern backup program
 * [Route53 DDNS](https://crazymax.dev/ddns-route53/) - Automatically update AWS Route53 with your IP address
 * [RSS-Bridge](https://rss-bridge.github.io/rss-bridge/) - The RSS feed for websites missing it
 * [Sabnzbd](https://sabnzbd.org/) - A powerful usenet downloader that FreeNAS provides
+* [Seafile](https://www.seafile.com/en/home/) - High performance file syncing and sharing
+* [Shaarli](https://github.com/shaarli/Shaarli) - Personal, minimalist, super-fast, database free, bookmarking service
 * [Sickchill](https://sickchill.github.io/) - for managing TV episodes
+* [Snipe-IT](https://snipeitapp.com/) - A free open source IT asset/license management system
 * [Sonarr](https://sonarr.tv/) - for downloading and managing TV episodes
 * [Speedtest-Tracker](https://github.com/henrywhitaker3/Speedtest-Tracker) - Continuously track your internet speed
 * Stats - Monitor and visualise metrics about your NAS and internet connection using Grafana, Prometheus, Telegraf and more.
