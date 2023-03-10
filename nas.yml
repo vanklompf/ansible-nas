@@ -79,6 +79,10 @@
       tags:
         - calibre
 
+    - role: changedetection
+      tags:
+        - changedetection
+
     - role: claper
       tags:
         - claper
@@ -278,10 +282,18 @@
       tags:
         - librephotos
 
+    - role: librespeed
+      tags:
+        - librespeed
+
     - role: lidarr
       tags:
         - lidarr
       when: (lidarr_enabled | default(False))
+
+    - role: mattermost
+      tags:
+        - mattermost
 
     - role: mealie
       tags:
@@ -301,6 +313,10 @@
         - minecraft-server
       when: (minecraft_server_enabled | default(False))
 
+    - role: minetest-server
+      tags:
+        - minetest-server
+
     - role: minidlna
       tags:
         - minidlna
@@ -315,6 +331,10 @@
       tags:
         - mosquitto
       when: (mosquitto_enabled | default(False))
+
+    - role: moviematch
+      tags:
+        - moviematch
 
     - role: mylar
       tags:
@@ -345,6 +365,10 @@
         - netbootxyz
       when: (netbootxyz_enabled | default(False))
 
+    - role: netbox
+      tags:
+        - netbox
+
     - role: netdata
       tags:
         - netdata
@@ -355,6 +379,10 @@
         - nextcloud
       when: (nextcloud_enabled | default(False))
 
+    - role: nodered
+      tags:
+        - nodered
+
     - role: nomad
       tags:
         - nomad
@@ -363,6 +391,10 @@
       tags:
         - nzbget
       when: (nzbget_enabled | default(False))
+
+    - role: nzbhydra2
+      tags:
+        - nzbhydra2
 
     - role: octoprint
       tags:
@@ -379,6 +411,10 @@
         - openhab
       when: (openhab_enabled | default(False))
 
+    - role: openldap
+      tags:
+        - openldap
+
     - role: organizr
       tags:
         - organizr
@@ -394,6 +430,18 @@
         - paperless_ng
       when: (paperless_ng_enabled | default(False))
 
+    - role: photofield
+      tags:
+        - photofield
+
+    - role: photoprism
+      tags:
+        - photoprism
+
+    - role: photostructure
+      tags:
+        - photostructure
+
     - role: phpmyadmin
       tags:
         - phpmyadmin
@@ -406,7 +454,6 @@
     - role: plex
       tags:
         - plex
-      when: (plex_enabled | default(False))
 
     - role: portainer
       tags:
@@ -437,6 +484,14 @@
       tags:
         - rclone
 
+    - role: releasebell
+      tags:
+        - releasebell
+
+    - role: restic
+      tags:
+        - restic
+
     - role: route53_ddns
       tags:
         - route53_ddns
@@ -452,10 +507,26 @@
         - sabnzbd
       when: (sabnzbd_enabled | default(False))
 
+    - role: seafile
+      tags:
+        - seafile
+
+    - role: searxng
+      tags:
+        - searxng
+
+    - role: shaarli
+      tags:
+        - shaarli
+
     - role: sickchill
       tags:
         - sickchill
       when: (sickchill_enabled | default(False))
+
+    - role: snipeit
+      tags:
+        - snipeit
 
     - role: sonarr
       tags:
@@ -511,6 +582,14 @@
         - transmission_with_openvpn
       when: (transmission_with_openvpn_enabled | default(False))
 
+    - role: trilium
+      tags:
+        - trilium
+
+    - role: ttrss
+      tags:
+        - ttrss
+
     - role: ubooquity
       tags:
         - ubooquity
@@ -539,6 +618,18 @@
       tags:
         - watchtower
       when: (watchtower_enabled | default(False))
+
+    - role: webtrees
+      tags:
+        - webtrees
+
+    - role: wger
+      tags:
+        - wger
+
+    - role: whoogle
+      tags:
+        - whoogle
 
     - role: wireshark
       tags:
