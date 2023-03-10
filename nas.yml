@@ -79,6 +79,10 @@
       tags:
         - calibre
 
+    - role: changedetection
+      tags:
+        - changedetection
+
     - role: claper
       tags:
         - claper
@@ -277,6 +281,10 @@
     - role: librephotos
       tags:
         - librephotos
+
+    - role: librespeed
+      tags:
+        - librespeed
 
     - role: lidarr
       tags:
@@ -503,6 +511,10 @@
       tags:
         - seafile
 
+    - role: searxng
+      tags:
+        - searxng
+
     - role: shaarli
       tags:
         - shaarli
@@ -570,6 +582,14 @@
         - transmission_with_openvpn
       when: (transmission_with_openvpn_enabled | default(False))
 
+    - role: trilium
+      tags:
+        - trilium
+
+    - role: ttrss
+      tags:
+        - ttrss
+
     - role: ubooquity
       tags:
         - ubooquity
@@ -598,6 +618,18 @@
       tags:
         - watchtower
       when: (watchtower_enabled | default(False))
+
+    - role: webtrees
+      tags:
+        - webtrees
+
+    - role: wger
+      tags:
+        - wger
+
+    - role: whoogle
+      tags:
+        - whoogle
 
     - role: wireshark
       tags:

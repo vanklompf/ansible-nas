@@ -14,7 +14,7 @@ You can configure Ansible-NAS to set up any (or all!) of the applications listed
 
 If you have a spare domain name you can configure applications to be accessible externally to your home LAN too; they'll be configured with a sensible hostname and DNS gets updated accordingly if your home IP address changes.
 
-## Available Applications
+## Available Applications ![Roles](https://img.shields.io/github/directory-file-count/anarion80/ansible-nas/roles?label=Roles)
 
 * [Airsonic](https://airsonic.github.io/) - catalog and stream music
 * [Authelia](https://www.authelia.com/) - The Single Sign-On Multi-Factor portal for web apps
@@ -24,6 +24,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Beets](https://beets.io/) - media library management system for obsessive music geeks
 * [Booksonic](https://booksonic.org/) - The selfhosted audiobook server
 * [Calibre-web](https://github.com/janeczku/calibre-web) - Provides a clean interface for browsing, reading and downloading eBooks using an existing Calibre database.
+* [Changedetection.io](https://github.com/dgtlmoon/changedetection.io) - Free open source website change detection, monitor and notification service
 * [Claper](https://claper.co/) - The ultimate tool to interact with your audience
 * [Code Server](https://code.visualstudio.com/) - Powerful IDE from Microsoft accessible through the browser
 * [Cloud Commander](https://cloudcmd.io/) - A dual panel file manager with integrated web console and text editor
@@ -71,6 +72,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [LazyLibrarian](https://lazylibrarian.gitlab.io/) - LazyLibrarian is a program to follow authors and grab metadata for all your digital reading needs
 * [Libreddit](https://github.com/libreddit/libreddit) - Private front-end for Reddit
 * [Librephotos](https://github.com/LibrePhotos/librephotos) - self-hosted open source photo
+* [Librespeed](https://github.com/librespeed/speedtest) - Self-hosted Speedtest for HTML5 and more
 * [Lidarr](https://github.com/lidarr/Lidarr) - Music collection manager for Usenet and BitTorrent users
 * [Loki](https://grafana.com/oss/loki/) - multi-tenant log aggregation system (via stats role).
 * [Mattermost](https://mattermost.com/) - open source platform for secure collaboration across the entire software development lifecycle
@@ -123,6 +125,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [RSS-Bridge](https://rss-bridge.github.io/rss-bridge/) - The RSS feed for websites missing it
 * [Sabnzbd](https://sabnzbd.org/) - A powerful usenet downloader that FreeNAS provides
 * [Seafile](https://www.seafile.com/en/home/) - High performance file syncing and sharing
+* [SearxNG](https://github.com/searxng/searxng) - Free internet metasearch engine
 * [Shaarli](https://github.com/shaarli/Shaarli) - Personal, minimalist, super-fast, database free, bookmarking service
 * [Sickchill](https://sickchill.github.io/) - for managing TV episodes
 * [Snipe-IT](https://snipeitapp.com/) - A free open source IT asset/license management system
@@ -136,12 +139,17 @@ If you have a spare domain name you can configure applications to be accessible 
 * [TimeMachine](https://github.com/awlx/samba-timemachine) - Samba-based mac backup server
 * [Traefik](https://traefik.io/) - Web proxy and SSL certificate manager
 * [Transmission](https://transmissionbt.com/) - BitTorrent client (with OpenVPN if you have a supported VPN provider)
+* [Trilium](https://github.com/zadam/trilium) - Hierarchical note taking application with focus on building large personal knowledge bases
+* [Tt-rss](https://tt-rss.org/) - free and open source web-based news feed (RSS/Atom) reader and aggregator
 * [Ubooquity](http://vaemendis.net/ubooquity/) - Book and comic server
 * [uTorrent](https://www.utorrent.com/) - The best torrent downloading app for beginners
 * [Vaultwarden](https://github.com/dani-garcia/vaultwarden) - Self-Hosting port of password manager
 * [Virtual Desktop](https://github.com/RattyDAVE/docker-ubuntu-xrdp-mate-custom) - A virtual desktop running on your NAS.
 * [Wallabag](https://wallabag.org/) - Save and classify articles. Read them later.
 * [Watchtower](https://github.com/v2tec/watchtower) - Monitor your Docker containers and update them if a new version is available
+* [Webtrees](https://www.webtrees.net/index.php/en/) - On-line collaborative genealogy application
+* [Wger](https://wger.de) - Free, open source web application that manages your exercises, workouts and nutrition
+* [Whoogle](https://github.com/benbusby/whoogle-search) - A self-hosted, ad-free, privacy-respecting metasearch engine
 * [Wireshark](https://www.wireshark.org/) - the world’s foremost and widely-used network protocol analyzer.
 * [Woodpecker-CI](https://woodpecker-ci.org) - a simple CI engine with great extensibility, forked from Drone.
 * [YouTubeDL-Material](https://github.com/Tzahi12345/YoutubeDL-Material) - Self-hosted YouTube downloader built on Material Design
