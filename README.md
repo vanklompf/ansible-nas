@@ -42,6 +42,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Firefly III](https://firefly-iii.org/) - Free and open source personal finance manager
 * [Flame](https://github.com/pawelmalak/flame/) - Flarum is a delightfully simple discussion platform for your website
 * [Flarum](https://flarum.org/) - Self-hosted startpage for your server
+* [Flatnotes](https://flatnotes.io/) - Self-hosted, database-less note taking web app
 * [Fresh RSS](https://freshrss.org/) - Self-hosted RSS feed aggregator like Leed or Kriss Feed
 * [Frigate](https://frigate.video/) - Frigate is an open source NVR built around real-time AI object detection
 * [Gaps](https://github.com/JasonHHouse/gaps) - Find the missing movies in your Plex Server
@@ -60,6 +61,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Home Assistant](https://www.home-assistant.io) - Open source home automation
 * [Homebridge](https://github.com/nfarina/homebridge) - Emulate the iOS HomeKit API
 * [Huginn](https://github.com/huginn/huginn) - Create agents that monitor and act on your behalf. Your agents are standing by!
+* [Huntly](https://github.com/lcomplete/huntly) - Self-hosted information management tool
 * [Immich](https://immich.app/) - Self-hosted photo and video backup solution directly from your mobile phone.
 * [Influxdb](https://github.com/influxdata/influxdb) - Time series database used for stats collection
 * [Jackett](https://github.com/Jackett/Jackett) - API Support for your favorite torrent trackers
@@ -74,6 +76,8 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Librephotos](https://github.com/LibrePhotos/librephotos) - self-hosted open source photo
 * [Librespeed](https://github.com/librespeed/speedtest) - Self-hosted Speedtest for HTML5 and more
 * [Lidarr](https://github.com/lidarr/Lidarr) - Music collection manager for Usenet and BitTorrent users
+* [Listmonk](https://listmonk.app/) - High performance, self-hosted, newsletter and mailing list manager
+* [Littlelink](https://github.com/techno-tim/littlelink-server) - Self-hosted alternative to linktree
 * [Loki](https://grafana.com/oss/loki/) - multi-tenant log aggregation system (via stats role).
 * [Mattermost](https://mattermost.com/) - open source platform for secure collaboration across the entire software development lifecycle
 * [MariaDB](https://mariadb.org/) - one of the most popular open source relational databases
@@ -149,8 +153,10 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Watchtower](https://github.com/v2tec/watchtower) - Monitor your Docker containers and update them if a new version is available
 * [Webtrees](https://www.webtrees.net/index.php/en/) - On-line collaborative genealogy application
 * [Wger](https://wger.de) - Free, open source web application that manages your exercises, workouts and nutrition
+* [Whats-Up-Docker](https://github.com/fmartinou/whats-up-docker) - Docker container update notifier
 * [Whoogle](https://github.com/benbusby/whoogle-search) - A self-hosted, ad-free, privacy-respecting metasearch engine
 * [Wireshark](https://www.wireshark.org/) - the world’s foremost and widely-used network protocol analyzer.
+* [Wishthis](https://github.com/grandeljay/wishthis) - simple, intuitive and modern wishlist platform
 * [Woodpecker-CI](https://woodpecker-ci.org) - a simple CI engine with great extensibility, forked from Drone.
 * [YouTubeDL-Material](https://github.com/Tzahi12345/YoutubeDL-Material) - Self-hosted YouTube downloader built on Material Design
 * [ZNC](https://wiki.znc.in/ZNC) - IRC bouncer to stay connected to favourite IRC networks and channels

@@ -1,4 +1,3 @@
----
 - name: Create paperless_ng directories
   file:
     path: "{{ item }}"
@@ -9,8 +8,7 @@
     - "{{ paperless_ng_media_directory }}"
     - "{{ paperless_ng_consume_directory }}"
 
-
-- name: Create paperless_ngx network
+- name: Create paperless_ng network
   docker_network:
     name: "{{ paperless_ng_container_network_name }}"
 
