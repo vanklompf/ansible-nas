@@ -1,7 +1,6 @@
 ---
 paperless_ng_enabled: false
 paperless_ng_available_externally: false
-paperless_ng_available_externally: false
 
 # directories
 paperless_ng_config_directory: "{{ docker_home }}/paperless_ng"
