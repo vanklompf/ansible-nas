@@ -89,3 +89,10 @@ stats_loki_docker_image_version: "latest"
 stats_promtail_container_name: stats-promtail
 stats_promtail_docker_image_name: "grafana/promtail"
 stats_promtail_docker_image_version: "latest"
+
+# uncomment to scrape more hosts
+# stats_prometheus_additional_hosts:
+#  - 192.168.1.1:9100
+
+# uncomment to scrape metrics from HomeAssistant. You'll need to create a long lived access token.
+# stats_hass_long_lived_access_token: addfasdfasdf

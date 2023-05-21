@@ -42,10 +42,6 @@
         restic_backup_script_template: restic_script_Linux.j2
       tags: molecule-idempotence-notest
 
-    # - name: Debug
-    #   ansible.builtin.debug:
-    #     var: restic_backups
-
     - name: Reformat dict if necessary
       ansible.builtin.set_fact:
         restic_backups: "{{ restic_backups | dict2items | json_query('[*].value') }}"
@@ -82,7 +78,7 @@
       tags: molecule-idempotence-notest
 
     - name: Setup CRON jobs
-      cron:
+      ansible.builtin.cron:
         name: 'Ansible-NAS Restic backup {{ item.name }}'
         user: "{{ restic_service_user }}"
         job: 'CRON=true ionice -c2 -n7 nice -n19 bash {{ restic_script_dir }}/backup-{{ item.name }}.sh'

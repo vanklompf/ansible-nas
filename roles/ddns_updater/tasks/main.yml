@@ -21,7 +21,7 @@
     register: template_files_result
 
   - name: Create ddns_updater Docker Container
-    docker_container:
+    community.docker.docker_container:
       name: ddns_updater
       image: qmcgaw/ddns-updater
       pull: true
@@ -45,7 +45,7 @@
 - name: Stop DDNS Updater
   block:
     - name: Stop DDNS Updater
-      docker_container:
+      community.docker.docker_container:
         name: "{{ ddns_updater_container_name }}"
         state: absent
   when: ddns_updater_enabled is false

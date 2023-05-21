@@ -1,41 +1,52 @@
 ---
-- name: Create Mosquitto Directories
-  file:
-    path: "{{ item }}"
-    state: directory
-  with_items:
-    - "{{ mosquitto_data_directory }}/config"
-    - "{{ mosquitto_data_directory }}/data"
-    - "{{ mosquitto_data_directory }}/log"
+- name: Start Mosquitto
+  block:
+    - name: Create Mosquitto Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ mosquitto_data_directory }}/config"
+        - "{{ mosquitto_data_directory }}/data"
+        - "{{ mosquitto_data_directory }}/log"
 
-- name: Default mosquitto.conf
-  copy:
-    src: mosquitto.conf
-    dest: "{{ mosquitto_data_directory }}/config/mosquitto.conf"
-  register: mosquitto_conf
+    - name: Default mosquitto.conf
+      ansible.builtin.copy:
+        src: mosquitto.conf
+        dest: "{{ mosquitto_data_directory }}/config/mosquitto.conf"
+      register: mosquitto_conf
 
-- name: Register user defined mosquitto config
-  local_action: stat path="{{ inventory_dir }}/mosquitto"
-  register: mosquitto_user_config
+    - name: Register user defined mosquitto config
+      local_action: stat path="{{ inventory_dir }}/mosquitto"
+      register: mosquitto_user_config
 
-- name: Copy user defined mosquitto config
-  copy:
-    src: "{{ inventory_dir }}/mosquitto/"
-    dest: "{{ mosquitto_data_directory }}/config/"
-  when: mosquitto_user_config.stat.exists
+    - name: Copy user defined mosquitto config
+      ansible.builtin.copy:
+        src: "{{ inventory_dir }}/mosquitto/"
+        dest: "{{ mosquitto_data_directory }}/config/"
+      when: mosquitto_user_config.stat.exists
 
-- name: Create Mosquitto container
-  docker_container:
-    name: mosquitto
-    image: eclipse-mosquitto:latest
-    pull: true
-    volumes:
-      - "{{ mosquitto_data_directory }}/config:/mosquitto/config:rw"
-      - "{{ mosquitto_data_directory }}/data:/mosquitto/data:rw"
-      - "{{ mosquitto_data_directory }}/log:/mosquitto/log:rw"
-    ports:
-      - "{{ mosquitto_port_a }}:1883"
-      - "{{ mosquitto_port_b }}:9001"
-    restart_policy: unless-stopped
-    restart: "{{ mosquitto_conf is changed }}"
-    memory: 1g
+    - name: Create Mosquitto container
+      community.docker.docker_container:
+        name: mosquitto
+        image: eclipse-mosquitto:latest
+        pull: true
+        volumes:
+          - "{{ mosquitto_data_directory }}/config:/mosquitto/config:rw"
+          - "{{ mosquitto_data_directory }}/data:/mosquitto/data:rw"
+          - "{{ mosquitto_data_directory }}/log:/mosquitto/log:rw"
+        ports:
+          - "{{ mosquitto_port_a }}:1883"
+          - "{{ mosquitto_port_b }}:9001"
+        restart_policy: unless-stopped
+        restart: "{{ mosquitto_conf is changed }}"
+        memory: 1g
+  when: mosquitto_enabled is true
+
+- name: Stop Mosquitto
+  block:
+    - name: Stop Mosquitto
+      community.docker.docker_container:
+        name: "{{ mosquitto_container_name }}"
+        state: absent
+  when: mosquitto_enabled is false

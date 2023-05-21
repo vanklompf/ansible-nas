@@ -2,7 +2,7 @@
 - name: Start Vaultwarden
   block:
     - name: Create Vaultwarden Directories
-      file:
+      ansible.builtin.file:
         path: "{{ item }}"
         state: directory
         mode: "0755"
@@ -10,9 +10,9 @@
         - "{{ vaultwarden_data_directory }}"
 
     - name: Vaultwarden Docker Container
-      docker_container:
+      community.docker.docker_container:
         name: "{{ vaultwarden_container_name }}"
-        image: vaultwarden/server:latest
+        image: "{{ vaultwarden_image_name }}:{{ vaultwarden_image_tag }}"
         pull: true
         ports:
           - "{{ vaultwarden_port_a }}:80"
@@ -27,16 +27,16 @@
         labels:
           traefik.enable: "{{ vaultwarden_available_externally | string }}"
           traefik.http.routers.vaultwarden.rule: "Host(`{{ vaultwarden_hostname }}.{{ ansible_nas_domain }}`)"
-          traefik.http.routers.vaultwarden.tls.certresolver: "letsencrypt"
-          traefik.http.routers.vaultwarden.tls.domains[0].main: "{{ ansible_nas_domain }}"
-          traefik.http.routers.vaultwarden.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          # traefik.http.routers.vaultwarden.tls.certresolver: "letsencrypt"
+          # traefik.http.routers.vaultwarden.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          # traefik.http.routers.vaultwarden.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.routers.vaultwarden.service: "vaultwarden"
           traefik.http.routers.vaultwarden.middlewares: "vaultwarden-ipwhitelist@docker"
           traefik.http.services.vaultwarden.loadbalancer.server.port: "80"
           traefik.http.routers.vaultwarden-ws.rule: "Host(`{{ vaultwarden_hostname }}.{{ ansible_nas_domain }}`) && Path(`/notifications/hub`)"
-          traefik.http.routers.vaultwarden-ws.tls.certresolver: "letsencrypt"
-          traefik.http.routers.vaultwarden-ws.tls.domains[0].main: "{{ ansible_nas_domain }}"
-          traefik.http.routers.vaultwarden-ws.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          # traefik.http.routers.vaultwarden-ws.tls.certresolver: "letsencrypt"
+          # traefik.http.routers.vaultwarden-ws.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          # traefik.http.routers.vaultwarden-ws.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.routers.vaultwarden-ws.service: "vaultwarden-ws"
           traefik.http.routers.vaultwarden-ws.middlewares: "vaultwarden-ipwhitelist@docker"
           traefik.http.services.vaultwarden-ws.loadbalancer.server.port: "3012"
@@ -45,9 +45,9 @@
         memory: "{{ vaultwarden_memory }}"
 
     - name: Vaultwarden Backup Container
-      docker_container:
+      community.docker.docker_container:
         name: "{{ vaultwarden_backup_container_name }}"
-        image: bruceforce/vaultwarden-backup:latest
+        image: "{{ vaultwarden_backup_image_name }}:{{ vaultwarden_backup_image_tag }}"
         pull: true
         restart_policy: unless-stopped
         volumes_from: "{{ vaultwarden_container_name }}"
@@ -57,12 +57,12 @@
 - name: Stop Vaultwarden
   block:
     - name: Stop Vaultwarden
-      docker_container:
+      community.docker.docker_container:
         name: "{{ vaultwarden_container_name }}"
         state: absent
 
     - name: Stop Vaultwarden Backup
-      docker_container:
+      community.docker.docker_container:
         name: "{{ vaultwarden_backup_container_name }}"
         state: absent
   when: vaultwarden_enabled is false

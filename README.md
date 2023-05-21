@@ -1,5 +1,6 @@
 # Ansible NAS
 
+![Available Applications](https://img.shields.io/github/directory-file-count/anarion80/ansible-nas/roles?label=Available%20Applications&style=flat-square)
 [![CI](https://github.com/anarion80/ansible-nas/workflows/CI/badge.svg)](https://github.com/anarion80/ansible-nas/actions?query=workflow%3ACI)
 [![Integration](https://github.com/anarion80/ansible-nas/workflows/Integration/badge.svg)](https://github.com/anarion80/ansible-nas/actions?query=workflow%3AIntegration)
 [![Gitter chat](https://img.shields.io/gitter/room/ansible-nas/chat.svg?logo=gitter&style=flat-square)](https://gitter.im/Ansible-NAS/Chat)
@@ -14,17 +15,20 @@ You can configure Ansible-NAS to set up any (or all!) of the applications listed
 
 If you have a spare domain name you can configure applications to be accessible externally to your home LAN too; they'll be configured with a sensible hostname and DNS gets updated accordingly if your home IP address changes.
 
-## Available Applications ![Roles](https://img.shields.io/github/directory-file-count/anarion80/ansible-nas/roles?label=Roles)
+## Available Applications
 
+* [Admidio](https://www.admidio.org/) - a free online membership management
 * [Airsonic](https://airsonic.github.io/) - catalog and stream music
 * [Authelia](https://www.authelia.com/) - The Single Sign-On Multi-Factor portal for web apps
 * [Authentik](https://goauthentik.io/) - an open-source Identity Provider focused on flexibility and versatility
 * [Barcode Buddy](https://github.com/Forceu/barcodebuddy/) - Barcode system for Grocy
 * [Bazarr](https://github.com/morpheus65535/bazarr) - companion to Radarr and Sonarr for downloading subtitles
 * [Beets](https://beets.io/) - media library management system for obsessive music geeks
+* [Blaze](https://github.com/blenderskool/blaze) - File sharing progressive web app
 * [Booksonic](https://booksonic.org/) - The selfhosted audiobook server
 * [Calibre-web](https://github.com/janeczku/calibre-web) - Provides a clean interface for browsing, reading and downloading eBooks using an existing Calibre database.
 * [Changedetection.io](https://github.com/dgtlmoon/changedetection.io) - Free open source website change detection, monitor and notification service
+* [Chatpad](https://chatpad.ai/) - Not just another ChatGPT user-interface!
 * [Claper](https://claper.co/) - The ultimate tool to interact with your audience
 * [Code Server](https://code.visualstudio.com/) - Powerful IDE from Microsoft accessible through the browser
 * [Cloud Commander](https://cloudcmd.io/) - A dual panel file manager with integrated web console and text editor
@@ -36,12 +40,15 @@ If you have a spare domain name you can configure applications to be accessible 
 * [DokuWiki](https://www.dokuwiki.org/) - A simple to use and highly versatile Open Source wiki software that doesn't require a database.
 * [Drone CI](https://drone.io) - A self-service Continuous Integration platform for busy development teams.
 * [Duplicacy](https://duplicacy.com/) - A web UI for the Duplicacy cloud backup program, which provides lock-free deduplication backups to multiple providers
+* [Dufs](https://github.com/sigoden/dufs) - distinctive utility file server
 * [Duplicati](https://www.duplicati.com/) - for backing up your stuff
 * [Emby](https://emby.media/) - Media streaming and management
 * [ESPHome](https://esphome.io/) - ESP8266/ESP32 programming and management for home automation
+* [Excalidraw](https://excalidraw.com/) - Virtual whiteboard for sketching hand-drawn like diagrams
 * [Firefly III](https://firefly-iii.org/) - Free and open source personal finance manager
 * [Flame](https://github.com/pawelmalak/flame/) - Flarum is a delightfully simple discussion platform for your website
 * [Flarum](https://flarum.org/) - Self-hosted startpage for your server
+* [Flatnotes](https://flatnotes.io/) - Self-hosted, database-less note taking web app
 * [Fresh RSS](https://freshrss.org/) - Self-hosted RSS feed aggregator like Leed or Kriss Feed
 * [Frigate](https://frigate.video/) - Frigate is an open source NVR built around real-time AI object detection
 * [Gaps](https://github.com/JasonHHouse/gaps) - Find the missing movies in your Plex Server
@@ -60,6 +67,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Home Assistant](https://www.home-assistant.io) - Open source home automation
 * [Homebridge](https://github.com/nfarina/homebridge) - Emulate the iOS HomeKit API
 * [Huginn](https://github.com/huginn/huginn) - Create agents that monitor and act on your behalf. Your agents are standing by!
+* [Huntly](https://github.com/lcomplete/huntly) - Self-hosted information management tool
 * [Immich](https://immich.app/) - Self-hosted photo and video backup solution directly from your mobile phone.
 * [Influxdb](https://github.com/influxdata/influxdb) - Time series database used for stats collection
 * [Jackett](https://github.com/Jackett/Jackett) - API Support for your favorite torrent trackers
@@ -74,6 +82,9 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Librephotos](https://github.com/LibrePhotos/librephotos) - self-hosted open source photo
 * [Librespeed](https://github.com/librespeed/speedtest) - Self-hosted Speedtest for HTML5 and more
 * [Lidarr](https://github.com/lidarr/Lidarr) - Music collection manager for Usenet and BitTorrent users
+* [Linkding](https://github.com/sissbruecker/linkding) - Self-hosted bookmark service
+* [Listmonk](https://listmonk.app/) - High performance, self-hosted, newsletter and mailing list manager
+* [Littlelink](https://github.com/techno-tim/littlelink-server) - Self-hosted alternative to linktree
 * [Loki](https://grafana.com/oss/loki/) - multi-tenant log aggregation system (via stats role).
 * [Mattermost](https://mattermost.com/) - open source platform for secure collaboration across the entire software development lifecycle
 * [MariaDB](https://mariadb.org/) - one of the most popular open source relational databases
@@ -83,8 +94,9 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Minetest Server](https://www.minetest.net/) - An open source voxel game engine server
 * [MiniDLNA](https://sourceforge.net/projects/minidlna/) - simple media server which is fully compliant with DLNA/UPnP-AV clients
 * [Miniflux](https://miniflux.app/) - An RSS news reader
+* [Miniserve](https://github.com/svenstaro/miniserve) - a CLI tool to serve files and dirs over HTTP
 * [Mosquitto](https://mosquitto.org) - An open source MQTT broker
-* [Moviematch](https://github.com/LukeChannings/moviematch) - MovieMatch for Plex
+* [Mumble](https://www.mumble.info) - Open source, low latency, high quality voice chat
 * [Mylar](https://github.com/evilhero/mylar) - An automated Comic Book downloader (cbr/cbz) for use with SABnzbd, NZBGet and torrents
 * [MyMediaForAlexa](https://www.mymediaalexa.com/) - Lets you stream your music collection to your alexa device
 * [MySql](https://www.mysql.com/) - The world's most popular open source database
@@ -99,6 +111,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [NZBget](https://nzbget.net/) - The most efficient usenet downloader
 * [Nzbhydra2](https://github.com/theotherp/nzbhydra2) - Usenet meta search
 * [Octoprint](https://octoprint.org/) - Control and monitor your 3D printer
+* [OliveTin](https://github.com/OliveTin/OliveTin) -  safe and simple access to predefined shell commands
 * [Ombi](https://ombi.io/) - web application that automatically gives your users the ability to request content
 * [openHAB](https://www.openhab.org/) - A vendor and technology agnostic open source automation software for your home
 * [openLDAP](https://www.openldap.org/) - An open source implementation of the Lightweight Directory Access Protocol
@@ -149,8 +162,10 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Watchtower](https://github.com/v2tec/watchtower) - Monitor your Docker containers and update them if a new version is available
 * [Webtrees](https://www.webtrees.net/index.php/en/) - On-line collaborative genealogy application
 * [Wger](https://wger.de) - Free, open source web application that manages your exercises, workouts and nutrition
+* [Whats-Up-Docker](https://github.com/fmartinou/whats-up-docker) - Docker container update notifier
 * [Whoogle](https://github.com/benbusby/whoogle-search) - A self-hosted, ad-free, privacy-respecting metasearch engine
 * [Wireshark](https://www.wireshark.org/) - the world’s foremost and widely-used network protocol analyzer.
+* [Wishthis](https://github.com/grandeljay/wishthis) - simple, intuitive and modern wishlist platform
 * [Woodpecker-CI](https://woodpecker-ci.org) - a simple CI engine with great extensibility, forked from Drone.
 * [YouTubeDL-Material](https://github.com/Tzahi12345/YoutubeDL-Material) - Self-hosted YouTube downloader built on Material Design
 * [ZNC](https://wiki.znc.in/ZNC) - IRC bouncer to stay connected to favourite IRC networks and channels

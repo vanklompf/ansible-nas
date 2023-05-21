@@ -16,7 +16,7 @@ paperless_ng_port: "16922"
 paperless_ng_hostname: "paperless_ng"
 
 # container names
-paperless_ng_container_network_name: "paperless_ngx_network"
+paperless_ng_network_name: "paperless_ngx_network"
 paperless_ng_container_name_redis: "paperless_ngx_redis"
 paperless_ng_container_name_uiserver: "paperless_ngx_uiserver"
 paperless_ng_container_name_tika: "paperless_ngx_tika"
