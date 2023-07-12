@@ -22,7 +22,10 @@
           - "{{ duplicacy_config_directory }}:/config:rw"
           - "{{ duplicacy_logs_directory }}:/logs:rw"
           - "{{ duplicacy_cache_directory }}:/cache:rw"
-          - "{{ samba_shares_root }}:/backuproot:{{ duplicacy_data_permissions }}"
+          - "{{ samba_shares_root }}:/mediaroot:{{ duplicacy_data_permissions }}"
+          - "{{ docker_home }}:/dockerroot:{{ duplicacy_data_permissions }}"
+          - "{{ backup_root }}:/backup:rw"
+
         env:
           DUPLICACY_WEB_VERSION: "{{ duplicacy_web_version }}"
           TZ: "{{ ansible_nas_timezone }}"
