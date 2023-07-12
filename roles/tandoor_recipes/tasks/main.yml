@@ -1,0 +1,107 @@
+---
+- name: Start Tandoor Recipes
+  block:
+    - name: Create Tandoor Recipes Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ tandoor_recipes_data_directory }}/staticfiles"
+        - "{{ tandoor_recipes_data_directory }}/nginx_config"
+        - "{{ tandoor_recipes_data_directory }}/mediafiles"
+
+    - name: Template nginx config
+      ansible.builtin.template:
+        src: Recipes.conf
+        dest: "{{ tandoor_recipes_data_directory }}/nginx_config/"
+        with_fileglob:
+        - "templates/*"
+      register: template_files_result
+
+    - name: Create Tandoor Recipes network
+      community.docker.docker_network:
+        name: "{{ tandoor_recipes_network_name }}"
+
+    - name: Tandoor Recipe Postgress Docker Container
+      community.docker.docker_container:
+        name: "{{ tandoor_recipes_postgres_container_name }}"
+        image: "{{ tandoor_recipes_postgres_image }}:{{ tandoor_recipes_postgres_tag }}"
+        pull: true
+        restart_policy: unless-stopped
+        volumes:
+          - "{{ tandoor_recipes_data_directory }}/database:/var/lib/postgresql/data:rw"
+        networks:
+          - name: "{{ tandoor_recipes_network_name }}"
+        env:
+          POSTGRES_PASSWORD: "{{ tandoor_recipe_db_password }}"
+          POSTGRES_USER: "{{ tandoor_recipe_db_username }}"
+          POSTGRES_DB: "{{ tandoor_recipe_db_name }}"
+        labels:
+          traefik.enable: "false"
+        memory: "{{ tandoor_recipes_postgres_memory }}"
+
+    - name: Tandoor Recipe Web Docker Container
+      community.docker.docker_container:
+        name: "{{ tandoor_recipes_web_container_name }}"
+        image: "{{ tandoor_recipes_web_image }}:{{ tandoor_recipes_web_tag }}"
+        pull: true
+        restart_policy: unless-stopped
+        volumes:
+          - "{{ tandoor_recipes_data_directory }}/staticfiles:/opt/recipes/staticfiles:rw"
+          - "{{ tandoor_recipes_data_directory }}/mediafiles:/opt/recipes/mediafiles:rw"
+        networks:
+          - name: "{{ tandoor_recipes_network_name }}"
+        env:
+          DB_ENGINE: "django.db.backends.postgresql"
+          POSTGRES_HOST: "{{ tandoor_recipes_postgres_container_name }}"
+          POSTGRES_PASSWORD: "{{ tandoor_recipe_db_password }}"
+          POSTGRES_USER: "{{ tandoor_recipe_db_username }}"
+          POSTGRES_DB: "{{ tandoor_recipe_db_name }}"
+          SECRET_KEY: "{{ tandoor_recipe_secret_key }}"
+          DEBUG: "0"
+          SQL_DEBUG: "0"
+          DEBUG_TOOLBAR: "0"
+          TIMEZONE: "{{ ansible_nas_timezone }}"
+          
+        labels:
+          traefik.enable: "false"
+        memory: "{{ tandoor_recipes_web_memory }}"
+
+    - name: Tandoor Recipe Proxy Docker Container
+      community.docker.docker_container:
+        name: "{{ tandoor_recipes_proxy_container_name }}"
+        image: "{{ tandoor_recipes_proxy_image }}:{{ tandoor_recipes_proxy_tag }}"
+        pull: true
+        restart_policy: unless-stopped
+        ports:
+          - "{{ tandoor_recipes_port }}:80"
+        volumes:
+          - "{{ tandoor_recipes_data_directory }}/staticfiles:/static:ro"
+          - "{{ tandoor_recipes_data_directory }}/nginx_config:/etc/nginx/conf.d:ro"
+          - "{{ tandoor_recipes_data_directory }}/mediafiles:/media:ro"
+        networks:
+          - name: "{{ tandoor_recipes_network_name }}"
+        memory: "{{ tandoor_recipes_proxy_memory }}"
+        labels:
+          traefik.enable: "{{ tandoor_recipes_available_externally | string }}"
+          traefik.http.routers.tandoor_recipes.rule: "Host(`{{ tandoor_recipes_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.tandoor_recipes.tls.certresolver: "letsencrypt"
+          traefik.http.routers.tandoor_recipes.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.tandoor_recipes.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.tandoor_recipes.loadbalancer.server.port: "80"
+
+
+  when: tandoor_recipes_enabled is true
+
+- name: Stop Tandoor Recipes
+  block:
+    - name: Stop Tandoor Recipes Postgres
+      community.docker.docker_container:
+        name: "{{ tandoor_recipes_postgres_container_name }}"
+        state: absent
+
+    - name: Delete Tandoor Recipes Network
+      community.docker.docker_network:
+        name: "{{ tandoor_recipes_network_name }}"
+        state: absent
+  when: tandoor_recipes_enabled is false

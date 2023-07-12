@@ -1,0 +1,31 @@
+---
+tandoor_recipes_enabled: false
+tandoor_recipes_available_externally: false
+
+tandoor_recipes_data_directory: "{{ docker_home }}/tandoor_recipes"
+tandoor_recipe_secret_key: "9r5RckmXVIzKPVza6nWyVXz4AaQX4LU9oMHcxpVIGnt34Z0622"
+tandoor_recipes_port: "3876"
+tandoor_recipes_hostname: "recipes"
+
+tandoor_recipes_network_name: "tandoor_recipes_network"
+tandoor_recipes_postgres_container_name: "tandoor_recipes_postgres"
+tandoor_recipes_web_container_name: "tandoor_recipes_web"
+tandoor_recipes_proxy_container_name: "tandoor_recipes_proxy"
+
+tandoor_recipe_db_password: "terefere"
+tandoor_recipe_db_username: "djangouser"
+tandoor_recipe_db_name: "djangodb"
+
+#docker
+tandoor_recipes_postgres_image: "postgres"
+tandoor_recipes_postgres_tag: "15-alpine"
+tandoor_recipes_web_image: "vabene1111/recipes"
+tandoor_recipes_web_tag: "latest"
+tandoor_recipes_proxy_image: "nginx"
+tandoor_recipes_proxy_tag: "mainline-alpine"
+
+
+# specs
+tandoor_recipes_postgres_memory: 1g
+tandoor_recipes_web_memory: 1g
+tandoor_recipes_proxy_memory: 1g

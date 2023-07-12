@@ -559,6 +559,10 @@
       tags:
         - syncthing
 
+    - role: tandoor_recipes
+      tags:
+        - tandoor_recipes
+
     - role: tautulli
       tags:
         - tautulli
