@@ -1,0 +1,43 @@
+---
+- name: Start Scrutiny
+  block:
+    - name: Create Scrutiny Data Directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ scrutiny_config_directory }}"
+        - "{{ scrutiny_influxdb_directory }}"
+
+    - name: Scrutiny Docker Container
+      community.docker.docker_container:
+        name: "{{ scrutiny_container_name }}"
+        image: "{{ scrutiny_image_name }}:{{ scrutiny_image_version }}"
+        pull: true
+        capabilities:
+          - SYS_RAWIO
+          - SYS_ADMIN
+        volumes:
+          - "/run/udev:/run/udev:ro"
+          - "{{ scrutiny_config_directory }}:/opt/scrutiny/config"
+          - "{{ scrutiny_influxdb_directory}}:/opt/scrutiny/influxdb"
+        ports:
+          - "{{ scrutiny_port }}:8080" # webapp
+          - "{{ scrutiny_influx_port }}:8086" # influxDB admin
+        restart_policy: unless-stopped
+        privileged: true
+        devices:
+          - "/dev/nvme0"
+          - "/dev/nvme1"
+          - "/dev/bus/0 -d megaraid,16"
+
+        memory: "{{ scrutiny_memory }}"
+  when: scrutiny_enabled is true
+
+- name: Stop Scrutiny
+  block:
+    - name: Stop Scrutiny
+      community.docker.docker_container:
+        name: "{{ scrutiny_container_name }}"
+        state: absent
+  when: scrutiny_enabled is false

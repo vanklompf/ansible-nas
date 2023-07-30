@@ -523,6 +523,10 @@
       tags:
         - sabnzbd
 
+    - role: scrutiny
+      tags:
+        - scrutiny
+
     - role: seafile
       tags:
         - seafile

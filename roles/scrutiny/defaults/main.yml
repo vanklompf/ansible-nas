@@ -1,0 +1,21 @@
+---
+scrutiny_enabled: false
+scrutiny_available_externally: false
+
+# directories
+scrutiny_data_directory: "{{ docker_home }}/scrutiny"
+scrutiny_config_directory: "{{ scrutiny_data_directory }}/config"
+scrutiny_influxdb_directory: "{{ scrutiny_data_directory }}/influxdb"
+
+# network
+scrutiny_port: "3877"
+scrutiny_influx_port: "8086"
+scrutiny_hostname: "scrutiny"
+
+# specs
+scrutiny_memory: 1g
+
+# docker
+scrutiny_container_name: "scrutiny"
+scrutiny_image_name: "ghcr.io/analogj/scrutiny"
+scrutiny_image_version: "master-omnibus"
