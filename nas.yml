@@ -259,9 +259,17 @@
       tags:
         - huntly
 
+    - role: icbinv
+      tags:
+        - icbinv
+
     - role: immich
       tags:
         - immich
+
+    - role: invidious
+      tags:
+        - invidious
 
     - role: jackett
       tags:
@@ -294,6 +302,10 @@
     - role: lazylibrarian
       tags:
         - lazylibrarian
+
+    - role: leantime
+      tags:
+        - leantime
 
     - role: libreddit
       tags:
