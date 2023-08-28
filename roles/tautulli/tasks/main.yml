@@ -33,6 +33,10 @@
           traefik.http.routers.tautulli.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.tautulli.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.tautulli.loadbalancer.server.port: "8181"
+          flame.type: "application"
+          flame.name: "Tautulli"
+          flame.url: "https://jezyk:{{ tautulli_port }}/"
+          flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/tautulli.png"
   when: tautulli_enabled is true
 
 - name: Stop Tautulli

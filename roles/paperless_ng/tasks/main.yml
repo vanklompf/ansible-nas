@@ -79,6 +79,10 @@
           traefik.http.routers.paperless_ng.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.paperless_ng.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.paperless_ng.loadbalancer.server.port: "8000"
+          flame.type: "application"
+          flame.name: "Paperless"
+          flame.url: "https://jezyk:{{ paperless_ng_port }}/"
+          flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/paperless.png"
   when: paperless_ng_enabled is true
 
 - name: Stop paperless_ng

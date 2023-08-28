@@ -43,6 +43,10 @@
           traefik.http.routers.plex.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.plex.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.plex.loadbalancer.server.port: "32400"
+          flame.type: "application"
+          flame.name: "Plex"
+          flame.url: "https://{{ plex_hostname }}.{{ ansible_nas_domain }}"
+          flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/plex.png"
 
     - name: Start Plex Autoscan
       block:

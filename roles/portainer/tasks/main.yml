@@ -28,6 +28,10 @@
           traefik.http.routers.portainer.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.portainer.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.portainer.loadbalancer.server.port: "9443"
+          flame.type: "application"
+          flame.name: "Portainer"
+          flame.url: "https://jezyk:9000"
+          flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/portainer.png"
   when: portainer_enabled is true
 
 - name: Stop Portainer

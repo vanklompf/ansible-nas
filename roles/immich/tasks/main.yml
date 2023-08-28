@@ -233,6 +233,10 @@
           traefik.http.routers.immich.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.immich.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.immich.loadbalancer.server.port: "8080"
+          flame.type: "application"
+          flame.name: "Immich"
+          flame.url: "https://{{ immich_hostname }}.{{ ansible_nas_domain }}"
+          flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/immich.png"
         restart_policy: unless-stopped
         memory: "{{ immich_proxy_memory }}"
   when: immich_enabled is true

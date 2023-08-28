@@ -40,6 +40,10 @@
           traefik.http.routers.youtubedlmaterial.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.youtubedlmaterial.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.youtubedlmaterial.loadbalancer.server.port: "17442"
+          flame.type: "application"
+          flame.name: "YoutubeDl"
+          flame.url: "http://jezyk:{{youtubedlmaterial_port_http}}"
+          flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/youtubedl.png"
   when: youtubedlmaterial_enabled is true
 
 - name: Stop Youtubedlmaterial
