@@ -1,0 +1,31 @@
+---
+- name: Start Homepage
+  block:
+    - name: Create Homepage Data Directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ homepage_config_directory }}"
+
+    - name: Homepage Docker Container
+      community.docker.docker_container:
+        name: "{{ homepage_container_name }}"
+        image: "{{ homepage_image_name }}:{{ homepage_image_version }}"
+        pull: true
+        volumes:
+          - "{{ homepage_config_directory }}:/app/config"
+          - "/var/run/docker.sock:/var/run/docker.sock:ro"
+        ports:
+          - "{{ homepage_port }}:3000" # webapp
+        restart_policy: unless-stopped
+        memory: "{{ homepage_memory }}"
+  when: homepage_enabled is true
+
+- name: Stop Homepage
+  block:
+    - name: Stop Homepage
+      community.docker.docker_container:
+        name: "{{ homepage_container_name }}"
+        state: absent
+  when: homepage_enabled is false

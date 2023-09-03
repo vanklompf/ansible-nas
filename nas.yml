@@ -251,6 +251,10 @@
       tags:
         - homebridge
 
+    - role: homepage
+      tags:
+        - homepage
+
     - role: huginn
       tags:
         - huginn
