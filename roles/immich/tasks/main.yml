@@ -22,15 +22,11 @@
           - "{{ immich_data_directory }}/database:/var/lib/postgresql/data:rw"
         networks:
           - name: "{{ immich_network_name }}"
-        network_mode: "{{ immich_network_name }}"
-        container_default_behavior: no_defaults
         env:
           POSTGRES_PASSWORD: "{{ immich_db_password }}"
           POSTGRES_USER: "{{ immich_db_username }}"
           POSTGRES_DB: "{{ immich_db_name }}"
           PG_DATA: /var/lib/postgresql/data
-        labels:
-          traefik.enable: "false"
         restart_policy: always
         memory: "{{ immich_postgres_memory }}"
         healthcheck:
@@ -45,13 +41,8 @@
         name: "{{ immich_redis_container_name }}"
         image: "{{ immich_redis_image }}:{{ immich_redis_tag }}"
         pull: true
-        command: --save 60 1 --loglevel warning
-        volumes:
-          - "{{ immich_data_directory }}/redis:/data:rw"
         networks:
           - name: "{{ immich_network_name }}"
-        labels:
-          traefik.enable: "false"
         restart_policy: always
         memory: "{{ immich_redis_memory }}"
         healthcheck:
@@ -73,8 +64,6 @@
         env:
           TYPESENSE_API_KEY: "{{ immich_typesense_api_key }}"
           TYPESENSE_DATA_DIR: "/data"
-        labels:
-          traefik.enable: "false"
         restart_policy: always
         memory: "{{ immich_typesense_memory }}"
 
@@ -83,7 +72,7 @@
         name: "{{ immich_server_container_name }}"
         image: "{{ immich_server_image }}:{{ immich_server_tag }}"
         pull: true
-        entrypoint: ["/bin/sh", "./start-server.sh"]
+        command: ["start.sh", "immich"]
         volumes:
           - "{{ immich_data_directory }}/data:/data:rw"
           - "{{ immich_upload_directory }}:/usr/src/app/upload:rw"
@@ -101,14 +90,9 @@
           DB_DATABASE_NAME: "{{ immich_db_name }}"
           DB_PORT: "{{ immich_db_port }}"
           JWT_SECRET: "{{ immich_jwt_secret }}"
-          ENABLE_MAPBOX: "{{ immich_enable_mapbox }}"
-          MAPBOX_KEY: "{{ immich_mapbox_key }}"
           UPLOAD_LOCATION: "./upload"
           PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
           TYPESENSE_API_KEY: "{{ immich_typesense_api_key }}"
-        labels:
-          traefik.enable: "false"
-        command: ["start.sh", "immich"]
         restart_policy: unless-stopped
         memory: "{{ immich_server_memory }}"
 
@@ -119,7 +103,6 @@
         pull: true
         command: ["start.sh", "microservices"]
         volumes:
-          - "{{ immich_data_directory }}/data:/data:rw"
           - "{{ immich_upload_directory }}:/usr/src/app/upload:rw"
         networks:
           - name: "{{ immich_network_name }}"
@@ -135,13 +118,9 @@
           DB_DATABASE_NAME: "{{ immich_db_name }}"
           DB_PORT: "{{ immich_db_port }}"
           JWT_SECRET: "{{ immich_jwt_secret }}"
-          ENABLE_MAPBOX: "{{ immich_enable_mapbox }}"
-          MAPBOX_KEY: "{{ immich_mapbox_key }}"
           UPLOAD_LOCATION: "./upload"
           PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
           TYPESENSE_API_KEY: "{{ immich_typesense_api_key }}"
-        labels:
-          traefik.enable: "false"
         restart_policy: unless-stopped
         memory: "{{ immich_microservices_memory }}"
 
@@ -151,9 +130,7 @@
         image: "{{ immich_machinelearning_image }}:{{ immich_machinelearning_tag }}"
         pull: true
         volumes:
-          - "{{ immich_data_directory }}/data:/data:rw"
-          - "{{ immich_upload_directory }}:/usr/src/app/upload:rw"
-          - "model-cache:/cache"
+          - "{{ immich_data_directory }}/model-cache:/cache"
         networks:
           - name: "{{ immich_network_name }}"
         env:
@@ -168,13 +145,9 @@
           DB_DATABASE_NAME: "{{ immich_db_name }}"
           DB_PORT: "{{ immich_db_port }}"
           JWT_SECRET: "{{ immich_jwt_secret }}"
-          ENABLE_MAPBOX: "{{ immich_enable_mapbox }}"
-          MAPBOX_KEY: "{{ immich_mapbox_key }}"
           UPLOAD_LOCATION: "./upload"
           PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
           TYPESENSE_API_KEY: "{{ immich_typesense_api_key }}"
-        labels:
-          traefik.enable: "false"
         restart_policy: unless-stopped
         memory: "{{ immich_machinelearning_memory }}"
 
@@ -197,15 +170,11 @@
           DB_DATABASE_NAME: "{{ immich_db_name }}"
           DB_PORT: "{{ immich_db_port }}"
           JWT_SECRET: "{{ immich_jwt_secret }}"
-          ENABLE_MAPBOX: "{{ immich_enable_mapbox }}"
-          MAPBOX_KEY: "{{ immich_mapbox_key }}"
           UPLOAD_LOCATION: "./upload"
           PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
           PUBLIC_IMMICH_SERVER_URL: "http://{{ immich_server_container_name }}:3001"
           IMMICH_SERVER_URL: "http://{{ immich_server_container_name }}:3001"
           TYPESENSE_API_KEY: "{{ immich_typesense_api_key }}"
-        labels:
-          traefik.enable: "false"
         restart_policy: unless-stopped
         memory: "{{ immich_web_memory }}"
 
