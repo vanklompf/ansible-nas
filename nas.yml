@@ -128,6 +128,10 @@
       tags:
         - code-server
 
+    - role: commafeed
+      tags:
+        - commafeed
+
     - role: couchpotato
       tags:
         - couchpotato
@@ -167,6 +171,10 @@
     - role: emby
       tags:
         - emby
+
+    - role: ebusd
+      tags:
+        - ebusd
 
     - role: esphome
       tags:
@@ -468,6 +476,10 @@
       tags:
         - ombi
 
+    - role: openbooks
+      tags:
+        - openbooks
+
     - role: openhab
       tags:
         - openhab
@@ -576,6 +588,10 @@
       tags:
         - shaarli
 
+    - role: servas
+      tags:
+        - servas
+
     - role: sickchill
       tags:
         - sickchill
@@ -595,6 +611,10 @@
     - role: stats
       tags:
         - stats
+
+    - role: stirlingpdf
+      tags:
+        - stirlingpdf
 
     - role: syncthing
       tags:

@@ -31,6 +31,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Chatpad](https://chatpad.ai/) - Not just another ChatGPT user-interface!
 * [Claper](https://claper.co/) - The ultimate tool to interact with your audience
 * [Code Server](https://code.visualstudio.com/) - Powerful IDE from Microsoft accessible through the browser
+* [CommaFeed](https://www.commafeed.com/) - Google Reader inspired self-hosted RSS reader
 * [Cloud Commander](https://cloudcmd.io/) - A dual panel file manager with integrated web console and text editor
 * [Cloudflare DDNS](https://hub.docker.com/r/joshuaavalon/cloudflare-ddns/) - automatically update Cloudflare with your IP address
 * [CouchPotato](https://couchpota.to/) - for downloading and managing movies
@@ -43,6 +44,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Dufs](https://github.com/sigoden/dufs) - distinctive utility file server
 * [Duplicati](https://www.duplicati.com/) - for backing up your stuff
 * [Emby](https://emby.media/) - Media streaming and management
+* [ebusd](https://github.com/john30/ebusd) - daemon for communication with eBUS heating systems
 * [ESPHome](https://esphome.io/) - ESP8266/ESP32 programming and management for home automation
 * [Excalidraw](https://excalidraw.com/) - Virtual whiteboard for sketching hand-drawn like diagrams
 * [Firefly III](https://firefly-iii.org/) - Free and open source personal finance manager
@@ -117,6 +119,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Octoprint](https://octoprint.org/) - Control and monitor your 3D printer
 * [OliveTin](https://github.com/OliveTin/OliveTin) -  safe and simple access to predefined shell commands
 * [Ombi](https://ombi.io/) - web application that automatically gives your users the ability to request content
+* [Openbooks](https://github.com/evan-buss/openbooks) - Search and Download eBooks
 * [openHAB](https://www.openhab.org/) - A vendor and technology agnostic open source automation software for your home
 * [openLDAP](https://www.openldap.org/) - An open source implementation of the Lightweight Directory Access Protocol
 * [Organizr](https://organizr.app/) - ORGANIZR aims to be your one stop shop for your Servers Frontend.
@@ -144,12 +147,14 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Sabnzbd](https://sabnzbd.org/) - A powerful usenet downloader that FreeNAS provides
 * [Seafile](https://www.seafile.com/en/home/) - High performance file syncing and sharing
 * [SearxNG](https://github.com/searxng/searxng) - Free internet metasearch engine
+* [Servas](https://github.com/beromir/Servas) - A self-hosted bookmark management tool
 * [Shaarli](https://github.com/shaarli/Shaarli) - Personal, minimalist, super-fast, database free, bookmarking service
 * [Sickchill](https://sickchill.github.io/) - for managing TV episodes
 * [Snipe-IT](https://snipeitapp.com/) - A free open source IT asset/license management system
 * [Sonarr](https://sonarr.tv/) - for downloading and managing TV episodes
 * [Speedtest-Tracker](https://github.com/henrywhitaker3/Speedtest-Tracker) - Continuously track your internet speed
 * Stats - Monitor and visualise metrics about your NAS and internet connection using Grafana, Prometheus, Telegraf and more.
+* [Stirling-PDF](https://github.com/Frooodle/Stirling-PDF) - locally hosted web application that allows you to perform various operations on PDF files
 * [Syncthing](https://syncthing.net/) - sync directories with another device
 * [Tautulli](http://tautulli.com/) - Monitor Your Plex Media Server
 * [The Lounge](https://thelounge.chat) - Web based always-on IRC client
