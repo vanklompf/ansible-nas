@@ -10,15 +10,15 @@
         - "{{ duplicacy_logs_directory }}"
         - "{{ duplicacy_cache_directory }}"
 
-    - name: Register user provided keys
-      local_action: stat path="{{ inventory_dir }}/mosquitto"
-      register: mosquitto_user_config
+#    - name: Register user provided keys
+#      local_action: stat path="{{ inventory_dir }}/mosquitto"
+#      register: mosquitto_user_config
 
-    - name: Copy keys
-      ansible.builtin.copy:
-        src: "{{ inventory_dir }}/duplicacy/public.pem"
-        dest: "{{ duplicacy_config_directory }}"
-      when: mosquitto_user_config.stat.exists
+#    - name: Copy keys
+#      ansible.builtin.copy:
+#        src: "{{ inventory_dir }}/duplicacy/public.pem"
+#        dest: "{{ duplicacy_config_directory }}"
+#      when: mosquitto_user_config.stat.exists
 
     - name: Duplicacy Docker Container
       community.docker.docker_container:
