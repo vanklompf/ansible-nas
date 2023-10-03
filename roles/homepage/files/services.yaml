@@ -1,0 +1,13 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/en/configs/services
+
+- Media:
+    - Plex:
+        icon: si-plex
+        href: https://plex.korta.top
+        description: "Plex Media server"
+        widget:
+          type: plex
+          url: https://plex.korta.top
+          key: P-xy2oLcJz4VPzE8Z3RS
