@@ -10,6 +10,16 @@
         - "{{ duplicacy_logs_directory }}"
         - "{{ duplicacy_cache_directory }}"
 
+    - name: Register user provided keys
+      local_action: stat path="{{ inventory_dir }}/mosquitto"
+      register: mosquitto_user_config
+
+    - name: Copy keys
+      ansible.builtin.copy:
+        src: "{{ inventory_dir }}/duplicacy/public.pem"
+        dest: "{{ duplicacy_config_directory }}"
+      when: mosquitto_user_config.stat.exists
+
     - name: Duplicacy Docker Container
       community.docker.docker_container:
         name: "{{ duplicacy_container_name }}"
@@ -40,6 +50,7 @@
           traefik.http.routers.duplicacy.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.duplicacy.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.duplicacy.loadbalancer.server.port: "3875"
+        network_mode: host
   when: duplicacy_enabled is true
 
 - name: Stop Duplicacy
