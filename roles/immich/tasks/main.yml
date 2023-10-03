@@ -70,7 +70,7 @@
     - name: Immich Server Docker Container
       community.docker.docker_container:
         name: "{{ immich_server_container_name }}"
-        image: "{{ immich_server_image }}:{{ immich_server_tag }}"
+        image: "{{ immich_server_image }}:{{ immich_tag }}"
         pull: true
         command: ["start.sh", "immich"]
         volumes:
@@ -79,7 +79,6 @@
         networks:
           - name: "{{ immich_network_name }}"
         env:
-          TZ: "{{ ansible_nas_timezone }}"
           PUID: "{{ immich_user_id | quote }}"
           PGID: "{{ immich_group_id | quote }}"
           NODE_ENV: "production"
@@ -91,7 +90,7 @@
           DB_PORT: "{{ immich_db_port }}"
           JWT_SECRET: "{{ immich_jwt_secret }}"
           UPLOAD_LOCATION: "./upload"
-          PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
+          TYPESENSE_HOST: "{{ immich_typesense_container_name }}"
           TYPESENSE_API_KEY: "{{ immich_typesense_api_key }}"
         restart_policy: unless-stopped
         memory: "{{ immich_server_memory }}"
@@ -99,7 +98,7 @@
     - name: Immich Microservices Docker Container
       community.docker.docker_container:
         name: "{{ immich_microservices_container_name }}"
-        image: "{{ immich_microservices_image }}:{{ immich_microservices_tag }}"
+        image: "{{ immich_microservices_image }}:{{ immich_tag }}"
         pull: true
         command: ["start.sh", "microservices"]
         volumes:
@@ -119,7 +118,7 @@
           DB_PORT: "{{ immich_db_port }}"
           JWT_SECRET: "{{ immich_jwt_secret }}"
           UPLOAD_LOCATION: "./upload"
-          PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
+          TYPESENSE_HOST: "{{ immich_typesense_container_name }}"
           TYPESENSE_API_KEY: "{{ immich_typesense_api_key }}"
         restart_policy: unless-stopped
         memory: "{{ immich_microservices_memory }}"
@@ -127,61 +126,43 @@
     - name: Immich Machine Learning Docker Container
       community.docker.docker_container:
         name: "{{ immich_machinelearning_container_name }}"
-        image: "{{ immich_machinelearning_image }}:{{ immich_machinelearning_tag }}"
+        image: "{{ immich_machinelearning_image }}:{{ immich_tag }}"
         pull: true
         volumes:
           - "{{ immich_data_directory }}/model-cache:/cache"
         networks:
           - name: "{{ immich_network_name }}"
         env:
-          TZ: "{{ ansible_nas_timezone }}"
           PUID: "{{ immich_user_id | quote }}"
           PGID: "{{ immich_group_id | quote }}"
           NODE_ENV: "production"
-          REDIS_HOSTNAME: "{{ immich_redis_container_name }}"
-          DB_HOSTNAME: "{{ immich_postgres_container_name }}"
-          DB_USERNAME: "{{ immich_db_username }}"
-          DB_PASSWORD: "{{ immich_db_password }}"
-          DB_DATABASE_NAME: "{{ immich_db_name }}"
-          DB_PORT: "{{ immich_db_port }}"
           JWT_SECRET: "{{ immich_jwt_secret }}"
-          UPLOAD_LOCATION: "./upload"
-          PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
-          TYPESENSE_API_KEY: "{{ immich_typesense_api_key }}"
         restart_policy: unless-stopped
         memory: "{{ immich_machinelearning_memory }}"
 
     - name: Immich Web Docker Container
       community.docker.docker_container:
         name: "{{ immich_web_container_name }}"
-        image: "{{ immich_web_image }}:{{ immich_web_tag }}"
+        image: "{{ immich_web_image }}:{{ immich_tag }}"
         pull: true
         networks:
           - name: "{{ immich_network_name }}"
         env:
-          TZ: "{{ ansible_nas_timezone }}"
           PUID: "{{ immich_user_id | quote }}"
           PGID: "{{ immich_group_id | quote }}"
           NODE_ENV: "production"
-          REDIS_HOSTNAME: "{{ immich_redis_container_name }}"
-          DB_HOSTNAME: "{{ immich_postgres_container_name }}"
-          DB_USERNAME: "{{ immich_db_username }}"
-          DB_PASSWORD: "{{ immich_db_password }}"
-          DB_DATABASE_NAME: "{{ immich_db_name }}"
-          DB_PORT: "{{ immich_db_port }}"
           JWT_SECRET: "{{ immich_jwt_secret }}"
           UPLOAD_LOCATION: "./upload"
           PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
           PUBLIC_IMMICH_SERVER_URL: "http://{{ immich_server_container_name }}:3001"
           IMMICH_SERVER_URL: "http://{{ immich_server_container_name }}:3001"
-          TYPESENSE_API_KEY: "{{ immich_typesense_api_key }}"
         restart_policy: unless-stopped
         memory: "{{ immich_web_memory }}"
 
     - name: Immich Proxy Docker Container
       community.docker.docker_container:
         name: "{{ immich_proxy_container_name }}"
-        image: "{{ immich_proxy_image }}:{{ immich_proxy_tag }}"
+        image: "{{ immich_proxy_image }}:{{ immich_tag }}"
         pull: true
         log_driver: "none"
         networks:
@@ -189,10 +170,8 @@
         ports:
           - "{{ immich_port }}:8080"
         env:
-          TZ: "{{ ansible_nas_timezone }}"
           PUID: "{{ immich_user_id | quote }}"
           PGID: "{{ immich_group_id | quote }}"
-          NODE_ENV: "production"
           IMMICH_SERVER_URL: "http://{{ immich_server_container_name }}:3001"
           IMMICH_WEB_URL: "http://{{ immich_web_container_name }}:3000"
         labels:
