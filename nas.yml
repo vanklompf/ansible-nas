@@ -688,6 +688,10 @@
       tags:
         - watchtower
 
+    - role: webcam
+      tags:
+        - webcam
+
     - role: webtrees
       tags:
         - webtrees

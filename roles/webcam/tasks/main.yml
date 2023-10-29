@@ -1,0 +1,25 @@
+---
+- name: Start Webcam
+  block:
+    - name: Webcam Docker Container
+      community.docker.docker_container:
+        name: "{{ webcam_container_name }}"
+        image: "{{ webcam_image_name }}:{{ webcam_image_version }}"
+        pull: true
+        ports:
+          - "{{ webcam_port }}:8080"
+          - "8082:8082"
+        restart_policy: unless-stopped
+        privileged: true
+        devices:
+          - "/dev/video0:/dev/video0"
+        memory: "{{ webcam_memory }}"
+  when: webcam_enabled is true
+
+- name: Stop Webcam
+  block:
+    - name: Stop Webcam
+      community.docker.docker_container:
+        name: "{{ webcam_container_name }}"
+        state: absent
+  when: webcam_enabled is false

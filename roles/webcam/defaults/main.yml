@@ -1,0 +1,15 @@
+---
+webcam_enabled: false
+webcam_available_externally: false
+
+# network
+webcam_port: "3878"
+webcam_hostname: "webcam"
+
+# specs
+webcam_memory: 1g
+
+# docker
+webcam_container_name: "webcam"
+webcam_image_name: "vanklompf/webcam-container"
+webcam_image_version: "latest"
