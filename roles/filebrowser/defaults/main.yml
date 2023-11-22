@@ -1,0 +1,19 @@
+---
+filebrowser_enabled: false
+filebrowser_available_externally: false
+
+# directories
+filebrowser_config_directory: "{{ docker_home }}/filebrowser/config"
+filebrowser_db_directory: "{{ docker_home }}/filebrowser/db"
+
+# network
+filebrowser_port: "3879"
+filebrowser_hostname: "filebrowser"
+
+# specs
+filebrowser_memory: 1g
+
+# docker
+filebrowser_container_name: "filebrowser"
+filebrowser_image_name: "filebrowser/filebrowser"
+filebrowser_image_version: "latest"

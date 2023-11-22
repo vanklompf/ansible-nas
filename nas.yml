@@ -184,6 +184,10 @@
       tags:
         - excalidraw
 
+    - role: filebrowser
+      tags:
+        - filebrowser
+
     - role: firefly
       tags:
         - firefly

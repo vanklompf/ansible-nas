@@ -1,0 +1,45 @@
+---
+- name: Start Filebrowser
+  block:
+    - name: Create Filebrowser Data Directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ filebrowser_db_directory }}"
+        - "{{ filebrowser_config_directory }}"
+
+    - name: Generate filebrowser.json
+      ansible.builtin.template:
+        src: filebrowser.json
+        dest: "{{ filebrowser_config_directory }}/filebrowser.json"
+      register: filebrowser_config
+
+    - name: Generate filebrowser.db
+      ansible.builtin.file:
+        path: "{{ filebrowser_db_directory }}/filebrowser.db"
+        state: touch
+      register: filebrowser_db
+
+    - name: Filebrowser Docker Container
+      community.docker.docker_container:
+        name: "{{ filebrowser_container_name }}"
+        image: "{{ filebrowser_image_name }}:{{ filebrowser_image_version }}"
+        pull: true
+        volumes:
+          - "/mnt/nas/media:/srv"
+          - "{{ filebrowser_config_directory }}/filebrowser.json:/.filebrowser.json"
+          - "{{ filebrowser_db_directory}}/filebrowser.db:/filebrowser.db:rw"
+        ports:
+          - "{{ filebrowser_port }}:80"
+        restart_policy: unless-stopped
+        memory: "{{ filebrowser_memory }}"
+  when: filebrowser_enabled is true
+
+- name: Stop Filebrowser
+  block:
+    - name: Stop Filebrowser
+      community.docker.docker_container:
+        name: "{{ filebrowser_container_name }}"
+        state: absent
+  when: filebrowser_enabled is false
