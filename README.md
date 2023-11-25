@@ -125,6 +125,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [openHAB](https://www.openhab.org/) - A vendor and technology agnostic open source automation software for your home
 * [openLDAP](https://www.openldap.org/) - An open source implementation of the Lightweight Directory Access Protocol
 * [Organizr](https://organizr.app/) - ORGANIZR aims to be your one stop shop for your Servers Frontend.
+* [Overleaf](https://github.com/overleaf/overleaf) - A web-based collaborative LaTeX editor
 * [overseerr](https://docs.overseerr.dev) - open source software application for managing requests for your media library
 * [Paperless_ng](https://github.com/jonaswinkler/paperless-ng) - Scan, index and archive all your physical documents
 * [Photofield](https://github.com/SmilyOrg/photofield) - Experimental fast photo viewer
@@ -156,6 +157,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Sonarr](https://sonarr.tv/) - for downloading and managing TV episodes
 * [Speedtest-Tracker](https://github.com/henrywhitaker3/Speedtest-Tracker) - Continuously track your internet speed
 * Stats - Monitor and visualise metrics about your NAS and internet connection using Grafana, Prometheus, Telegraf and more.
+* [Standard Notes](https://standardnotes.com/) - An end-to-end encrypted notes app
 * [Stirling-PDF](https://github.com/Frooodle/Stirling-PDF) - locally hosted web application that allows you to perform various operations on PDF files
 * [Syncthing](https://syncthing.net/) - sync directories with another device
 * [Tautulli](http://tautulli.com/) - Monitor Your Plex Media Server

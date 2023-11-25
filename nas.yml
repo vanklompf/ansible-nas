@@ -500,6 +500,10 @@
       tags:
         - organizr
 
+    - role: overleaf
+      tags:
+        - overleaf
+
     - role: overseerr
       tags:
         - overseerr
@@ -615,6 +619,10 @@
     - role: speedtest-tracker
       tags:
         - speedtest-tracker
+
+    - role: standardnotes
+      tags:
+        - standardnotes
 
     - role: stats
       tags:
