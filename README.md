@@ -4,7 +4,7 @@
 [![CI](https://github.com/anarion80/ansible-nas/workflows/CI/badge.svg)](https://github.com/anarion80/ansible-nas/actions?query=workflow%3ACI)
 [![Integration](https://github.com/anarion80/ansible-nas/workflows/Integration/badge.svg)](https://github.com/anarion80/ansible-nas/actions?query=workflow%3AIntegration)
 [![Gitter chat](https://img.shields.io/gitter/room/ansible-nas/chat.svg?logo=gitter&style=flat-square)](https://gitter.im/Ansible-NAS/Chat)
-[![license](https://img.shields.io/github/license/DAVFoundation/api_doc.svg?style=flat-square)](https://github.com/anarion80/ansible-nas/blob/master/LICENSE)
+[![license](https://img.shields.io/github/license/DAVFoundation/api_doc.svg?style=flat-square)](https://github.com/anarion80/ansible-nas/blob/main/LICENSE)
 [![Ko-fi](https://img.shields.io/static/v1.svg?label=ko-fi&message=Buy%20Me%20A%20Coffee&color=orange&style=flat-square&logo=buy-me-a-coffee)](https://ko-fi.com/davestephens)
 
 After getting burned by broken FreeNAS updates one too many times, I figured I could do a much better job myself using just a stock Ubuntu install, some clever Ansible config and a bunch of Docker containers.
@@ -38,6 +38,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Dashy](https://dashy.to/) - A self-hosted startpage for your server. Easy to use visual editor, status checking, widgets, themes and tons more!
 * [DDNS Updater](https://github.com/qdm12/ddns-updater) - dynamic dns updater for serveral providers
 * [Deluge](https://dev.deluge-torrent.org/) - A lightweight, Free Software, cross-platform BitTorrent client.
+* [Dockge](https://github.com/louislam/dockge) - A fancy, easy-to-use and reactive self-hosted docker compose.yaml stack-oriented manager
 * [DokuWiki](https://www.dokuwiki.org/) - A simple to use and highly versatile Open Source wiki software that doesn't require a database.
 * [Drone CI](https://drone.io) - A self-service Continuous Integration platform for busy development teams.
 * [Duplicacy](https://duplicacy.com/) - A web UI for the Duplicacy cloud backup program, which provides lock-free deduplication backups to multiple providers

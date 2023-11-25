@@ -148,6 +148,10 @@
       tags:
         - deluge
 
+    - role: dockge
+      tags:
+        - dockge
+
     - role: dokuwiki
       tags:
         - dokuwiki
