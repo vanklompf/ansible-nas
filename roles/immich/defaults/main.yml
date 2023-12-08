@@ -14,7 +14,6 @@ immich_network_name: "immich"
 # specs
 immich_postgres_memory: 1g
 immich_redis_memory: 1g
-immich_typesense_memory: 1g
 immich_server_memory: 1g
 immich_microservices_memory: 1g
 immich_machinelearning_memory: 1g
@@ -22,7 +21,6 @@ immich_machinelearning_memory: 1g
 # docker
 immich_postgres_container_name: "immich_postgres"
 immich_redis_container_name: "immich_redis"
-immich_typesense_container_name: "immich_typesense"
 immich_server_container_name: "immich_server"
 immich_microservices_container_name: "immich_microservices"
 immich_machinelearning_container_name: "immich-machine-learning"
@@ -31,12 +29,10 @@ immich_proxy_container_name: "immich_proxy"
 
 
 immich_tag: "release"
-immich_postgres_image: "postgres"
-immich_postgres_tag: "14-alpine"
+immich_postgres_image: "tensorchord/pgvecto-rs"
+immich_postgres_tag: "pg14-v0.1.11"
 immich_redis_image: "redis"
 immich_redis_tag: "6.2-alpine"
-immich_typesense_image: "typesense/typesense"
-immich_typesense_tag: "0.24.1@sha256:9bcff2b829f12074426ca044b56160ca9d777a0c488303469143dd9f8259d4dd"
 immich_server_image: "ghcr.io/immich-app/immich-server"
 immich_microservices_image: "ghcr.io/immich-app/immich-server"
 immich_machinelearning_image: "ghcr.io/immich-app/immich-machine-learning"
