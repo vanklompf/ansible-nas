@@ -9,7 +9,7 @@
         - "{{ traefik_data_directory }}"
         - "{{ traefik_data_directory }}/letsencrypt"
         - "{{ traefik_data_directory }}/config"
-        - "{{ docker_logs }}/traefik"
+        - "{{ traefik_log_directory }}"
 
     - name: Template Traefik config.yml
       ansible.builtin.template:
@@ -33,7 +33,7 @@
           - "{{ traefik_data_directory }}/traefik.yml:/etc/traefik/traefik.yml:ro"
           - "{{ traefik_data_directory }}/config:/etc/traefik/config:ro"
           - "{{ traefik_data_directory }}/letsencrypt:/letsencrypt:rw"
-          - "{{ docker_logs }}/traefik:/logs"
+          - "{{ traefik_log_directory }}:/logs"
           - "/var/run/docker.sock:/var/run/docker.sock:ro"
         env: "{{ traefik_environment_variables }}"
         restart_policy: unless-stopped

@@ -8,6 +8,7 @@
       with_items:
         - "{{ nextcloud_data_directory }}/nextcloud"
         - "{{ nextcloud_data_directory }}/mysql"
+        - "{{ nextcloud_log_directory }}"
 
     - name: Create Nextcloud network
       community.docker.docker_network:
@@ -39,6 +40,7 @@
         pull: true
         volumes:
           - "{{ nextcloud_data_directory }}/nextcloud:/var/www/html:rw"
+          - "{{ nextcloud_log_directory }}:/var/log/apache2"
         ports:
           - "{{ nextcloud_port }}:80"
         env:

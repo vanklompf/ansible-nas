@@ -3,6 +3,8 @@ tandoor_recipes_enabled: false
 tandoor_recipes_available_externally: false
 
 tandoor_recipes_data_directory: "{{ docker_home }}/tandoor_recipes"
+tandoor_recipes_log_directory: "{{ docker_logs }}/tandoor_recipes"
+
 tandoor_recipe_secret_key: "9r5RckmXVIzKPVza6nWyVXz4AaQX4LU9oMHcxpVIGnt34Z0622"
 tandoor_recipes_port: "3876"
 tandoor_recipes_hostname: "recipes"

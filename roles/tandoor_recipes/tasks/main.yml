@@ -9,6 +9,7 @@
         - "{{ tandoor_recipes_data_directory }}/staticfiles"
         - "{{ tandoor_recipes_data_directory }}/nginx_config"
         - "{{ tandoor_recipes_data_directory }}/mediafiles"
+        - "{{ tandoor_recipes_log_directory }}"
 
     - name: Template nginx config
       ansible.builtin.template:
@@ -79,6 +80,7 @@
           - "{{ tandoor_recipes_data_directory }}/staticfiles:/static:ro"
           - "{{ tandoor_recipes_data_directory }}/nginx_config:/etc/nginx/conf.d:ro"
           - "{{ tandoor_recipes_data_directory }}/mediafiles:/media:ro"
+          - "{{ tandoor_recipes_log_directory }}:/var/log/nginx"
         networks:
           - name: "{{ tandoor_recipes_network_name }}"
         memory: "{{ tandoor_recipes_proxy_memory }}"
@@ -89,8 +91,6 @@
           traefik.http.routers.tandoor_recipes.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.tandoor_recipes.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.tandoor_recipes.loadbalancer.server.port: "80"
-
-
   when: tandoor_recipes_enabled is true
 
 - name: Stop Tandoor Recipes
