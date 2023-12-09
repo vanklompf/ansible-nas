@@ -14,17 +14,31 @@ entryPoints:
           main: "{{ ansible_nas_domain }}"
           sans:
             - "*.{{ ansible_nas_domain }}"
+      middlewares:
+        - geoblock@file
+        - secure-headers@file
   traefik:
     address: ":{{ traefik_port_ui }}"
 providers:
   providersThrottleDuration: 2s
   docker:
     exposedbydefault: false
+  file:
+    directory: /etc/traefik/config
 api:
   insecure: true
   dashboard: true
 log:
   level: "{{ traefik_log_level }}"
+  filePath: /logs/traefik.log
+accessLog:
+  filePath: /logs/access.log
+  bufferingSize: 100
+  filters:
+    statusCodes:
+      - "204-299"
+      - "400-499"
+      - "500-599"
 ping:
   terminatingStatusCode: 0
 certificatesResolvers:
@@ -37,3 +51,10 @@ certificatesResolvers:
         provider: "{{ traefik_dns_provider }}"
 metrics:
   prometheus: {}
+global:
+  sendAnonymousUsage: true
+experimental:
+  plugins:
+    GeoBlock:
+      moduleName: "github.com/PascalMinder/geoblock"
+      version: "v0.2.7"

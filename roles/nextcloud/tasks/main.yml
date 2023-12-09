@@ -54,9 +54,6 @@
         memory: "{{ nextcloud_memory }}"
         labels:
           traefik.enable: "{{ nextcloud_available_externally | string }}"
-          traefik.http.middlewares.nextcloud-security.headers.stsPreload: "true"
-          traefik.http.middlewares.nextcloud-security.headers.stsSeconds: "15552000"
-          traefik.http.routers.nextcloud.middlewares: "nextcloud-security"
           traefik.http.routers.nextcloud.rule: "Host(`{{ nextcloud_hostname }}.{{ ansible_nas_domain }}`)"
           traefik.http.routers.nextcloud.tls.certresolver: "letsencrypt"
           traefik.http.routers.nextcloud.tls.domains[0].main: "{{ ansible_nas_domain }}"
