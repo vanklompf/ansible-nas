@@ -8,7 +8,6 @@ plex_available_externally: false
 plex_config_directory: "{{ docker_home }}/plex/config"
 plex_logs: "{{ docker_home }}/plex/logs"
 plex_movies_directory: "{{ movies_root }}"
-plex_tv_directory: "{{ tv_root }}"
 plex_photos_directory: "{{ photos_root }}"
 plex_podcasts_directory: "{{ podcasts_root }}"
 plex_music_directory: "{{ music_root }}"

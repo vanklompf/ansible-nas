@@ -11,6 +11,9 @@
         - "{{ plex_config_directory }}/autoscan"
         - "{{ plex_config_directory }}/metamanager"
         - "{{ plex_logs }}"
+        - "{{ plex_movies_directory }}/youtube"
+        - "{{ plex_movies_directory }}/movies"
+        - "{{ plex_movies_directory }}/tv"
 
     - name: Create Plex Docker Container
       community.docker.docker_container:
@@ -20,8 +23,9 @@
         volumes:
           - "{{ plex_config_directory }}:/config:rw"
           - "{{ plex_logs }}:/opt/plex/Library/Application Support/Plex Media Server/Logs:rw"
-          - "{{ plex_movies_directory }}:/movies:{{ plex_movies_permissions }}"
-          - "{{ plex_tv_directory }}:/tv:{{ plex_tv_permissions }}"
+          - "{{ plex_movies_directory }}/movies:/movies:{{ plex_movies_permissions }}"
+          - "{{ plex_movies_directory }}/tv:/tv:{{ plex_tv_permissions }}"
+          - "{{ plex_movies_directory }}/youtube:/youtube:{{ plex_tv_permissions }}"
           - "{{ plex_photos_directory }}:/photos:{{ plex_photos_permissions }}"
           - "{{ plex_podcasts_directory }}:/podcasts:{{ plex_podcasts_permissions }}"
           - "{{ plex_music_directory }}:/music:{{ plex_music_permissions }}"
