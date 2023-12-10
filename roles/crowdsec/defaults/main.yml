@@ -1,0 +1,20 @@
+---
+crowdsec_enabled: false
+crowdsec_available_externally: false
+
+# directories
+crowdsec_directory: "{{ docker_home }}/crowdsec"
+
+# network
+crowdsec_port: "3880"
+crowdsec_hostname: "crowdsec"
+
+# specs
+crowdsec_memory: 1g
+
+# docker
+crowdsec_container_name: "crowdsec"
+crowdsec_image_name: "crowdsecurity/crowdsec"
+crowdsec_image_version: "latest"
+
+crowdsec_collections: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/whitelist-good-actors crowdsecurity/iptables crowdsecurity/linux crowdsecurity/nginx crowdsecurity/sshd crowdsecurity/apache2"

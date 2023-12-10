@@ -1,0 +1,43 @@
+---
+- name: Start Crowdsec
+  block:
+    - name: Create Crowdsec Data Directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ crowdsec_directory }}"
+
+    - name: Template Crowdsec Acquisition Config
+      ansible.builtin.template:
+        src: acquis.yaml
+        dest: "{{ crowdsec_directory }}/config/acquis.yaml"
+      register: template_config
+
+    - name: Crowdsec Docker Container
+      community.docker.docker_container:
+        name: "{{ crowdsec_container_name }}"
+        image: "{{ crowdsec_image_name }}:{{ crowdsec_image_version }}"
+        pull: true
+        volumes:
+          - "{{ crowdsec_directory }}/data:/var/lib/crowdsec/data"
+          - "{{ crowdsec_directory }}/config:/etc/crowdsec"
+          - "/var/log:/var/log:ro"
+          - "{{ docker_logs }}:/logs/web:ro"
+        env:
+          COLLECTIONS: "{{ crowdsec_collections }}"
+          CUSTOM_HOSTNAME: "{{ ansible_nas_domain }}"
+        ports:
+          - "{{ crowdsec_port }}:8080"
+        restart_policy: unless-stopped
+        memory: "{{ crowdsec_memory }}"
+        recreate: "{{ template_config is changed }}"
+  when: crowdsec_enabled is true
+
+- name: Stop Crowdsec
+  block:
+    - name: Stop Crowdsec
+      community.docker.docker_container:
+        name: "{{ crowdsec_container_name }}"
+        state: absent
+  when: crowdsec_enabled is false

@@ -136,6 +136,10 @@
       tags:
         - couchpotato
 
+    - role: crowdsec
+      tags:
+        - crowdsec
+
     - role: dashy
       tags:
         - dashy

@@ -1,0 +1,21 @@
+filenames:
+  - /var/log/auth.log
+  - /var/log/syslog
+  - /var/log/kern.log
+labels:
+  type: syslog
+---
+filenames:
+  - /logs/web/traefik/*.log
+labels:
+  type: traefik
+---
+filenames:
+  - /logs/web/nextcloud/*.log
+labels:
+  type: apache2
+---
+filenames:
+  - /logs/web/tandoor_recipes/*.log
+labels:
+  type: apache2
