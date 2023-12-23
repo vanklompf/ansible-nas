@@ -21,7 +21,7 @@ http:
           countries:
             - PL
             - DE
-            - UK
+            - GB
             - IE
     secure-headers:
       headers:
