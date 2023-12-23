@@ -18,5 +18,8 @@ youtubedlmaterial_container_name: "youtubedlmaterial"
 youtubedlmaterial_image_name: "tzahi12345/youtubedl-material"
 youtubedlmaterial_image_version: "latest"
 
+youtubedlmaterial_user_id: "1000"
+youtubedlmaterial_group_id: "1000"
+
 # specs
 youtubedlmaterial_memory: "1g"

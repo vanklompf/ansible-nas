@@ -63,7 +63,6 @@
           SQL_DEBUG: "0"
           DEBUG_TOOLBAR: "0"
           TIMEZONE: "{{ ansible_nas_timezone }}"
-          
         labels:
           traefik.enable: "false"
         memory: "{{ tandoor_recipes_web_memory }}"
