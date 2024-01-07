@@ -64,6 +64,10 @@
     ###
     ### Applications
     ###
+    - role: activepieces
+      tags:
+        - activepieces
+
     - role: admidio
       tags:
         - admidio
@@ -95,6 +99,10 @@
     - role: blaze
       tags:
         - blaze
+
+    - role: blocky
+      tags:
+        - blocky
 
     - role: booksonic
       tags:
@@ -260,6 +268,10 @@
       tags:
         - guacamole
 
+    - role: hafusion
+      tags:
+        - hafusion
+
     - role: healthchecks.io
       tags:
         - healthchecks.io
@@ -352,6 +364,10 @@
       tags:
         - librespeed
 
+    - role: libretranslate
+      tags:
+        - libretranslate
+
     - role: lidarr
       tags:
         - lidarr
@@ -371,6 +387,10 @@
     - role: littlelink
       tags:
         - littlelink
+
+    - role: lldap
+      tags:
+        - lldap
 
     - role: loki
       tags:
@@ -588,6 +608,10 @@
       tags:
         - rssbridge
 
+    - role: ryot
+      tags:
+        - ryot
+
     - role: sabnzbd
       tags:
         - sabnzbd
@@ -655,6 +679,10 @@
     - role: thelounge
       tags:
         - thelounge
+
+    - role: threadfin
+      tags:
+        - threadfin
 
     - role: tiddlywiki
       tags:
