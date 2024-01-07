@@ -9,6 +9,11 @@
         - "{{ scrutiny_config_directory }}"
         - "{{ scrutiny_influxdb_directory }}"
 
+    - name: Copy user defined Scrutiny config
+      ansible.builtin.copy:
+        src: "{{ inventory_dir }}/scrutiny/collector.yaml"
+        dest: "{{ scrutiny_config_directory }}/collector.yaml"
+
     - name: Scrutiny Docker Container
       community.docker.docker_container:
         name: "{{ scrutiny_container_name }}"
@@ -26,11 +31,6 @@
           - "{{ scrutiny_influx_port }}:8086" # influxDB admin
         restart_policy: unless-stopped
         privileged: true
-        devices:
-          - "/dev/nvme0"
-          - "/dev/nvme1"
-          - "/dev/bus/0 -d megaraid,16"
-
         memory: "{{ scrutiny_memory }}"
   when: scrutiny_enabled is true
 
