@@ -31,6 +31,7 @@
     cmd: set -o pipefail && curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
   args:
     creates: /usr/local/bin/lazydocker
+    executable: /bin/bash
   environment:
     DIR: /usr/local/bin
 

@@ -82,7 +82,7 @@
         masked: true
         state: stopped
       register: stop_service
-      until: stop_service.status.ActiveState == "inactive"
+      until: stop_service.status["ActiveState"] == "inactive"
       retries: 5
       delay: 5
 
