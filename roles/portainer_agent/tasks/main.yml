@@ -1,0 +1,24 @@
+---
+- name: Start Portainer Agent
+  block:
+    - name: Portainer Agent Docker Container
+      community.docker.docker_container:
+        name: "{{ portainer_agent_container_name }}"
+        image: "{{ portainer_agent_image_name }}:{{ portainer_agent_image_version }}"
+        pull: true
+        volumes:
+          - "/var/run/docker.sock:/var/run/docker.sock:ro"
+          - "/var/lib/docker/volumes:/var/lib/docker/volumes"
+        ports:
+          - "{{ portainer_agent_port }}:9001"
+        restart_policy: unless-stopped
+        memory: "{{ portainer_agent_memory }}"
+  when: portainer_agent_enabled is true
+
+- name: Stop Portainer Agent
+  block:
+    - name: Stop Portainer Agent
+      community.docker.docker_container:
+        name: "{{ portainer_agent_container_name }}"
+        state: absent
+  when: portainer_agent_enabled is false

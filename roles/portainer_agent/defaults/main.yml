@@ -1,0 +1,13 @@
+---
+portainer_agent_enabled: false
+
+# network
+portainer_agent_port: "9001"
+
+# docker
+portainer_agent_container_name: "portainer_agent"
+portainer_agent_image_name: "portainer/agent"
+portainer_agent_image_version: "latest"
+
+# specs
+portainer_agent_memory: 1g
