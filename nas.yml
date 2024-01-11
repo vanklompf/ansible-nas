@@ -568,6 +568,10 @@
       tags:
         - portainer
 
+    - role: portainer_agent
+      tags:
+        - portainer_agent
+
     - role: prowlarr
       tags:
         - prowlarr
