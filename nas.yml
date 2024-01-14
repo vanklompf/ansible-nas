@@ -508,6 +508,10 @@
       tags:
         - olivetin
 
+    - role: ollama
+      tags:
+        - ollama
+
     - role: ombi
       tags:
         - ombi
@@ -623,6 +627,10 @@
     - role: scrutiny
       tags:
         - scrutiny
+
+    - role: scrutiny_collector
+      tags:
+        - scrutiny_collector
 
     - role: seafile
       tags:
