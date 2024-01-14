@@ -1,0 +1,27 @@
+---
+- name: Start Scrutiny Collector
+  block:
+    - name: Scrutiny Collector Docker Container
+      community.docker.docker_container:
+        name: "{{ scrutiny_collector_container_name }}"
+        image: "{{ scrutiny_collector_image_name }}:{{ scrutiny_collector_image_version }}"
+        pull: true
+        capabilities:
+          - SYS_RAWIO
+          - SYS_ADMIN
+        volumes:
+          - "/run/udev:/run/udev:ro"
+        restart_policy: unless-stopped
+        privileged: true
+        env:
+          COLLECTOR_API_ENDPOINT: "http://{{ scrutiny_collector_api_endpoint }}:8080"
+        memory: "{{ scrutiny_collector_memory }}"
+  when: scrutiny_collector_enabled is true
+
+- name: Stop Scrutiny Collector
+  block:
+    - name: Stop Scrutiny Collector
+      community.docker.docker_container:
+        name: "{{ scrutiny_collector_container_name }}"
+        state: absent
+  when: scrutiny_collector_enabled is false
