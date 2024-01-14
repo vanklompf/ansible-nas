@@ -13,6 +13,7 @@
       ansible.builtin.copy:
         src: "{{ inventory_dir }}/scrutiny/collector.yaml"
         dest: "{{ scrutiny_config_directory }}/collector.yaml"
+      failed_when: false
 
     - name: Scrutiny Docker Container
       community.docker.docker_container:
