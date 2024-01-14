@@ -1,0 +1,57 @@
+---
+- name: Start Ollama
+  block:
+    - name: Create Ollama directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ ollama_data_directory }}/backend"
+
+    - name: Create Ollama network
+      community.docker.docker_network:
+        name: "{{ ollama_network_name }}"
+
+    - name: Ollama Docker Container
+      community.docker.docker_container:
+        name: "{{ ollama_container_name }}"
+        image: "{{ ollama_image_name }}:{{ ollama_image_version }}"
+        volumes:
+          - "{{ ollama_data_directory }}:/root/.ollama"
+        networks:
+          - name: "{{ ollama_network_name }}"
+        ports:
+          - "{{ ollama_port }}:11434"
+        pull: true
+        restart_policy: unless-stopped
+        memory: "{{ ollama_memory }}"
+
+    - name: Ollama WebUI Docker Container
+      community.docker.docker_container:
+        name: "{{ ollama_webui_container_name }}"
+        image: "{{ ollama_webui_image_name }}:{{ ollama_webui_image_version }}"
+        volumes:
+          - "{{ ollama_data_directory }}/backend:/app/backend/data"
+        networks:
+          - name: "{{ ollama_network_name }}"
+        ports:
+          - "{{ ollama_webui_port }}:8080"
+        env:
+          OLLAMA_API_BASE_URL: "http://{{ ollama_container_name }}:{{ ollama_port }}/api"
+        pull: true
+        restart_policy: unless-stopped
+        memory: "{{ ollama_webui_memory }}"
+  when: ollama_enabled is true
+
+- name: Stop Ollama
+  block:
+    - name: Stop Ollama
+      community.docker.docker_container:
+        name: "{{ ollama_container_name }}"
+        state: absent
+    - name: Stop Ollama Webui
+      community.docker.docker_container:
+        name: "{{ ollama_webui_container_name }}"
+        state: absent
+
+  when: ollama_enabled is false
