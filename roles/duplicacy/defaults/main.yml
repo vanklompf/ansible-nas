@@ -25,3 +25,9 @@ duplicacy_memory: 1g
 
 # docker
 duplicacy_container_name: duplicacy
+
+duplicacy_storage_enabled: false
+duplicacy_storage_host: duplicacy_storage_host
+duplicacy_storage_group: duplicacy
+duplicacy_storage_user: duplicacy
+duplicacy_storage_directory: "/mnt/nas/media/backup"

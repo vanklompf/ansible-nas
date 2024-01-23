@@ -60,3 +60,62 @@
         name: "{{ duplicacy_container_name }}"
         state: absent
   when: duplicacy_enabled is false
+
+- name: Setup Duplicacy storage backend
+  block:
+    - name: Create Duplicacy storage group
+      ansible.builtin.group:
+        name: "{{ duplicacy_storage_group }}"
+        state: present
+      delegate_to: "{{ duplicacy_storage_host }}"
+
+    - name: Create Duplicacy storage user
+      ansible.builtin.user:
+        name: "{{ duplicacy_storage_user }}"
+        state: present
+        system: yes
+        update_password: on_create
+        create_home: yes
+        group: duplicacy
+        shell: /usr/sbin/nologin
+        comment: "Duplicacy storage user"
+      delegate_to: "{{ duplicacy_storage_host }}"
+
+    - name: Generate key pair to be used by Duplicacy
+      community.crypto.openssh_keypair:
+        path: "{{ duplicacy_config_directory }}/duplicacy_id_ssh_rsa"
+
+    - name: Generate key pair to be used by Duplicacy
+      ansible.builtin.fetch:
+        src: "{{ duplicacy_config_directory }}/duplicacy_id_ssh_rsa.pub"
+        dest: "/tmp/duplicacy_id_ssh_rsa.pub"
+
+    - name: adding user "{{ ansible_nas_user }}" to Duplicacy group
+      ansible.builtin.user:
+        name: "{{ ansible_nas_user }}"
+        groups: "{{ duplicacy_storage_group }}"
+        append: yes
+      delegate_to: "{{ duplicacy_storage_host }}"
+
+    - name: Create Duplicacy backup directory
+      ansible.builtin.file:
+        path: "{{ duplicacy_storage_directory }}"
+        state: directory
+        group: "{{ duplicacy_storage_group }}"
+        owner: "{{ duplicacy_storage_user }}"
+      delegate_to: "{{ duplicacy_storage_host }}"
+
+    - name: Template OpenSSH config for internal-sftp user
+      ansible.builtin.template:
+        src: duplicacy-sftp.conf
+        dest: "/etc/ssh/sshd_config.d/duplicacy-sftp.conf"
+        mode: 600
+      delegate_to: "{{ duplicacy_storage_host }}"
+
+    - name: Remove sftp subsystems from OpenSSH configs
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regex: \s*Subsystem\s*sftp
+        state: absent
+      delegate_to: "{{ duplicacy_storage_host }}"
+  when: duplicacy_storage_enabled is true
