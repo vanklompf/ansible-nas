@@ -10,16 +10,6 @@
         - "{{ duplicacy_logs_directory }}"
         - "{{ duplicacy_cache_directory }}"
 
-#    - name: Register user provided keys
-#      local_action: stat path="{{ inventory_dir }}/mosquitto"
-#      register: mosquitto_user_config
-
-#    - name: Copy keys
-#      ansible.builtin.copy:
-#        src: "{{ inventory_dir }}/duplicacy/public.pem"
-#        dest: "{{ duplicacy_config_directory }}"
-#      when: mosquitto_user_config.stat.exists
-
     - name: Duplicacy Docker Container
       community.docker.docker_container:
         name: "{{ duplicacy_container_name }}"
@@ -50,6 +40,10 @@
           traefik.http.routers.duplicacy.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.duplicacy.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.duplicacy.loadbalancer.server.port: "3875"
+          flame.type: "application"
+          flame.name: "Duplicacy"
+          flame.url: "http://jezyk:{{ duplicacy_port }}/"
+          flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/duplicacy.png"
         network_mode: host
   when: duplicacy_enabled is true
 
@@ -81,15 +75,6 @@
         comment: "Duplicacy storage user"
       delegate_to: "{{ duplicacy_storage_host }}"
 
-    - name: Generate key pair to be used by Duplicacy
-      community.crypto.openssh_keypair:
-        path: "{{ duplicacy_config_directory }}/duplicacy_id_ssh_rsa"
-
-    - name: Generate key pair to be used by Duplicacy
-      ansible.builtin.fetch:
-        src: "{{ duplicacy_config_directory }}/duplicacy_id_ssh_rsa.pub"
-        dest: "/tmp/duplicacy_id_ssh_rsa.pub"
-
     - name: adding user "{{ ansible_nas_user }}" to Duplicacy group
       ansible.builtin.user:
         name: "{{ ansible_nas_user }}"
@@ -117,5 +102,22 @@
         path: /etc/ssh/sshd_config
         regex: \s*Subsystem\s*sftp
         state: absent
+      delegate_to: "{{ duplicacy_storage_host }}"
+
+    - name: Generate key pair to be used by Duplicacy
+      community.crypto.openssh_keypair:
+        path: "{{ duplicacy_config_directory }}/duplicacy_id_ssh_rsa"
+
+    - name: Fetch public key
+      ansible.builtin.slurp:
+        src: "{{ duplicacy_config_directory }}/duplicacy_id_ssh_rsa.pub"
+      register: public_key
+
+    - name: Install public key on remote
+      ansible.posix.authorized_key:
+        user: "{{ duplicacy_storage_user }}"
+        state: present
+        exclusive: true
+        key: "{{ public_key['content'] | b64decode }}"
       delegate_to: "{{ duplicacy_storage_host }}"
   when: duplicacy_storage_enabled is true
