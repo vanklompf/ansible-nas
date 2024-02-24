@@ -30,7 +30,7 @@ immich_proxy_container_name: "immich_proxy"
 
 immich_tag: "release"
 immich_postgres_image: "tensorchord/pgvecto-rs"
-immich_postgres_tag: "pg14-v0.1.11"
+immich_postgres_tag: "pg14-v0.2.0"
 immich_redis_image: "redis"
 immich_redis_tag: "6.2-alpine"
 immich_server_image: "ghcr.io/immich-app/immich-server"
