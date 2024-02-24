@@ -36,7 +36,7 @@
         labels:
           flame.type: "application"
           flame.name: "Scrutiny"
-          flame.url: "https://jezyk:{scrutiny_port}"
+          flame.url: "http://jezyk:{{ scrutiny_port }}"
           flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/scrutiny.png"
   when: scrutiny_enabled is true
 

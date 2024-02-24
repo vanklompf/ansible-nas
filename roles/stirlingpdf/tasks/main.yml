@@ -35,6 +35,11 @@
           traefik.http.routers.stirlingpdf.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.stirlingpdf.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.stirlingpdf.loadbalancer.server.port: "8080"
+          flame.type: "application"
+          flame.name: "Stirling Pdf"
+          flame.url: "http://jezyk:{{ stirlingpdf_port }}"
+          flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/stirling-pdf.png"
+
   when: stirlingpdf_enabled is true
 
 - name: Stop Stirling-PDF

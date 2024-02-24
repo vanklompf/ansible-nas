@@ -41,10 +41,11 @@
         pull: true
         restart_policy: unless-stopped
         memory: "{{ ollama_webui_memory }}"
-        flame.type: "application"
-        flame.name: "Ollama"
-        flame.url: "http://jezyk:{{ ollama_webui_port }}/"
-        flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/ollama.png"
+        labels:
+          flame.type: "application"
+          flame.name: "Ollama"
+          flame.url: "https://jezyk:{{ ollama_webui_port }}/"
+          flame.icon: "https://ollama.ai/public/ollama.png"
   when: ollama_enabled is true
 
 - name: Stop Ollama

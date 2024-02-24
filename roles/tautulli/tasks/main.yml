@@ -35,7 +35,7 @@
           traefik.http.services.tautulli.loadbalancer.server.port: "8181"
           flame.type: "application"
           flame.name: "Tautulli"
-          flame.url: "https://jezyk:{{ tautulli_port }}/"
+          flame.url: "http://jezyk:{{ tautulli_port }}/"
           flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/tautulli.png"
   when: tautulli_enabled is true
 
