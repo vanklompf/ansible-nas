@@ -1,18 +1,43 @@
 ---
 homeassistant_enabled: false
+homeassistant_zigbee_enabled: false
 homeassistant_available_externally: false
 
+# ls -la /dev/serial/by-id/
+zigbee_dongle: "usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20240124165802-if00"
+mqtt_user: zigbee2mqtt
+mqtt_password: zigbee2mqtt
+mqtt_password_encrypted: "$7$101$r9pnht3Nmp6IkZr/$USqyKFE3f86xKPBF0Kt+X7VqDUOqWexTQVQxvpZOztighYKhtUSzN4sKHUxaIhophRrfqxlSsAj5wG8DoWD31g=="
+
 # directories
-homeassistant_data_directory: "{{ docker_home }}/homeassistant"
+homeassistant_directory: "{{ docker_home }}/homeassistant"
+mosquitto_directory: "{{ docker_home }}/homeassistant/mosquitto"
+zigbee2mqtt_data_directory: "{{ docker_home }}/homeassistant/zigbee2mqtt"
+
 
 # network
+homeassistant_network_name: "homeassistant"
 homeassistant_port: "8123"
+mosquitto_port_a: "1883"
+mosquitto_port_b: "9001"
+zigbee2mqtt_port: "3882"
+
 homeassistant_hostname: "homeassistant"
 
 # docker
 homeassistant_container_name: "homeassistant"
+mosquitto_container_name: "mqtt"
+zigbee2mqtt_container_name: "zigbee2mqtt"
+
 homeassistant_image_name: "homeassistant/home-assistant"
+mosquitto_image_name: "eclipse-mosquitto"
+zigbee2mqtt_image_name: "koenkk/zigbee2mqtt"
+
 homeassistant_image_version: latest
+mosquitto_image_version: latest
+zigbee2mqtt_image_version: latest
 
 # specs
 homeassistant_memory: 1g
+mosquitto_memory: 1g
+zigbee2mqtt_memory: 1g

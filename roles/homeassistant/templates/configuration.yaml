@@ -1,0 +1,39 @@
+permit_join: true
+homeassistant: true
+frontend: true
+
+mqtt:
+  base_topic: zigbee2mqtt
+  user: "{{ mqtt_user }}"
+  password: "{{ mqtt_password }}"
+  client_id: "ZIGBEE2MQTT"
+serial:
+  port: "/dev/ttyACM0"
+advanced:
+  network_key:
+    - 93
+    - 193
+    - 174
+    - 2
+    - 49
+    - 79
+    - 209
+    - 80
+    - 42
+    - 146
+    - 171
+    - 177
+    - 123
+    - 39
+    - 65
+    - 36
+  pan_id: 24716
+  ext_pan_id:
+    - 9
+    - 46
+    - 162
+    - 83
+    - 82
+    - 209
+    - 88
+    - 52
