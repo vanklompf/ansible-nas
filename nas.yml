@@ -436,10 +436,6 @@
       tags:
         - miniserve
 
-    - role: mosquitto
-      tags:
-        - mosquitto
-
     - role: moviematch
       tags:
         - moviematch
