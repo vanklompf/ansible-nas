@@ -34,12 +34,11 @@
         volumes:
           - "{{ heimdall_data_directory }}:/config:rw"
         env:
+          TZ: "{{ ansible_nas_timezone }}"
           PUID: "{{ heimdall_user_id }}"
           PGID: "{{ heimdall_group_id }}"
-          TZ: "{{ ansible_nas_timezone }}"
         ports:
           - "{{ heimdall_port_http }}:80"
-          - "{{ heimdall_port_https }}:443"
         restart_policy: unless-stopped
         memory: "{{ heimdall_memory }}"
         labels:

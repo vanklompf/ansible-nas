@@ -1,0 +1,7 @@
+---
+provisioner:
+  inventory:
+    group_vars:
+      all:
+        romm_enabled: true
+        roms_root: /tmp

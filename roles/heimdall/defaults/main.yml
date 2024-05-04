@@ -7,8 +7,7 @@ heimdall_docker_image: linuxserver/heimdall:latest
 heimdall_data_directory: "{{ docker_home }}/heimdall"
 
 # network
-heimdall_port_http: "10080"
-heimdall_port_https: "10443"
+heimdall_port_http: "11112"
 heimdall_hostname: heimdall
 
 # uid / gid

@@ -112,6 +112,10 @@
       tags:
         - calibre
 
+    - role: calibreweb
+      tags:
+        - calibreweb
+
     - role: changedetection
       tags:
         - changedetection
@@ -412,6 +416,10 @@
       tags:
         - mergerfs
 
+    - role: minecraft-bedrock-server
+      tags:
+        - minecraft-bedrock-server
+
     - role: minecraft-server
       tags:
         - minecraft-server
@@ -496,6 +504,10 @@
       tags:
         - nzbhydra2
 
+    - role: obsidian
+      tags:
+        - obsidian
+
     - role: octoprint
       tags:
         - octoprint
@@ -527,6 +539,10 @@
     - role: organizr
       tags:
         - organizr
+
+    - role: outline
+      tags:
+        - outline
 
     - role: overleaf
       tags:
@@ -604,6 +620,10 @@
       tags:
         - restic
 
+    - role: romm
+      tags:
+        - romm
+
     - role: route53_ddns
       tags:
         - route53_ddns
@@ -647,6 +667,14 @@
     - role: sickchill
       tags:
         - sickchill
+
+    - role: silverbullet
+      tags:
+        - silverbullet
+
+    - role: siyuan
+      tags:
+        - siyuan
 
     - role: snipeit
       tags:
@@ -719,6 +747,10 @@
     - role: ttrss
       tags:
         - ttrss
+
+    - role: twenty
+      tags:
+        - twenty
 
     - role: ubooquity
       tags:
