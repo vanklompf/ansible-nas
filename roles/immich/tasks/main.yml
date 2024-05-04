@@ -58,7 +58,7 @@
     - name: Immich Server Docker Container
       community.docker.docker_container:
         name: "{{ immich_server_container_name }}"
-        image: "{{ immich_server_image }}:{{ immich_tag }}"
+        image: "{{ immich_server_image }}:{{ immich_server_tag }}"
         pull: true
         command: ["start.sh", "immich"]
         volumes:
@@ -97,7 +97,7 @@
     - name: Immich Microservices Docker Container
       community.docker.docker_container:
         name: "{{ immich_microservices_container_name }}"
-        image: "{{ immich_microservices_image }}:{{ immich_tag }}"
+        image: "{{ immich_microservices_image }}:{{ immich_microservices_tag }}"
         pull: true
         command: ["start.sh", "microservices"]
         volumes:
@@ -129,7 +129,7 @@
     - name: Immich Machine Learning Docker Container
       community.docker.docker_container:
         name: "{{ immich_machinelearning_container_name }}"
-        image: "{{ immich_machinelearning_image }}:{{ immich_tag }}"
+        image: "{{ immich_machinelearning_image }}:{{ immich_machinelearning_tag }}"
         pull: true
         volumes:
           - "{{ immich_data_directory }}/model-cache:/cache"

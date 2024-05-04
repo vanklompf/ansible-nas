@@ -48,10 +48,13 @@
           MYSQL_DATABASE: "nextcloud"
           MYSQL_USER: "{{ nextcloud_sql_user }}"
           MYSQL_PASSWORD: "{{ nextcloud_sql_password }}"
-          NEXTCLOUD_TRUSTED_DOMAINS: "{{ nextcloud_hostname }}.{{ ansible_nas_domain }}"
-          OVERWRITEHOST: "{{ nextcloud_hostname }}.{{ ansible_nas_domain }}"
-          OVERWRITEPROTOCOL: "https"
-          TRUSTED_PROXIES: "172.17.0.0/24"
+          NEXTCLOUD_ADMIN_USER: admin
+          NEXTCLOUD_ADMIN_PASSWORD: D4f1252dD4f1252d
+          #NEXTCLOUD_TRUSTED_DOMAINS: "{{ nextcloud_hostname }}.{{ ansible_nas_domain }}"
+          #OVERWRITEHOST: "{{ nextcloud_hostname }}.{{ ansible_nas_domain }}"
+          OVERWRITEHOST: "{{ ansible_nas_hostname }}:{{ nextcloud_port}}"
+          #OVERWRITEPROTOCOL: "https"
+          #TRUSTED_PROXIES: "172.17.0.0/24"
         restart_policy: unless-stopped
         memory: "{{ nextcloud_memory }}"
         labels:
