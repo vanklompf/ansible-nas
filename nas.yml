@@ -776,6 +776,10 @@
       tags:
         - wallabag
 
+    - role: wanderer
+      tags:
+        - wanderer
+
     - role: watchtower
       tags:
         - watchtower
