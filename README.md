@@ -19,6 +19,7 @@ If you have a spare domain name you can configure applications to be accessible 
 
 * [Activepieces](https://www.activepieces.com/) - an open source all-in-one automation tool
 * [Admidio](https://www.admidio.org/) - a free online membership management
+* [Affine](https://github.com/toeverything/AFFiNE) - a next-gen knowledge base that brings planning, sorting and creating all together
 * [Airsonic](https://airsonic.github.io/) - catalog and stream music
 * [Authelia](https://www.authelia.com/) - The Single Sign-On Multi-Factor portal for web apps
 * [Authentik](https://goauthentik.io/) - an open-source Identity Provider focused on flexibility and versatility
@@ -55,6 +56,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Flame](https://github.com/pawelmalak/flame/) - Flarum is a delightfully simple discussion platform for your website
 * [Flarum](https://flarum.org/) - Self-hosted startpage for your server
 * [Flatnotes](https://flatnotes.io/) - Self-hosted, database-less note taking web app
+* [FormIO](https://github.com/formio/formio) - SA Form and Data Management Platform for Progressive Web Applications
 * [Fresh RSS](https://freshrss.org/) - Self-hosted RSS feed aggregator like Leed or Kriss Feed
 * [Frigate](https://frigate.video/) - Frigate is an open source NVR built around real-time AI object detection
 * [Gaps](https://github.com/JasonHHouse/gaps) - Find the missing movies in your Plex Server
@@ -71,6 +73,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [HA Fusion](https://github.com/matt8707/ha-fusion) - A modern, easy-to-use and performant custom Home Assistant dashboard
 * [healthchecks.io](https://healthchecks.io/) - Ensure your NAS is online and get notified otherwise
 * [Heimdall](https://heimdall.site/) - Home server dashboard
+* [Homarr](https://github.com/ajnart/homarr) - Customizable browser's home page
 * [Home Assistant](https://www.home-assistant.io) - Open source home automation
 * [Homebridge](https://github.com/nfarina/homebridge) - Emulate the iOS HomeKit API
 * [Homepage](https://gethomepage.dev/) - Highly customizable application dashboard with integrations for over 100 services.
@@ -105,6 +108,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [MariaDB](https://mariadb.org/) - one of the most popular open source relational databases
 * [Mealie](https://hay-kot.github.io/mealie/) - A self-hosted recipe manager and meal planner
 * [Memos](https://usememos.com/) - An open-source memo hub with knowledge management and social networking
+* [Metube](https://github.com/alexta69/metube) - Self-hosted YouTube downloader (web UI for youtube-dl / yt-dlp)
 * [Minecraft Java Server](https://www.minecraft.net/) - Java server edition of the popular building and exploring game
 * [Minecraft Bedrock Server](https://www.minecraft.net/) - Bedrock server edition of the popular building and exploring game
 * [Minetest Server](https://www.minetest.net/) - An open source voxel game engine server
@@ -119,6 +123,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [MySql](https://www.mysql.com/) - The world's most popular open source database
 * [n8n](https://n8n.io/) - Nodemation, a node based workflow and automation service like IFTTT.
 * [navidrome](https://www.navidrome.org/) - Modern Music Server and Streamer compatible with Subsonic/Airsonic
+* [n.eko](https://github.com/m1k1o/neko/) - A self hosted virtual browser that runs in docker and uses WebRTC.
 * [netboot.xyz](https://netboot.xyz/) - a PXE boot server
 * [Netbox](https://netbox.dev/) - The premiere source of truth powering network automation
 * [Netdata](https://my-netdata.io/) - An extremely comprehensive system monitoring solution
@@ -134,6 +139,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Openbooks](https://github.com/evan-buss/openbooks) - Search and Download eBooks
 * [openHAB](https://www.openhab.org/) - A vendor and technology agnostic open source automation software for your home
 * [openLDAP](https://www.openldap.org/) - An open source implementation of the Lightweight Directory Access Protocol
+* [Open-resume](https://github.com/xitanggg/open-resume) - A powerful open-source resume builder and resume parser
 * [Organizr](https://organizr.app/) - ORGANIZR aims to be your one stop shop for your Servers Frontend.
 * [Outline](https://github.com/outline/outline) - The fastest knowledge base for growing teams.
 * [Overleaf](https://github.com/overleaf/overleaf) - A web-based collaborative LaTeX editor
@@ -154,6 +160,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [pyLoad](https://pyload.net/) - A download manager with a friendly web-interface
 * [PyTivo](http://pytivo.org) - An HMO and GoBack server for TiVos.
 * [Radarr](https://radarr.video/) - for organising and downloading movies
+* [Rallly](https://github.com/lukevella/rallly/) - an open-source scheduling and collaboration tool
 * [Romm](https://github.com/zurdi15/romm) - A game library manager focused on retro gaming
 * [Releasebell](https://github.com/anarion80/releasebell) - Starred GitHub repositories notifications
 * [Restic](https://restic.net/) - A modern backup program
@@ -180,6 +187,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Threadfin](https://github.com/Threadfin/Threadfin) - M3U Proxy for Plex DVR and Emby/Jellyfin Live TV. Based on xTeVe.
 * [TiddlyWiki](https://tiddlywiki.com) - A unique non-linear notebook/wiki for capturing, organizing, and sharing complex information
 * [TimeMachine](https://github.com/awlx/samba-timemachine) - Samba-based mac backup server
+* [ToolJet](https://github.com/ToolJet/ToolJet) - Low-code platform for building business applications
 * [Traefik](https://traefik.io/) - Web proxy and SSL certificate manager
 * [Transmission](https://transmissionbt.com/) - BitTorrent client (with OpenVPN if you have a supported VPN provider)
 * [Trilium](https://github.com/zadam/trilium) - Hierarchical note taking application with focus on building large personal knowledge bases

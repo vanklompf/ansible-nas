@@ -72,6 +72,10 @@
       tags:
         - admidio
 
+    - role: affine
+      tags:
+        - affine
+
     - role: airsonic
       tags:
         - airsonic
@@ -224,6 +228,10 @@
       tags:
         - flatnotes
 
+    - role: formio
+      tags:
+        - formio
+
     - role: freshrss
       tags:
         - freshrss
@@ -287,6 +295,10 @@
     - role: hello_world
       tags:
         - hello_world
+
+    - role: homarr
+      tags:
+        - homarr
 
     - role: homeassistant
       tags:
@@ -420,6 +432,10 @@
       tags:
         - mergerfs
 
+    - role: metube
+      tags:
+        - metube
+
     - role: minecraft-bedrock-server
       tags:
         - minecraft-bedrock-server
@@ -475,6 +491,10 @@
     - role: navidrome
       tags:
         - navidrome
+
+    - role: neko
+      tags:
+        - neko
 
     - role: netbootxyz
       tags:
@@ -539,6 +559,10 @@
     - role: openldap
       tags:
         - openldap
+
+    - role: open-resume
+      tags:
+        - openresume
 
     - role: organizr
       tags:
@@ -611,6 +635,10 @@
     - role: radarr
       tags:
         - radarr
+
+    - role: rallly
+      tags:
+        - rallly
 
     - role: rclone
       tags:
@@ -731,6 +759,10 @@
     - role: timemachine
       tags:
         - timemachine
+
+    - role: tooljet
+      tags:
+        - tooljet
 
     - role: traefik
       tags:
