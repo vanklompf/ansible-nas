@@ -11,8 +11,8 @@ mqtt_password_encrypted: "$7$101$r9pnht3Nmp6IkZr/$USqyKFE3f86xKPBF0Kt+X7VqDUOqWe
 
 # directories
 homeassistant_directory: "{{ docker_home }}/homeassistant"
-mosquitto_directory: "{{ docker_home }}/homeassistant/mosquitto"
-zigbee2mqtt_data_directory: "{{ docker_home }}/homeassistant/zigbee2mqtt"
+mosquitto_directory: "{{ docker_home }}/mosquitto"
+zigbee2mqtt_directory: "{{ docker_home }}/zigbee2mqtt"
 
 
 # network

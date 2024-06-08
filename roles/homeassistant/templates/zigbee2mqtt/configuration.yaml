@@ -1,6 +1,7 @@
-permit_join: true
+permit_join: false
 homeassistant: true
 frontend: true
+devices: devices.yaml
 
 mqtt:
   base_topic: zigbee2mqtt

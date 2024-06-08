@@ -1,13 +1,43 @@
 ---
 - name: Start Homeassistant
   block:
-    - name: Create Home Assistant Directories
+    - name: Create Home Assistant network
+      community.docker.docker_network:
+        name: "{{ homeassistant_network_name }}"
+
+    - name: Create directories
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
       with_items:
         - "{{ homeassistant_directory }}"
-        - "{{ homeassistant_directory }}/config"
+        - "{{ mosquitto_directory }}/data"
+        - "{{ mosquitto_directory }}/log"
+        - "{{ zigbee2mqtt_directory }}"
+
+    - name: Prepare config
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: '0640'
+      loop:
+        - src: zigbee2mqtt/configuration.yaml
+          dest: "{{ zigbee2mqtt_directory }}"
+        - src: mosquitto/users.conf
+          dest: "{{ mosquitto_directory }}/config"
+        - src: mosquitto/acl.conf
+          dest: "{{ mosquitto_directory }}/config"
+        - src: mosquitto/mosquitto.conf
+          dest: "{{ mosquitto_directory }}/config"
+        - src: homeassistant/configuration.yaml
+          dest: "{{ homeassistant_directory }}"
+      register: homeassistant_config
+
+    - name: Copy user defined Home Assistant config
+      ansible.builtin.copy:
+        src: "{{ inventory_dir }}/homeassistant/climate.yaml"
+        dest: "{{ homeassistant_directory }}/"
+      register: homeassistant_config_extra
 
     - name: Home Assistant Docker Container
       community.docker.docker_container:
@@ -20,6 +50,7 @@
         ports:
          - "8123:8123"
         restart_policy: unless-stopped
+        restart: "{{ homeassistant_config is changed or homeassistant_config_extra is changed}}"
         env:
           TZ: "{{ ansible_nas_timezone }}"
         labels:
@@ -30,36 +61,6 @@
           traefik.http.routers.homeassistant.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.homeassistant.loadbalancer.server.port: "8123"
         memory: "{{ homeassistant_memory }}"
-
-    - name: Create Home Assistant network
-      community.docker.docker_network:
-        name: "{{ homeassistant_network_name }}"
-
-    - name: Create Z2MQTT and Mosquitto directories
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-      with_items:
-        - "{{ mosquitto_directory }}/data"
-        - "{{ mosquitto_directory }}/config"
-        - "{{ mosquitto_directory }}/log"
-        - "{{ zigbee2mqtt_data_directory }}"
-
-    - name: Prepare config
-      ansible.builtin.template:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        mode: '0640'
-      loop:
-        - src: configuration.yaml
-          dest: "{{ zigbee2mqtt_data_directory }}"
-        - src: users.conf
-          dest: "{{ mosquitto_directory }}/config"
-        - src: acl.conf
-          dest: "{{ mosquitto_directory }}/config"
-        - src: mosquitto.conf
-          dest: "{{ mosquitto_directory }}/config"
-      register: zigbee2mqtt_config
 
     - name: Mosquitto Docker Container
       community.docker.docker_container:
@@ -75,6 +76,7 @@
           - "{{ mosquitto_port_a }}:1883"
           - "{{ mosquitto_port_b }}:9001"
         restart_policy: unless-stopped
+        restart: "{{ homeassistant_config is changed }}"
         env:
           TZ: "{{ ansible_nas_timezone }}"
         memory: "{{mosquitto_memory }}"
@@ -86,14 +88,14 @@
         pull: true
         volumes:
           - "/run/udev:/run/udev:ro"
-          - "{{ zigbee2mqtt_data_directory }}:/app/data:rw"
+          - "{{ zigbee2mqtt_directory }}:/app/data:rw"
         devices: "/dev/serial/by-id/{{ zigbee_dongle }}:/dev/ttyACM0"
         privileged: true
         network_mode: "{{ homeassistant_network_name }}"
         ports:
           - "{{ zigbee2mqtt_port }}:8080"
         restart_policy: unless-stopped
-        restart: "{{ zigbee2mqtt_config is changed }}"
+        restart: "{{ homeassistant_config is changed }}"
         env:
           TZ: "{{ ansible_nas_timezone }}"
           ZIGBEE2MQTT_CONFIG_MQTT_SERVER : mqtt://{{ mosquitto_container_name }}
