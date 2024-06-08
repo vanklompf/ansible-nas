@@ -28,15 +28,10 @@
         - skip_ansible_lint
 
     - role: geerlingguy.docker
-      when: ansible_architecture == "x86_64"
+      vars:
+        docker_apt_filename: download_docker_com_linux_ubuntu
       tags:
         - docker
-        - skip_ansible_lint
-
-    - role: geerlingguy.docker_arm
-      when: ansible_architecture == "aarch64"
-      tags:
-        - docker_arm
         - skip_ansible_lint
 
     ###
@@ -68,6 +63,10 @@
       tags:
         - activepieces
 
+    - role: actual
+      tags:
+        - actual
+
     - role: admidio
       tags:
         - admidio
@@ -80,6 +79,14 @@
       tags:
         - airsonic
 
+    - role: appsmith
+      tags:
+        - appsmith
+
+    - role: aria2
+      tags:
+        - aria2
+
     - role: authelia
       tags:
         - authelia
@@ -91,6 +98,10 @@
     - role: barcodebuddy
       tags:
         - barcodebuddy
+
+    - role: baserow
+      tags:
+        - baserow
 
     - role: bazarr
       tags:
@@ -112,6 +123,10 @@
       tags:
         - booksonic
 
+    - role: budibase
+      tags:
+        - budibase
+
     - role: calibre
       tags:
         - calibre
@@ -120,6 +135,10 @@
       tags:
         - calibreweb
 
+    - role: casdoor
+      tags:
+        - casdoor
+
     - role: changedetection
       tags:
         - changedetection
@@ -127,6 +146,10 @@
     - role: chatpad
       tags:
         - chatpad
+
+    - role: chatwoot
+      tags:
+        - chatwoot
 
     - role: claper
       tags:
@@ -159,6 +182,10 @@
     - role: dashy
       tags:
         - dashy
+
+    - role: dbgate
+      tags:
+        - dbgate
 
     - role: ddns_updater
       tags:
@@ -204,6 +231,14 @@
       tags:
         - esphome
 
+    - role: espocrm
+      tags:
+        - espocrm
+
+    - role: evershop
+      tags:
+        - evershop
+
     - role: excalidraw
       tags:
         - excalidraw
@@ -227,6 +262,10 @@
     - role: flatnotes
       tags:
         - flatnotes
+
+    - role: formbricks
+      tags:
+        - formbricks
 
     - role: formio
       tags:
@@ -272,6 +311,10 @@
       tags:
         - graylog
 
+    - role: grist
+      tags:
+        - grist
+
     - role: grocy
       tags:
         - grocy
@@ -296,6 +339,10 @@
       tags:
         - hello_world
 
+    - role: heyform
+      tags:
+        - heyform
+
     - role: homarr
       tags:
         - homarr
@@ -316,6 +363,10 @@
       tags:
         - huginn
 
+    - role: huly
+      tags:
+        - huly
+
     - role: huntly
       tags:
         - huntly
@@ -327,6 +378,10 @@
     - role: immich
       tags:
         - immich
+
+    - role: input
+      tags:
+        - input
 
     - role: invidious
       tags:
@@ -392,6 +447,10 @@
       tags:
         - linkding
 
+    - role: linkstack
+      tags:
+        - linkstack
+
     - role: linkwarden
       tags:
         - linkwarden
@@ -404,6 +463,10 @@
       tags:
         - littlelink
 
+    - role: livehelperchat
+      tags:
+        - livehelperchat
+
     - role: lldap
       tags:
         - lldap
@@ -412,13 +475,29 @@
       tags:
         - loki
 
+    - role: lowcoder
+      tags:
+        - lowcoder
+
     - role: lubelogger
       tags:
         - lubelogger
 
+    - role: mainsail
+      tags:
+        - mainsail
+
+    - role: mantium
+      tags:
+        - mantium
+
     - role: mattermost
       tags:
         - mattermost
+
+    - role: maybe
+      tags:
+        - maybe
 
     - role: mealie
       tags:
@@ -431,6 +510,10 @@
     - role: mergerfs
       tags:
         - mergerfs
+
+    - role: metabase
+      tags:
+        - metabase
 
     - role: metube
       tags:
@@ -463,6 +546,10 @@
     - role: miniserve
       tags:
         - miniserve
+
+    - role: mmp
+      tags:
+        - mmp
 
     - role: moviematch
       tags:
@@ -520,6 +607,10 @@
       tags:
         - nomad
 
+    - role: notifo
+      tags:
+        - notifo
+
     - role: nzbget
       tags:
         - nzbget
@@ -563,6 +654,10 @@
     - role: open-resume
       tags:
         - openresume
+
+    - role: openwebui
+      tags:
+        - openwebui
 
     - role: organizr
       tags:
@@ -644,6 +739,10 @@
       tags:
         - rclone
 
+    - role: readeck
+      tags:
+        - readeck
+
     - role: releasebell
       tags:
         - releasebell
@@ -663,6 +762,10 @@
     - role: rssbridge
       tags:
         - rssbridge
+
+    - role: rsshub
+      tags:
+        - rsshub
 
     - role: ryot
       tags:
@@ -720,6 +823,14 @@
       tags:
         - speedtest-tracker
 
+    - role: squirrel
+      tags:
+        - squirrel
+
+    - role: stalwart
+      tags:
+        - stalwart
+
     - role: standardnotes
       tags:
         - standardnotes
@@ -731,6 +842,10 @@
     - role: stirlingpdf
       tags:
         - stirlingpdf
+
+    - role: suitecrm
+      tags:
+        - suitecrm
 
     - role: syncthing
       tags:
@@ -792,6 +907,10 @@
       tags:
         - ubooquity
 
+    - role: uppy
+      tags:
+        - uppy
+
     - role: utorrent
       tags:
         - utorrent
@@ -807,6 +926,10 @@
     - role: wallabag
       tags:
         - wallabag
+
+    - role: wallos
+      tags:
+        - wallos
 
     - role: wanderer
       tags:

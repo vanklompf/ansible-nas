@@ -18,21 +18,28 @@ If you have a spare domain name you can configure applications to be accessible 
 ## Available Applications
 
 * [Activepieces](https://www.activepieces.com/) - an open source all-in-one automation tool
+* [Actual](https://github.com/actualbudget/actual-server) - A local-first personal finance app
 * [Admidio](https://www.admidio.org/) - a free online membership management
 * [Affine](https://github.com/toeverything/AFFiNE) - a next-gen knowledge base that brings planning, sorting and creating all together
 * [Airsonic](https://airsonic.github.io/) - catalog and stream music
+* [Appsmith](https://www.appsmith.com/) -  low-code application platform to quickly build, deploy, and manage effective software
+* [Aria2](https://github.com/aria2/aria2) - a lightweight multi-protocol & multi-source, cross platform download utility operated in command-line
 * [Authelia](https://www.authelia.com/) - The Single Sign-On Multi-Factor portal for web apps
 * [Authentik](https://goauthentik.io/) - an open-source Identity Provider focused on flexibility and versatility
 * [Barcode Buddy](https://github.com/Forceu/barcodebuddy/) - Barcode system for Grocy
+* [Baserow](https://gitlab.com/baserow/baserow) - an open source no-code database and Airtable alternative
 * [Bazarr](https://github.com/morpheus65535/bazarr) - companion to Radarr and Sonarr for downloading subtitles
 * [Beets](https://beets.io/) - media library management system for obsessive music geeks
 * [Blaze](https://github.com/blenderskool/blaze) - File sharing progressive web app
 * [Blocky](https://0xerr0r.github.io/blocky/) - Fast and lightweight DNS proxy as ad-blocker
 * [Booksonic](https://booksonic.org/) - The selfhosted audiobook server
+* [Budibase](https://github.com/Budibase/budibase) - Low code platform for building business apps and workflows in minutes
 * [Calibre](https://calibre-ebook.com) - Calibre is a powerful and easy to use e-book manager.
 * [Calibre-web](https://github.com/janeczku/calibre-web) - Provides a clean interface for browsing, reading and downloading eBooks using an existing Calibre database.
+* [Casdoor](https://github.com/casdoor/casdoor) - An open-source UI-first Identity and Access Management (IAM) / Single-Sign-On (SSO) platform.
 * [Changedetection.io](https://github.com/dgtlmoon/changedetection.io) - Free open source website change detection, monitor and notification service
 * [Chatpad](https://chatpad.ai/) - Not just another ChatGPT user-interface!
+* [Chatwoot](https://github.com/chatwoot/chatwoot) - Open-source live-chat, email support, omni-channel desk
 * [Claper](https://claper.co/) - The ultimate tool to interact with your audience
 * [Code Server](https://code.visualstudio.com/) - Powerful IDE from Microsoft accessible through the browser
 * [CommaFeed](https://www.commafeed.com/) - Google Reader inspired self-hosted RSS reader
@@ -40,6 +47,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Cloudflare DDNS](https://hub.docker.com/r/joshuaavalon/cloudflare-ddns/) - automatically update Cloudflare with your IP address
 * [CouchPotato](https://couchpota.to/) - for downloading and managing movies
 * [Dashy](https://dashy.to/) - A self-hosted startpage for your server. Easy to use visual editor, status checking, widgets, themes and tons more!
+* [DbGate](https://github.com/dbgate/dbgate) - Database manager for MySQL, PostgreSQL, SQL Server, MongoDB, SQLite and others
 * [DDNS Updater](https://github.com/qdm12/ddns-updater) - dynamic dns updater for serveral providers
 * [Deluge](https://dev.deluge-torrent.org/) - A lightweight, Free Software, cross-platform BitTorrent client.
 * [Dockge](https://github.com/louislam/dockge) - A fancy, easy-to-use and reactive self-hosted docker compose.yaml stack-oriented manager
@@ -51,11 +59,14 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Emby](https://emby.media/) - Media streaming and management
 * [ebusd](https://github.com/john30/ebusd) - daemon for communication with eBUS heating systems
 * [ESPHome](https://esphome.io/) - ESP8266/ESP32 programming and management for home automation
+* [EspoCRM](https://github.com/espocrm/espocrm) - Open Source CRM Application
+* [Evershop](https://github.com/evershopcommerce/evershop) - NodeJS E-commerce Platform
 * [Excalidraw](https://excalidraw.com/) - Virtual whiteboard for sketching hand-drawn like diagrams
 * [Firefly III](https://firefly-iii.org/) - Free and open source personal finance manager
 * [Flame](https://github.com/pawelmalak/flame/) - Flarum is a delightfully simple discussion platform for your website
 * [Flarum](https://flarum.org/) - Self-hosted startpage for your server
 * [Flatnotes](https://flatnotes.io/) - Self-hosted, database-less note taking web app
+* [Formbricks](https://github.com/formbricks/formbricks) - An Open Source Survey Platform
 * [FormIO](https://github.com/formio/formio) - SA Form and Data Management Platform for Progressive Web Applications
 * [Fresh RSS](https://freshrss.org/) - Self-hosted RSS feed aggregator like Leed or Kriss Feed
 * [Frigate](https://frigate.video/) - Frigate is an open source NVR built around real-time AI object detection
@@ -68,19 +79,23 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Gotify](https://gotify.net/) - Self-hosted server for sending push notifications
 * [Grafana](https://grafana.com/) - Query, visualize, alert on, and understand your data no matter where it’s stored (via stats role).
 * [Graylog](https://www.graylog.org/) - Free and open source log management
+* [Grist](https://github.com/gristlabs/grist-core) - Grist is the evolution of spreadsheets.
 * [Grocy](https://grocy.info/) - web-based self-hosted groceries & household management solution for your home
 * [Guacamole](https://guacamole.apache.org/) - Web based remote desktop gateway, supports VNC, RDP and SSH
 * [HA Fusion](https://github.com/matt8707/ha-fusion) - A modern, easy-to-use and performant custom Home Assistant dashboard
 * [healthchecks.io](https://healthchecks.io/) - Ensure your NAS is online and get notified otherwise
 * [Heimdall](https://heimdall.site/) - Home server dashboard
+* [Heyform](https://github.com/heyform/heyform) - an open-source form builder that allows anyone to create engaging conversational forms
 * [Homarr](https://github.com/ajnart/homarr) - Customizable browser's home page
 * [Home Assistant](https://www.home-assistant.io) - Open source home automation
 * [Homebridge](https://github.com/nfarina/homebridge) - Emulate the iOS HomeKit API
 * [Homepage](https://gethomepage.dev/) - Highly customizable application dashboard with integrations for over 100 services.
 * [Huginn](https://github.com/huginn/huginn) - Create agents that monitor and act on your behalf. Your agents are standing by!
+* [Huly Platform](https://github.com/hcengineering/platform) - All-in-One Project Management Platform (alternative to Linear, Jira, Slack, Notion, Motion)
 * [Huntly](https://github.com/lcomplete/huntly) - Self-hosted information management tool
 * [ICantBelieveItsNotValetudo](https://github.com/Hypfer/ICantBelieveItsNotValetudo) - companion service for Valetudo that renders ValetudoMap map data to raster graphics.
 * [Immich](https://immich.app/) - Self-hosted photo and video backup solution directly from your mobile phone.
+* [Input](https://github.com/deck9/input) - A privacy-focused, no-code, open-source form builder.
 * [Influxdb](https://github.com/influxdata/influxdb) - Time series database used for stats collection
 * [Invidious](https://invidious.io/) - An open source alternative front-end to YouTube
 * [Jackett](https://github.com/Jackett/Jackett) - API Support for your favorite torrent trackers
@@ -99,15 +114,23 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Lidarr](https://github.com/lidarr/Lidarr) - Music collection manager for Usenet and BitTorrent users
 * [Light LDAP](https://github.com/lldap/lldap) - Light LDAP implementation
 * [Linkding](https://github.com/sissbruecker/linkding) - Self-hosted bookmark service
+* [Linkstack](https://github.com/LinkStackOrg/LinkStack) - the ultimate solution for creating a personalized & professional profile page
 * [Linkwarden](https://linkwarden.app/) - Open-source collaborative bookmark manager to collect, organize and archive webpages
 * [Listmonk](https://listmonk.app/) - High performance, self-hosted, newsletter and mailing list manager
 * [Littlelink](https://github.com/techno-tim/littlelink-server) - Self-hosted alternative to linktree
+* [LiveHelperChat](https://github.com/LiveHelperChat/livehelperchat) - live support for your website
 * [Loki](https://grafana.com/oss/loki/) - Loki is a horizontally scalable, highly available, multi-tenant log aggregation system inspired by Prometheus.
+* [Lowcoder](https://github.com/lowcoder-org/lowcoder) - The Open Source Retool, Tooljet and Appsmith Alternative.
 * [LubeLogger](https://github.com/hargata/lubelog) - LubeLogger is a web-based vehicle maintenance and fuel mileage tracker.
+* [Mainsail](https://github.com/mainsail-crew/mainsail) -  popular web interface for managing and controlling 3D printers with Klipper
+* [Maker Management Platform](https://github.com/Maker-Management-Platform/docs) -  management of a variety of digital assets related to 3d printing, manufacturing, laser engraving and such.
+* [Mantium](https://github.com/diogovalentte/mantium) - dashboard for tracking mangas from multiple source sites, like Mangadex and ComicK.
 * [Mattermost](https://mattermost.com/) - open source platform for secure collaboration across the entire software development lifecycle
 * [MariaDB](https://mariadb.org/) - one of the most popular open source relational databases
+* [Maybe](https://github.com/maybe-finance/maybe) - The OS for your personal finances
 * [Mealie](https://hay-kot.github.io/mealie/) - A self-hosted recipe manager and meal planner
 * [Memos](https://usememos.com/) - An open-source memo hub with knowledge management and social networking
+* [Metabase](https://github.com/metabase/metabase) - business intelligence and analytics
 * [Metube](https://github.com/alexta69/metube) - Self-hosted YouTube downloader (web UI for youtube-dl / yt-dlp)
 * [Minecraft Java Server](https://www.minecraft.net/) - Java server edition of the popular building and exploring game
 * [Minecraft Bedrock Server](https://www.minecraft.net/) - Bedrock server edition of the popular building and exploring game
@@ -130,6 +153,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Nextcloud](https://nextcloud.com/) - A self-hosted Dropbox alternative
 * [Node-RED](https://nodered.org/) - A programming tool for wiring together hardware devices, APIs and online services
 * [Nomad](https://www.nomadproject.io/) - A simple and flexible scheduler and software orchestrator
+* [Notifo](https://github.com/notifo-io/notifo) - Multi channel notification service for collaboration tools, e-commerce, news service and more.
 * [NZBget](https://nzbget.net/) - The most efficient usenet downloader
 * [Nzbhydra2](https://github.com/theotherp/nzbhydra2) - Usenet meta search
 * [Obsidian](https://obsidian.md/) - Obsidian is the private and flexible writing app
@@ -140,6 +164,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [openHAB](https://www.openhab.org/) - A vendor and technology agnostic open source automation software for your home
 * [openLDAP](https://www.openldap.org/) - An open source implementation of the Lightweight Directory Access Protocol
 * [Open-resume](https://github.com/xitanggg/open-resume) - A powerful open-source resume builder and resume parser
+* [Open-WebUI](https://github.com/open-webui/open-webui) - User-friendly WebUI for LLMs (Formerly Ollama WebUI)
 * [Organizr](https://organizr.app/) - ORGANIZR aims to be your one stop shop for your Servers Frontend.
 * [Outline](https://github.com/outline/outline) - The fastest knowledge base for growing teams.
 * [Overleaf](https://github.com/overleaf/overleaf) - A web-based collaborative LaTeX editor
@@ -161,11 +186,13 @@ If you have a spare domain name you can configure applications to be accessible 
 * [PyTivo](http://pytivo.org) - An HMO and GoBack server for TiVos.
 * [Radarr](https://radarr.video/) - for organising and downloading movies
 * [Rallly](https://github.com/lukevella/rallly/) - an open-source scheduling and collaboration tool
-* [Romm](https://github.com/zurdi15/romm) - A game library manager focused on retro gaming
+* [Readeck](https://codeberg.org/readeck/readeck) - a simple web application that lets you save the precious readable content of web pages you like and want to keep forever.
 * [Releasebell](https://github.com/anarion80/releasebell) - Starred GitHub repositories notifications
 * [Restic](https://restic.net/) - A modern backup program
+* [Romm](https://github.com/zurdi15/romm) - A game library manager focused on retro gaming
 * [Route53 DDNS](https://crazymax.dev/ddns-route53/) - Automatically update AWS Route53 with your IP address
 * [RSS-Bridge](https://rss-bridge.github.io/rss-bridge/) - The RSS feed for websites missing it
+* [RSSHub](https://github.com/DIYgod/RSSHub) - An open source, easy to use, and extensible RSS feed generator.
 * [Ryot](https://github.com/ignisda/ryot) - A self hosted platform for tracking various facets of your life - media, fitness etc.
 * [Sabnzbd](https://sabnzbd.org/) - A powerful usenet downloader that FreeNAS provides
 * [Seafile](https://www.seafile.com/en/home/) - High performance file syncing and sharing
@@ -178,9 +205,12 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Snipe-IT](https://snipeitapp.com/) - A free open source IT asset/license management system
 * [Sonarr](https://sonarr.tv/) - for downloading and managing TV episodes
 * [Speedtest-Tracker](https://github.com/henrywhitaker3/Speedtest-Tracker) - Continuously track your internet speed
+* [Squirrel Servers Manager](https://github.com/SquirrelCorporation/SquirrelServersManager) - A user friendly, UI/UX focus server & configuration management tool.
 * Stats - Monitor and visualise metrics about your NAS and internet connection using Grafana, Prometheus, Telegraf and more.
+* [Stalwart Mail](https://stalw.art/) - A scalable, secure and robust open-source mail server software designed for the 21st century.
 * [Standard Notes](https://standardnotes.com/) - An end-to-end encrypted notes app
 * [Stirling-PDF](https://github.com/Frooodle/Stirling-PDF) - locally hosted web application that allows you to perform various operations on PDF files
+* [SuiteCRM](https://github.com/salesagility/SuiteCRM) - Open source CRM for the world
 * [Syncthing](https://syncthing.net/) - sync directories with another device
 * [Tautulli](http://tautulli.com/) - Monitor Your Plex Media Server
 * [The Lounge](https://thelounge.chat) - Web based always-on IRC client
@@ -194,10 +224,12 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Tt-rss](https://tt-rss.org/) - free and open source web-based news feed (RSS/Atom) reader and aggregator
 * [Twenty CMS](https://github.com/twentyhq/twenty) - The #1 Open-Source CRM
 * [Ubooquity](http://vaemendis.net/ubooquity/) - Book and comic server
+* [Uppy](https://github.com/transloadit/uppy) - The next open source file uploader for web browsers
 * [uTorrent](https://www.utorrent.com/) - The best torrent downloading app for beginners
 * [Vaultwarden](https://github.com/dani-garcia/vaultwarden) - Self-Hosting port of password manager
 * [Virtual Desktop](https://github.com/RattyDAVE/docker-ubuntu-xrdp-mate-custom) - A virtual desktop running on your NAS.
 * [Wallabag](https://wallabag.org/) - Save and classify articles. Read them later.
+* [Wallos](https://github.com/ellite/Wallos) - Open-Source Personal Subscription Tracker.
 * [Wanderer](https://github.com/Flomp/wanderer) - A self-hosted trail database.
 * [Watchtower](https://github.com/v2tec/watchtower) - Monitor your Docker containers and update them if a new version is available
 * [Webtrees](https://www.webtrees.net/index.php/en/) - On-line collaborative genealogy application

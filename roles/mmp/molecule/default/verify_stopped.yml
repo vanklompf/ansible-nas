@@ -1,0 +1,26 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+
+    - name: Try and stop and remove mmp agent
+      community.docker.docker_container:
+        name: "{{ mmp_agent_container_name }}"
+        state: absent
+      register: result_agent
+
+    - name: Try and stop and remove mmp ui
+      community.docker.docker_container:
+        name: "{{ mmp_ui_container_name }}"
+        state: absent
+      register: result_ui
+
+    - name: Check if mmp is stopped
+      ansible.builtin.assert:
+        that:
+          - not result_agent.changed
+          - not result_ui.changed
