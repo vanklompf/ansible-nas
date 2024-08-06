@@ -60,7 +60,6 @@
         name: "{{ immich_server_container_name }}"
         image: "{{ immich_server_image }}:{{ immich_server_tag }}"
         pull: true
-        command: ["start.sh", "immich"]
         volumes:
           - "{{ immich_data_directory }}/data:/data:rw"
           - "{{ immich_upload_directory }}:/usr/src/app/upload:rw"
@@ -93,38 +92,6 @@
           traefik.http.services.immich.loadbalancer.server.port: "3001"
         restart_policy: unless-stopped
         memory: "{{ immich_server_memory }}"
-
-    - name: Immich Microservices Docker Container
-      community.docker.docker_container:
-        name: "{{ immich_microservices_container_name }}"
-        image: "{{ immich_microservices_image }}:{{ immich_microservices_tag }}"
-        pull: true
-        command: ["start.sh", "microservices"]
-        volumes:
-          - "{{ immich_upload_directory }}:/usr/src/app/upload:rw"
-        networks:
-          - name: "{{ immich_network_name }}"
-        env:
-          TZ: "{{ ansible_nas_timezone }}"
-          PUID: "{{ immich_user_id | quote }}"
-          PGID: "{{ immich_group_id | quote }}"
-          NODE_ENV: "production"
-          IMMICH_VERSION: "{{ immich_version }}"
-          REDIS_HOSTNAME: "{{ immich_redis_container_name }}"
-          DB_HOSTNAME: "{{ immich_postgres_container_name }}"
-          DB_USERNAME: "{{ immich_db_username }}"
-          DB_PASSWORD: "{{ immich_db_password }}"
-          DB_DATABASE_NAME: "{{ immich_db_name }}"
-          DB_PORT: "{{ immich_db_port }}"
-          JWT_SECRET: "{{ immich_jwt_secret }}"
-          ENABLE_MAPBOX: "{{ immich_enable_mapbox }}"
-          MAPBOX_KEY: "{{ immich_mapbox_key }}"
-          UPLOAD_LOCATION: "{{ immich_upload_location }}"
-          PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
-        labels:
-          traefik.enable: "false"
-        restart_policy: unless-stopped
-        memory: "{{ immich_microservices_memory }}"
 
     - name: Immich Machine Learning Docker Container
       community.docker.docker_container:
@@ -173,11 +140,6 @@
     - name: Stop Immich Server
       community.docker.docker_container:
         name: "{{ immich_server_container_name }}"
-        state: absent
-
-    - name: Stop Immich Microservices
-      community.docker.docker_container:
-        name: "{{ immich_microservices_container_name }}"
         state: absent
 
     - name: Stop Immich Machine Learning
