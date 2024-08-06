@@ -50,6 +50,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [DbGate](https://github.com/dbgate/dbgate) - Database manager for MySQL, PostgreSQL, SQL Server, MongoDB, SQLite and others
 * [DDNS Updater](https://github.com/qdm12/ddns-updater) - dynamic dns updater for serveral providers
 * [Deluge](https://dev.deluge-torrent.org/) - A lightweight, Free Software, cross-platform BitTorrent client.
+* [Directus](https://github.com/directus/directus) - An instant REST+GraphQL API and intuitive no-code data collaboration app for any SQL database.
 * [Dockge](https://github.com/louislam/dockge) - A fancy, easy-to-use and reactive self-hosted docker compose.yaml stack-oriented manager
 * [DokuWiki](https://www.dokuwiki.org/) - A simple to use and highly versatile Open Source wiki software that doesn't require a database.
 * [Drone CI](https://drone.io) - A self-service Continuous Integration platform for busy development teams.
@@ -64,6 +65,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Excalidraw](https://excalidraw.com/) - Virtual whiteboard for sketching hand-drawn like diagrams
 * [Firefly III](https://firefly-iii.org/) - Free and open source personal finance manager
 * [Flame](https://github.com/pawelmalak/flame/) - Flarum is a delightfully simple discussion platform for your website
+* [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) - FlareSolverr is a proxy server to bypass Cloudflare and DDoS-GUARD protection
 * [Flarum](https://flarum.org/) - Self-hosted startpage for your server
 * [Flatnotes](https://flatnotes.io/) - Self-hosted, database-less note taking web app
 * [Formbricks](https://github.com/formbricks/formbricks) - An Open Source Survey Platform
@@ -73,6 +75,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Gaps](https://github.com/JasonHHouse/gaps) - Find the missing movies in your Plex Server
 * [get_iplayer](https://github.com/get-iplayer/get_iplayer) - download programmes from BBC iplayer
 * [Ghost](https://ghost.org/) - Turn your audience into a business. Publishing, memberships, subscriptions and newsletters
+* [Ghostfolio](https://github.com/ghostfolio/ghostfolio) - Open Source Wealth Management Software
 * [Gitea](https://gitea.io/en-us/) - Simple self-hosted GitHub clone
 * [GitLab](https://about.gitlab.com/features/) - Self-hosted GitHub clone of the highest order
 * [Glances](https://nicolargo.github.io/glances/) - for seeing the state of your system via a web browser
@@ -86,10 +89,13 @@ If you have a spare domain name you can configure applications to be accessible 
 * [healthchecks.io](https://healthchecks.io/) - Ensure your NAS is online and get notified otherwise
 * [Heimdall](https://heimdall.site/) - Home server dashboard
 * [Heyform](https://github.com/heyform/heyform) - an open-source form builder that allows anyone to create engaging conversational forms
+* [Hi.Events](https://github.com/HiEventsDev/hi.events) - Self-hosted event management and ticket selling platform
+* [Hoarder](https://github.com/hoarder-app/hoarder) - A self-hostable bookmark-everything app (links, notes and images)
 * [Homarr](https://github.com/ajnart/homarr) - Customizable browser's home page
 * [Home Assistant](https://www.home-assistant.io) - Open source home automation
 * [Homebridge](https://github.com/nfarina/homebridge) - Emulate the iOS HomeKit API
 * [Homepage](https://gethomepage.dev/) - Highly customizable application dashboard with integrations for over 100 services.
+* [Hoppscotch](https://github.com/hoppscotch/hoppscotch) - Open source API development ecosystem - (open-source alternative to Postman, Insomnia)
 * [Huginn](https://github.com/huginn/huginn) - Create agents that monitor and act on your behalf. Your agents are standing by!
 * [Huly Platform](https://github.com/hcengineering/platform) - All-in-One Project Management Platform (alternative to Linear, Jira, Slack, Notion, Motion)
 * [Huntly](https://github.com/lcomplete/huntly) - Self-hosted information management tool
@@ -111,7 +117,9 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Librephotos](https://github.com/LibrePhotos/librephotos) - self-hosted open source photo
 * [Librespeed](https://github.com/librespeed/speedtest) - Self-hosted Speedtest for HTML5 and more
 * [LibreTranslate](https://libretranslate.com/) - Free and Open Source Machine Translation API
+* [Librum Server](https://github.com/Librum-Reader/Librum-Server) - A clean and powerful way to read and manage your e-books on any device
 * [Lidarr](https://github.com/lidarr/Lidarr) - Music collection manager for Usenet and BitTorrent users
+* [LidaTube](https://github.com/TheWicklowWolf/LidaTube) - App for finding missing Lidarr albums via yt-dlp
 * [Light LDAP](https://github.com/lldap/lldap) - Light LDAP implementation
 * [Linkding](https://github.com/sissbruecker/linkding) - Self-hosted bookmark service
 * [Linkstack](https://github.com/LinkStackOrg/LinkStack) - the ultimate solution for creating a personalized & professional profile page
@@ -152,6 +160,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Netdata](https://my-netdata.io/) - An extremely comprehensive system monitoring solution
 * [Nextcloud](https://nextcloud.com/) - A self-hosted Dropbox alternative
 * [Node-RED](https://nodered.org/) - A programming tool for wiring together hardware devices, APIs and online services
+* [NocoDB](https://github.com/nocodb/nocodb) - Open Source Airtable Alternative
 * [Nomad](https://www.nomadproject.io/) - A simple and flexible scheduler and software orchestrator
 * [Notifo](https://github.com/notifo-io/notifo) - Multi channel notification service for collaboration tools, e-commerce, news service and more.
 * [NZBget](https://nzbget.net/) - The most efficient usenet downloader
@@ -179,6 +188,7 @@ If you have a spare domain name you can configure applications to be accessible 
   * [Plex Autoscan](https://github.com/Cloudbox/autoscan) - automatic Plex library updates
   * [Plex Meta Manager](https://metamanager.wiki) - Python script to update metadata information for items in plex
 * [Portainer](https://portainer.io/) - for managing Docker and running custom images
+* [Pretix](https://pretix.eu/about/en/) - Ticketing software that cares about your event—all the way.
 * [Prometheus](https://prometheus.io/) - Time series database and monitoring system (via stats role).
 * [Promtail](https://grafana.com/docs/loki/latest/clients/promtail/) - Promtail is an agent which ships the contents of local logs to a private Grafana Loki instance
 * [Prowlarr](https://github.com/Prowlarr/Prowlarr) - Indexer aggregator for Sonarr, Radarr, Lidarr, etc.
@@ -199,6 +209,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [SearxNG](https://github.com/searxng/searxng) - Free internet metasearch engine
 * [Servas](https://github.com/beromir/Servas) - A self-hosted bookmark management tool
 * [Shaarli](https://github.com/shaarli/Shaarli) - Personal, minimalist, super-fast, database free, bookmarking service
+* [Shiori](https://github.com/go-shiori/shiori) - Simple bookmark manager built with Go
 * [Sickchill](https://sickchill.github.io/) - for managing TV episodes
 * [Silverbullet](https://silverbullet.md) - Note-taking application optimized for people with a hacker mindset
 * [SiYuan](https://github.com/siyuan-note/siyuan) - A privacy-first, self-hosted, fully open source personal knowledge management software
@@ -224,8 +235,10 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Tt-rss](https://tt-rss.org/) - free and open source web-based news feed (RSS/Atom) reader and aggregator
 * [Twenty CMS](https://github.com/twentyhq/twenty) - The #1 Open-Source CRM
 * [Ubooquity](http://vaemendis.net/ubooquity/) - Book and comic server
+* [Unifi Network Application](https://github.com/linuxserver/docker-unifi-network-application) - powerful, enterprise wireless software engine
 * [Uppy](https://github.com/transloadit/uppy) - The next open source file uploader for web browsers
 * [uTorrent](https://www.utorrent.com/) - The best torrent downloading app for beginners
+* [Valheim Server](https://github.com/mbround18/valheim-docker) - Valheim dedicated gameserver manager.
 * [Vaultwarden](https://github.com/dani-garcia/vaultwarden) - Self-Hosting port of password manager
 * [Virtual Desktop](https://github.com/RattyDAVE/docker-ubuntu-xrdp-mate-custom) - A virtual desktop running on your NAS.
 * [Wallabag](https://wallabag.org/) - Save and classify articles. Read them later.

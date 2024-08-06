@@ -17,7 +17,7 @@
         - ansible-nas-users
         - ansible-nas
 
-    - role: bertvv.samba
+    - role: vladgh.samba.server
       tags:
         - samba
         - skip_ansible_lint
@@ -195,6 +195,10 @@
       tags:
         - deluge
 
+    - role: directus
+      tags:
+        - directus
+
     - role: dockge
       tags:
         - dockge
@@ -255,6 +259,10 @@
       tags:
         - flame
 
+    - role: flaresolverr
+      tags:
+        - flaresolverr
+
     - role: flarum
       tags:
         - flarum
@@ -290,6 +298,10 @@
     - role: ghost
       tags:
         - ghost
+
+    - role: ghostfolio
+      tags:
+        - ghostfolio
 
     - role: gitea
       tags:
@@ -343,6 +355,14 @@
       tags:
         - heyform
 
+    - role: hievents
+      tags:
+        - hievents
+
+    - role: hoarder
+      tags:
+        - hoarder
+
     - role: homarr
       tags:
         - homarr
@@ -358,6 +378,10 @@
     - role: homepage
       tags:
         - homepage
+
+    - role: hoppscotch
+      tags:
+        - hoppscotch
 
     - role: huginn
       tags:
@@ -439,9 +463,17 @@
       tags:
         - libretranslate
 
+    - role: librum
+      tags:
+        - librum
+
     - role: lidarr
       tags:
         - lidarr
+
+    - role: lidatube
+      tags:
+        - lidatube
 
     - role: linkding
       tags:
@@ -599,6 +631,10 @@
       tags:
         - nextcloud
 
+    - role: nocodb
+      tags:
+        - nocodb
+
     - role: nodered
       tags:
         - nodered
@@ -707,6 +743,10 @@
       tags:
         - portainer
 
+    - role: pretix
+      tags:
+        - pretix
+
     - role: portainer_agent
       tags:
         - portainer_agent
@@ -794,6 +834,10 @@
     - role: shaarli
       tags:
         - shaarli
+
+    - role: shiori
+      tags:
+        - shiori
 
     - role: servas
       tags:
@@ -907,6 +951,10 @@
       tags:
         - ubooquity
 
+    - role: unifi
+      tags:
+        - unifi
+
     - role: uppy
       tags:
         - uppy
@@ -914,6 +962,10 @@
     - role: utorrent
       tags:
         - utorrent
+
+    - role: valheim
+      tags:
+        - valheim
 
     - role: vaultwarden
       tags:
