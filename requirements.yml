@@ -12,6 +12,8 @@ roles:
 
   - name: andrewrothstein.restic
 
+  - name: artis3n.tailscale
+
 collections:
   - name: ansible.posix
   - name: community.crypto

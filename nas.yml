@@ -17,6 +17,11 @@
         - ansible-nas-users
         - ansible-nas
 
+    - role: artis3n.tailscale
+      tags:
+        - tailscale
+        - skip_ansible_lint
+
     - role: vladgh.samba.server
       tags:
         - samba
