@@ -76,6 +76,10 @@
       tags:
         - admidio
 
+    - role: adventure_log
+      tags:
+        - adventure_log
+
     - role: affine
       tags:
         - affine
@@ -216,6 +220,10 @@
       tags:
         - dokuwiki
 
+    - role: domain_watchdog
+      tags:
+        - domain_watchdog
+
     - role: drone-ci
       tags:
         - drone_ci
@@ -295,6 +303,10 @@
     - role: frigate
       tags:
         - frigate
+
+    - role: fusion
+      tags:
+        - fusion
 
     - role: gaps
       tags:
@@ -740,6 +752,10 @@
       tags:
         - phpmyadmin
 
+    - role: pinchflat
+      tags:
+        - pinchflat
+
     - role: piwigo
       tags:
         - piwigo
@@ -747,6 +763,10 @@
     - role: plex
       tags:
         - plex
+
+    - role: pocketid
+      tags:
+        - pocketid
 
     - role: portainer
       tags:
