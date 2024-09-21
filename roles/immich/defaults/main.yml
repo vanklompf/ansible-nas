@@ -15,10 +15,7 @@ immich_network_name: "immich"
 immich_postgres_memory: 1g
 immich_redis_memory: 1g
 immich_server_memory: 1g
-immich_microservices_memory: 1g
 immich_machinelearning_memory: 1g
-immich_web_memory: 1g
-immich_proxy_memory: 1g
 
 # docker
 immich_postgres_container_name: "immich_postgres"

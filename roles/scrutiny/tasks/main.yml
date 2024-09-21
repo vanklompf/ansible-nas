@@ -9,12 +9,6 @@
         - "{{ scrutiny_config_directory }}"
         - "{{ scrutiny_influxdb_directory }}"
 
-    - name: Copy user defined Scrutiny config
-      ansible.builtin.copy:
-        src: "{{ inventory_dir }}/scrutiny/collector.yaml"
-        dest: "{{ scrutiny_config_directory }}/collector.yaml"
-      failed_when: false
-
     - name: Scrutiny Docker Container
       community.docker.docker_container:
         name: "{{ scrutiny_container_name }}"
@@ -22,7 +16,7 @@
         pull: true
         capabilities:
           - SYS_RAWIO
-          - SYS_ADMIN
+          - SYS_ADMIN 
         volumes:
           - "/run/udev:/run/udev:ro"
           - "{{ scrutiny_config_directory }}:/opt/scrutiny/config"
