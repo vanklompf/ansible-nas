@@ -184,6 +184,10 @@
       tags:
         - crowdsec
 
+    - role: cups
+      tags:
+        - cups
+
     - role: dashy
       tags:
         - dashy

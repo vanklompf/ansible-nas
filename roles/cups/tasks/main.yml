@@ -1,0 +1,31 @@
+---
+- name: Start Cups
+  block:
+    - name: Create Cups Directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ cups_directory }}"
+
+    - name: Cups Docker Container
+      community.docker.docker_container:
+        name: "{{ cups_container_name }}"
+        image: "{{ cups_image_name }}:{{ cups_image_version }}"
+        pull: true
+        ports:
+          - "{{ cups_port }}:631"
+        restart_policy: unless-stopped
+        memory: "{{ cups_memory }}"
+        volumes:
+          - /var/run/dbus:/var/run/dbus
+          - "{{ cups_directory }}/cupsd.conf:/etc/cups/cupsd.conf"
+  when: cups_enabled is true
+
+- name: Stop Cups
+  block:
+    - name: Stop Cups
+      community.docker.docker_container:
+        name: "{{ cups_container_name }}"
+        state: absent
+  when: cups_enabled is false

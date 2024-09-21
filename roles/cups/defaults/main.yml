@@ -1,0 +1,17 @@
+---
+cups_enabled: false
+
+# directories
+cups_directory: "{{ docker_home }}/cups"
+
+# network
+cups_port: "631"
+cups_hostname: "print"
+
+# specs
+cups_memory: 1g
+
+# docker
+cups_container_name: cups
+cups_image_name: "olbat/cupsd"
+cups_image_version: stable
