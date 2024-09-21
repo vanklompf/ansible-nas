@@ -20,7 +20,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Activepieces](https://www.activepieces.com/) - an open source all-in-one automation tool
 * [Actual](https://github.com/actualbudget/actual-server) - A local-first personal finance app
 * [Admidio](https://www.admidio.org/) - a free online membership management
-* [Affine](https://github.com/toeverything/AFFiNE) - a next-gen knowledge base that brings planning, sorting and creating all together
+* [Adventure Log](https://github.com/seanmorley15/AdventureLog) - Self-hostable travel tracker and trip planner.
 * [Airsonic](https://airsonic.github.io/) - catalog and stream music
 * [Appsmith](https://www.appsmith.com/) -  low-code application platform to quickly build, deploy, and manage effective software
 * [Aria2](https://github.com/aria2/aria2) - a lightweight multi-protocol & multi-source, cross platform download utility operated in command-line
@@ -53,6 +53,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Directus](https://github.com/directus/directus) - An instant REST+GraphQL API and intuitive no-code data collaboration app for any SQL database.
 * [Dockge](https://github.com/louislam/dockge) - A fancy, easy-to-use and reactive self-hosted docker compose.yaml stack-oriented manager
 * [DokuWiki](https://www.dokuwiki.org/) - A simple to use and highly versatile Open Source wiki software that doesn't require a database.
+* [Domain Watchdog](https://github.com/maelgangloff/domain-watchdog) - DNS domain monitoring tool
 * [Drone CI](https://drone.io) - A self-service Continuous Integration platform for busy development teams.
 * [Duplicacy](https://duplicacy.com/) - A web UI for the Duplicacy cloud backup program, which provides lock-free deduplication backups to multiple providers
 * [Dufs](https://github.com/sigoden/dufs) - distinctive utility file server
@@ -72,6 +73,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [FormIO](https://github.com/formio/formio) - SA Form and Data Management Platform for Progressive Web Applications
 * [Fresh RSS](https://freshrss.org/) - Self-hosted RSS feed aggregator like Leed or Kriss Feed
 * [Frigate](https://frigate.video/) - Frigate is an open source NVR built around real-time AI object detection
+* [Fusion](https://github.com/0x2E/fusion) - A lightweight, self-hosted friendly RSS aggregator and reader
 * [Gaps](https://github.com/JasonHHouse/gaps) - Find the missing movies in your Plex Server
 * [get_iplayer](https://github.com/get-iplayer/get_iplayer) - download programmes from BBC iplayer
 * [Ghost](https://ghost.org/) - Turn your audience into a business. Publishing, memberships, subscriptions and newsletters
@@ -183,10 +185,12 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Photoprism](https://www.photoprism.app/) - An AI-Powered Photos App for the Decentralized Web
 * [PhotoStructure](https://photostructure.com/) - Your new home for all your photos & videos
 * [PhpMyAdmin](https://www.phpmyadmin.net/) - a tool intended to handle the administration of MySQL over the Web
+* [Pinchflat](https://github.com/kieraneglin/pinchflat/) - Your next YouTube media manager
 * [Piwigo](https://piwigo.org/) - Photo Gallery Software
 * [Plex](https://www.plex.tv/) - Plex Media Server
   * [Plex Autoscan](https://github.com/Cloudbox/autoscan) - automatic Plex library updates
   * [Plex Meta Manager](https://metamanager.wiki) - Python script to update metadata information for items in plex
+* [Pocket-ID](https://github.com/stonith404/pocket-id) - A simple OIDC provider
 * [Portainer](https://portainer.io/) - for managing Docker and running custom images
 * [Pretix](https://pretix.eu/about/en/) - Ticketing software that cares about your event—all the way.
 * [Prometheus](https://prometheus.io/) - Time series database and monitoring system (via stats role).
@@ -231,7 +235,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [ToolJet](https://github.com/ToolJet/ToolJet) - Low-code platform for building business applications
 * [Traefik](https://traefik.io/) - Web proxy and SSL certificate manager
 * [Transmission](https://transmissionbt.com/) - BitTorrent client (with OpenVPN if you have a supported VPN provider)
-* [Trilium](https://github.com/zadam/trilium) - Hierarchical note taking application with focus on building large personal knowledge bases
+* [TriliumNext Notes](https://github.com/TriliumNext/Notes) - Hierarchical note taking application with focus on building large personal knowledge bases
 * [Tt-rss](https://tt-rss.org/) - free and open source web-based news feed (RSS/Atom) reader and aggregator
 * [Twenty CMS](https://github.com/twentyhq/twenty) - The #1 Open-Source CRM
 * [Ubooquity](http://vaemendis.net/ubooquity/) - Book and comic server
