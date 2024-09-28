@@ -21,12 +21,13 @@ homepage_memory: "1g"
 # settings
 homepage_title: Ansible-NAS Homepage
 homepage_locale: en-GB
+homepage_show_stats: false
 
 # Homepage config files - the variables below are formatted to Homepage YAML config files
 homepage_settings_yaml:
   title: "{{ homepage_title }}"
   language: "{{ homepage_locale }}"
-  showStats: true
+  showStats: "{{ homepage_show_stats }}"
 
 homepage_services_yaml:
   - Networking:
