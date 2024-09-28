@@ -28,10 +28,12 @@
         privileged: true
         memory: "{{ scrutiny_memory }}"
         labels:
-          flame.type: "application"
-          flame.name: "Scrutiny"
-          flame.url: "http://jezyk:{{ scrutiny_port }}"
-          flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/scrutiny.png"
+          homepage.group: System
+          homepage.name: Scrutiny
+          homepage.icon: scrutiny.png
+          homepage.href: "http://{{ ansible_nas_hostname }}:{{ scrutiny_port }}"
+          homepage.widget.type: scrutiny
+          homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ scrutiny_port }}"
   when: scrutiny_enabled is true
 
 - name: Stop Scrutiny

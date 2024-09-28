@@ -33,10 +33,15 @@
           traefik.http.routers.tautulli.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.tautulli.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.tautulli.loadbalancer.server.port: "8181"
-          flame.type: "application"
-          flame.name: "Tautulli"
-          flame.url: "http://jezyk:{{ tautulli_port }}/"
-          flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/tautulli.png"
+          homepage.group: Media
+          homepage.name: Plex
+          homepage.icon: plex.png
+          homepage.href: "http://{{ ansible_nas_hostname }}:32400"
+          homepage.widget.type: tautulli
+          homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ tautulli_port }}"
+          homepage.widget.key: "{{ tautulli_api_key }}"
+          homepage.widget.enableUser: "true"
+          homepage.widget.showEpisodeNumber: "true"
   when: tautulli_enabled is true
 
 - name: Stop Tautulli

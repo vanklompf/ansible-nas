@@ -35,6 +35,7 @@
         restart_policy: unless-stopped
         restart: "{{ homepage_config is changed }}"
         memory: "{{ homepage_memory }}"
+        network_mode: "host"
         labels:
           traefik.enable: "{{ homepage_available_externally | string }}"
           traefik.http.routers.homepage.rule: "Host(`{{ homepage_hostname }}.{{ ansible_nas_domain }}`)"

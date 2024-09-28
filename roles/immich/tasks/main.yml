@@ -89,6 +89,14 @@
           traefik.http.routers.immich.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.immich.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.immich.loadbalancer.server.port: "3001"
+          homepage.group: Media
+          homepage.name: Immich
+          homepage.icon: immich.png
+          homepage.href: "http://{{ ansible_nas_hostname }}:{{ immich_port }}"
+          homepage.widget.type: immich
+          homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ immich_port }}"
+          homepage.widget.key: "{{ immich_api_key }}"
+          homepage.widget.showStats: false
         restart_policy: unless-stopped
         memory: "{{ immich_server_memory }}"
         memory_swap: "{{ immich_server_memory }}"

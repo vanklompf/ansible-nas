@@ -1,6 +1,7 @@
 ---
 tautulli_enabled: false
 tautulli_available_externally: false
+tautulli_api_key: "keykeykeykey"
 
 # directories
 tautulli_config_directory: "{{ docker_home }}/tautulli/config"
