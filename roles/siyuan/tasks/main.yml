@@ -18,7 +18,6 @@
         image: "{{ siyuan_image_name }}:{{ siyuan_image_version }}"
         pull: true
         command: ['--workspace=/siyuan/workspace/', '--accessAuthCode={{ siyuan_access_auth_code }}']
-        user: "{{ siyuan_user_id | quote }}:{{ siyuan_group_id | quote }}"
         volumes:
           - "{{ siyuan_data_directory }}/workspace:/siyuan/workspace/"
         ports:
@@ -41,7 +40,7 @@
 
 - name: Stop Siyuan
   block:
-    - name: Stop Stirling-PDF
+    - name: Stop Siyuan
       community.docker.docker_container:
         name: "{{ siyuan_container_name }}"
         state: absent
