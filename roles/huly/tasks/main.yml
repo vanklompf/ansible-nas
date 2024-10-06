@@ -9,6 +9,15 @@
         group: "{{ huly_group_id }}"
       with_items:
         - "{{ huly_data_directory }}"
+        - "{{ huly_data_directory }}/mongo_data"
+
+    - name: Create Elastic Directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: 1000
+        group: root
+      with_items:
         - "{{ huly_data_directory }}/elastic"
 
     - name: Create Huly Network
