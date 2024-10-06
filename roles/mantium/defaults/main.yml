@@ -45,6 +45,10 @@ mantium_update_mangas_periodically_minutes: "30"
 mantium_kaizoku_address: ""
 mantium_kaizoku_default_interval: "never"
 mantium_wait_until_empty_queues_timeout_minutes: "5"
+mantium_kaizoku_try_other_sources: "false"
+mantium_tranga_address: ""
+mantium_tranga_default_interval: ""
+
 mantium_dashboard_port: "{{ mantium_port }}"
 mantium_api_address: "http://{{ mantium_api_container_name }}:{{ mantium_api_port }}"
 
@@ -70,6 +74,10 @@ mantium_api_env:
   KAIZOKU_ADDRESS: "{{ mantium_kaizoku_address }}"
   KAIZOKU_DEFAULT_INTERVAL: "{{ mantium_kaizoku_default_interval }}"
   KAIZOKU_WAIT_UNTIL_EMPTY_QUEUES_TIMEOUT_MINUTES: "{{ mantium_wait_until_empty_queues_timeout_minutes }}"
+  KAIZOKU_TRY_OTHER_SOURCES: "{{ mantium_kaizoku_try_other_sources }}"
+
+  TRANGA_ADDRESS: "{{ mantium_tranga_address }}"
+  TRANGA_DEFAULT_INTERVAL: "{{ mantium_tranga_default_interval }}"
 
 mantium_db_env:
   POSTGRES_PORT: "{{ mantium_postgres_port }}"
