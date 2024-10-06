@@ -33,13 +33,13 @@ simplelogin_postfix_container_name: simplelogin-postfix
 simplelogin_postfix_image_name: anarion/postfix
 simplelogin_postfix_image_version: latest-ubuntu
 simplelogin_webapp_container_name: simplelogin-webapp
-simplelogin_webapp_image_name:  simplelogin/app-ci
+simplelogin_webapp_image_name: simplelogin/app-ci
 simplelogin_webapp_image_version: latest
 simplelogin_email_handler_container_name: simplelogin-email-handler
-simplelogin_email_handler_image_name:  simplelogin/app-ci
+simplelogin_email_handler_image_name: simplelogin/app-ci
 simplelogin_email_handler_image_version: latest
 simplelogin_job_runner_container_name: simplelogin-job-runner
-simplelogin_job_runner_image_name:  simplelogin/app-ci
+simplelogin_job_runner_image_name: simplelogin/app-ci
 simplelogin_job_runner_image_version: latest
 simplelogin_user_id: "1000"
 simplelogin_group_id: "1000"
@@ -60,7 +60,7 @@ simplelogin_postfix_hostname: "{{ simplelogin_postfix_container_name }}" # Postf
 simplelogin_postfix_relayhost: "" # Host that relays your msgs
 simplelogin_postfix_relayhost_username: "" # An (optional) username for the relay server
 simplelogin_postfix_relayhost_password: "" # An (optional) login password for the relay server
-simplelogin_postfix_mynetworks: "" #allow domains from per Network ( default 127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16 )
+simplelogin_postfix_mynetworks: "" # allow domains from per Network ( default 127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16 )
 simplelogin_allowed_sender_domains: "{{ simplelogin_email_domain }}"
 simplelogin_allowe_empty_sender_domains: "" # if value is set (i.e: "true"), $ALLOWED_SENDER_DOMAINS can be unset
 simplelogin_masqueraded_domains: "" # domains where you want to masquerade internal hosts
