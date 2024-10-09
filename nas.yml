@@ -793,6 +793,10 @@
       tags:
         - restic
 
+    - role: richy
+      tags:
+        - richy
+
     - role: romm
       tags:
         - romm

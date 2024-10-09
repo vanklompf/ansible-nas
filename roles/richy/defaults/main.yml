@@ -1,0 +1,72 @@
+---
+richy_enabled: false
+richy_available_externally: false
+
+# directories
+richy_data_directory: "{{ docker_home }}/richy"
+
+# network
+richy_port: "8176"
+richy_hostname: "richy"
+richy_network_name: "richy"
+
+# specs
+richy_memory: 1g
+richy_db_memory: 1g
+richy_nginx_memory: 1g
+richy_redis_memory: 1g
+richy_worker_memory: 1g
+richy_worker_slow_memory: 1g
+richy_worker_fast_memory: 1g
+richy_beat_memory: 1g
+
+# docker
+richy_container_name: richy
+richy_image_name: "n1cz/richy"
+richy_image_version: latest
+richy_db_container_name: richy-db
+richy_db_image_name: "postgres"
+richy_db_image_version: 16-alpine
+richy_nginx_container_name: richy-nginx
+richy_nginx_image_name: "nginx"
+richy_nginx_image_version: 1.23-alpine
+richy_redis_container_name: richy-redis
+richy_redis_image_name: redis
+richy_redis_image_version: 7-alpine
+richy_worker_container_name: richy-worker
+richy_worker_image_name: "n1cz/richy"
+richy_worker_image_version: latest
+richy_worker_slow_container_name: richy-worker-slow
+richy_worker_slow_image_name: "n1cz/richy"
+richy_worker_slow_image_version: latest
+richy_worker_fast_container_name: richy-worker-fast
+richy_worker_fast_image_name: "n1cz/richy"
+richy_worker_fast_image_version: latest
+richy_beat_container_name: richy-beat
+richy_beat_image_name: "n1cz/richy"
+richy_beat_image_version: latest
+richy_user_id: "1000"
+richy_group_id: "1000"
+
+# richy
+richy_db_user: richy
+richy_db_name: richy
+richy_db_pass: tralala256
+richy_sentry_url: ""
+richy_sentry_enable: "false"
+richy_base_url: "https://{{ richy_hostname }}.{{ ansible_nas_domain }}"
+richy_domain: "{{ richy_hostname }}.{{ ansible_nas_domain }}"
+richy_redis_url: "{{ richy_redis_container_name }}:6379"
+
+# main env dictionary for the container and for merging with optional environment variables
+richy_env:
+  DB_PASSWORD: "{{ richy_db_pass }}"
+  DB_HOST: "{{ richy_db_container_name }}"
+  DB_NAME: "{{ richy_db_name }}"
+  DB_USER: "{{ richy_db_user }}"
+  SENTRY_URL: "{{ richy_sentry_url }}"
+  SENTRY_ENABLE: "{{ richy_sentry_enable }}"
+  TZ: "{{ ansible_nas_timezone }}"
+  BASE_URL: "{{ richy_base_url }}"
+  DOMAIN: "{{ richy_domain }}"
+  REDIS_URL: "{{ richy_redis_url }}"
