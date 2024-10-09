@@ -313,6 +313,10 @@
       tags:
         - glances
 
+    - role: glpi
+      tags:
+        - glpi
+
     - role: gotify
       tags:
         - gotify
