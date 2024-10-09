@@ -1,0 +1,68 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+
+    - name: Try and stop and remove richy
+      community.docker.docker_container:
+        name: "{{ richy_container_name }}"
+        state: absent
+      register: result
+
+    - name: Try and stop and remove richy db
+      community.docker.docker_container:
+        name: "{{ richy_db_container_name }}"
+        state: absent
+      register: result_db
+
+    - name: Try and stop and remove richy redis
+      community.docker.docker_container:
+        name: "{{ richy_redis_container_name }}"
+        state: absent
+      register: result_redis
+
+    - name: Try and stop and remove richy nginx
+      community.docker.docker_container:
+        name: "{{ richy_nginx_container_name }}"
+        state: absent
+      register: result_nginx
+
+    - name: Try and stop and remove richy worker
+      community.docker.docker_container:
+        name: "{{ richy_worker_container_name }}"
+        state: absent
+      register: result_worker
+
+    - name: Try and stop and remove richy worker slow
+      community.docker.docker_container:
+        name: "{{ richy_worker_slow_container_name }}"
+        state: absent
+      register: result_worker_slow
+
+    - name: Try and stop and remove richy worker fast
+      community.docker.docker_container:
+        name: "{{ richy_worker_fast_container_name }}"
+        state: absent
+      register: result_worker_fast
+
+    - name: Try and stop and remove richy beat
+      community.docker.docker_container:
+        name: "{{ richy_beat_container_name }}"
+        state: absent
+      register: result_beat
+
+    - name: Check if richy is stopped
+      ansible.builtin.assert:
+        that:
+          - not result.changed
+          - not result_db.changed
+          - not result_redis.changed
+          - not result_nginx.changed
+          - not result_worker.changed
+          - not result_worker_slow.changed
+          - not result_worker_fast.changed
+          - not result_beat.changed

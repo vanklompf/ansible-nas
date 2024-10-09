@@ -203,6 +203,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Readeck](https://codeberg.org/readeck/readeck) - a simple web application that lets you save the precious readable content of web pages you like and want to keep forever.
 * [Releasebell](https://github.com/anarion80/releasebell) - Starred GitHub repositories notifications
 * [Restic](https://restic.net/) - A modern backup program
+* [Richy](https://gitlab.com/imn1/richy) - Application that helps you to manage your investing portfolio
 * [Romm](https://github.com/zurdi15/romm) - A game library manager focused on retro gaming
 * [Route53 DDNS](https://crazymax.dev/ddns-route53/) - Automatically update AWS Route53 with your IP address
 * [RSS-Bridge](https://rss-bridge.github.io/rss-bridge/) - The RSS feed for websites missing it
