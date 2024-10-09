@@ -1,0 +1,47 @@
+---
+glpi_enabled: false
+
+# Networking
+glpi_available_externally: false
+glpi_port: "8177"
+glpi_hostname: "glpi"
+glpi_network_name: "glpi"
+
+# Directories
+glpi_data_directory: "{{ docker_home }}/glpi"
+
+# Security
+glpi_basic_auth_user: "glpi_user"
+glpi_basic_auth_password: "glpi_change_me"
+
+# docker
+glpi_container_name: "glpi"
+glpi_image_name: "elestio/glpi"
+glpi_image_version: "latest"
+glpi_mysql_container_name: "glpi-mysql"
+glpi_mysql_image_name: "elestio/mysql"
+glpi_mysql_image_version: "8.0"
+
+# specs
+glpi_memory: 1g
+glpi_mysql_memory: 1g
+
+# glpi
+glpi_timezone: "{{ ansible_nas_timezone }}"
+glpi_admin_email: "admin@email.com"
+glpi_admin_password: "change_me"
+glpi_domain: "{{ ansible_nas_domain }}"
+glpi_mysql_root_password: "super_secure"
+glpi_mysql_database: "glpidb"
+glpi_mysql_user: "glpi"
+glpi_mysql_password: "change_me"
+
+glpi_env:
+  TIMEZONE: "{{ glpi_timezone }}"
+  ADMIN_EMAIL: "{{ glpi_admin_email }}"
+  ADMIN_PASSWORD: "{{ glpi_admin_password }}"
+  DOMAIN: "{{ glpi_domain }}"
+  MYSQL_ROOT_PASSWORD: "{{ glpi_mysql_root_password }}"
+  MYSQL_DATABASE: "{{ glpi_mysql_database }}"
+  MYSQL_USER: "{{ glpi_mysql_user }}"
+  MYSQL_PASSWORD: "{{ glpi_mysql_password }}"

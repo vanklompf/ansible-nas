@@ -81,6 +81,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Gitea](https://gitea.io/en-us/) - Simple self-hosted GitHub clone
 * [GitLab](https://about.gitlab.com/features/) - Self-hosted GitHub clone of the highest order
 * [Glances](https://nicolargo.github.io/glances/) - for seeing the state of your system via a web browser
+* [Glpi](https://github.com/glpi-project/glpi) - Free Asset and IT Management Software package
 * [Gotify](https://gotify.net/) - Self-hosted server for sending push notifications
 * [Grafana](https://grafana.com/) - Query, visualize, alert on, and understand your data no matter where it’s stored (via stats role).
 * [Graylog](https://www.graylog.org/) - Free and open source log management

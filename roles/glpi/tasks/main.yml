@@ -1,0 +1,74 @@
+---
+- name: Start Glpi
+  block:
+    - name: Create Glpi Directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ glpi_data_directory }}"
+        - "{{ glpi_data_directory }}/storage"
+        - "{{ glpi_data_directory }}/apache"
+
+    - name: Create Glpi network
+      community.docker.docker_network:
+        name: "{{ glpi_network_name }}"
+
+    - name: Create Glpi Mysql Docker Container
+      community.docker.docker_container:
+        name: "{{ glpi_mysql_container_name }}"
+        image: "{{ glpi_mysql_image_name }}:{{ glpi_mysql_image_version }}"
+        pull: true
+        env: "{{ glpi_env }}"
+        volumes:
+          - "{{ glpi_data_directory }}/mysql:/var/lib/mysql:rw"
+        networks:
+          - name: "{{ glpi_network_name }}"
+        network_mode: "{{ glpi_network_name }}"
+        restart_policy: unless-stopped
+        memory: "{{ glpi_mysql_memory }}"
+        labels:
+          traefik.enable: "false"
+
+
+    - name: Pause for 70 seconds to wait for DB to get up
+      ansible.builtin.pause:
+        seconds: 70
+
+    - name: Create Glpi Docker Container
+      community.docker.docker_container:
+        name: "{{ glpi_container_name }}"
+        image: "{{ glpi_image_name }}:{{ glpi_image_version }}"
+        pull: true
+        ports:
+          - "{{ glpi_port }}:80"
+        volumes:
+          - "/etc/timezone:/etc/timezone:ro"
+          - "/etc/localtime:/etc/localtime:ro"
+          - "{{ glpi_data_directory }}/storage/var/www/html/glpi/:/var/www/html/glpi"
+        networks:
+          - name: "{{ glpi_network_name }}"
+        network_mode: "{{ glpi_network_name }}"
+        restart_policy: unless-stopped
+        memory: "{{ glpi_memory }}"
+        env: "{{ glpi_env }}"
+        labels:
+          traefik.enable: "{{ glpi_available_externally | string }}"
+          traefik.http.routers.glpi.rule: "Host(`{{ glpi_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.glpi.tls.certresolver: "letsencrypt"
+          traefik.http.routers.glpi.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.glpi.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.glpi.loadbalancer.server.port: "80"
+  when: glpi_enabled is true
+
+- name: Stop Glpi
+  block:
+    - name: Stop Glpi
+      community.docker.docker_container:
+        name: "{{ glpi_container_name }}"
+        state: absent
+    - name: Stop Glpi Mysql
+      community.docker.docker_container:
+        name: "{{ glpi_mysql_container_name }}"
+        state: absent
+  when: glpi_enabled is false
