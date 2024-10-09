@@ -43,9 +43,9 @@
         ports:
           - "{{ glpi_port }}:80"
         volumes:
-            - "/etc/timezone:/etc/timezone:ro"
-            - "/etc/localtime:/etc/localtime:ro"
-            - "{{ glpi_data_directory }}/storage/var/www/html/glpi/:/var/www/html/glpi"
+          - "/etc/timezone:/etc/timezone:ro"
+          - "/etc/localtime:/etc/localtime:ro"
+          - "{{ glpi_data_directory }}/storage/var/www/html/glpi/:/var/www/html/glpi"
         networks:
           - name: "{{ glpi_network_name }}"
         network_mode: "{{ glpi_network_name }}"
