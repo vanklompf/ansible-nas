@@ -313,6 +313,10 @@
       tags:
         - gitlab
 
+    - role: glance
+      tags:
+        - glance
+
     - role: glances
       tags:
         - glances
