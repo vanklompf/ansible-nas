@@ -77,6 +77,10 @@
       tags:
         - airsonic
 
+    - role: apcupsd
+      tags:
+        - apcupsd
+
     - role: appsmith
       tags:
         - appsmith
@@ -412,6 +416,10 @@
     - role: invidious
       tags:
         - invidious
+
+    - role: ispyagentdvr
+      tags:
+        - ispyagentdvr
 
     - role: jackett
       tags:
