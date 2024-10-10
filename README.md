@@ -22,6 +22,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Admidio](https://www.admidio.org/) - a free online membership management
 * [Adventure Log](https://github.com/seanmorley15/AdventureLog) - Self-hostable travel tracker and trip planner.
 * [Airsonic](https://airsonic.github.io/) - catalog and stream music
+* [Apcupsd](http://www.apcupsd.org/) - A daemon for controlling APC UPSes
 * [Appsmith](https://www.appsmith.com/) -  low-code application platform to quickly build, deploy, and manage effective software
 * [Aria2](https://github.com/aria2/aria2) - a lightweight multi-protocol & multi-source, cross platform download utility operated in command-line
 * [Authelia](https://www.authelia.com/) - The Single Sign-On Multi-Factor portal for web apps
@@ -107,6 +108,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Input](https://github.com/deck9/input) - A privacy-focused, no-code, open-source form builder.
 * [Influxdb](https://github.com/influxdata/influxdb) - Time series database used for stats collection
 * [Invidious](https://invidious.io/) - An open source alternative front-end to YouTube
+* [iSpy Agent DVR](https://www.ispyconnect.com/) - iSpy - Agent DVR is a video surveillance software
 * [Jackett](https://github.com/Jackett/Jackett) - API Support for your favorite torrent trackers
 * [Jellyfin](https://jellyfin.github.io) - The Free Software Media System
 * [Joomla](https://www.joomla.org/) - Open source content management system
