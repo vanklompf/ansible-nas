@@ -12,6 +12,11 @@
         name: "{{ invidious_postgres_container_name }}"
       register: result_db
 
+    - name: Get invidious sig helper container state
+      community.docker.docker_container:
+        name: "{{ invidious_sig_helper_container_name }}"
+      register: result_sig_helper
+
     - name: Get invidious container state
       community.docker.docker_container:
         name: "{{ invidious_container_name }}"
@@ -22,5 +27,7 @@
         that:
           - result_db.container['State']['Status'] == "running"
           - result_db.container['State']['Restarting'] == false
+          - result_sig_helper.container['State']['Status'] == "running"
+          - result_sig_helper.container['State']['Restarting'] == false
           - result.container['State']['Status'] == "running"
           - result.container['State']['Restarting'] == false
