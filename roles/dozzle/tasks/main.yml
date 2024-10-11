@@ -1,0 +1,64 @@
+---
+- name: Start Dozzle
+  block:
+    - name: Create Dozzle Directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ dozzle_data_directory }}"
+        - "{{ dozzle_data_directory }}/data"
+
+    - name: Create users file
+      ansible.builtin.template:
+        src: "users.yml.j2"
+        dest: "{{ dozzle_data_directory }}/data/users.yml"
+      become: true
+
+    - name: Dozzle Docker Container
+      vars:
+        dozzle_command: "{{ ['agent'] if dozzle_agent_mode | default(false) | bool else omit }}"
+        dozzle_container_port: "{{ '7007' if dozzle_agent_mode | default(false) | bool else '8080' }}"
+        dozzle_labels: "{{
+            {
+              'traefik.enable': 'false'
+            } if dozzle_agent_mode | default(false) | bool
+            else
+            {
+              'traefik.enable': (dozzle_available_externally | string),
+              'traefik.http.routers.dozzle.rule': 'Host(`' + dozzle_hostname + '.' + ansible_nas_domain + '`)',
+              'traefik.http.routers.dozzle.tls.certresolver': 'letsencrypt',
+              'traefik.http.routers.dozzle.tls.domains[0].main': ansible_nas_domain,
+              'traefik.http.routers.dozzle.tls.domains[0].sans': '*.' + ansible_nas_domain,
+              'traefik.http.services.dozzle.loadbalancer.server.port': '8080'
+            }
+          }}"
+      community.docker.docker_container:
+        name: "{{ dozzle_container_name }}"
+        image: "{{ dozzle_image_name }}:{{ dozzle_image_version }}"
+        pull: true
+        ports:
+          - "{{ dozzle_port }}:{{ dozzle_container_port }}"
+        restart_policy: unless-stopped
+        memory: "{{ dozzle_memory }}"
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+          - "{{ dozzle_data_directory }}/data:/data:rw"
+        env: "{{ dozzle_optional_env | default({}) | combine(dozzle_env) }}"
+        labels: "{{ dozzle_labels }}"
+        command: "{{ dozzle_command }}"
+        healthcheck:
+          test: ["CMD", "/dozzle", "healthcheck"]
+          interval: 5s
+          retries: 5
+          start_period: 5s
+          start_interval: 5s
+  when: dozzle_enabled is true
+
+- name: Stop Dozzle
+  block:
+    - name: Stop Dozzle
+      community.docker.docker_container:
+        name: "{{ dozzle_container_name }}"
+        state: absent
+  when: dozzle_enabled is false

@@ -209,6 +209,10 @@
       tags:
         - domain_watchdog
 
+    - role: dozzle
+      tags:
+        - dozzle
+
     - role: drone-ci
       tags:
         - drone_ci

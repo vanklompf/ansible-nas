@@ -1,0 +1,7 @@
+users:
+{% for username, user_data in dozzle_users.items() %}
+  {{ username }}:
+    email: "{{ user_data.email }}"
+    name: "{{ user_data.name }}"
+    password: "{{ user_data.password }}"
+{% endfor %}
