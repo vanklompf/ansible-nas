@@ -36,6 +36,56 @@
       community.docker.docker_network:
         name: "{{ invidious_network_name }}"
 
+    - name: Check if we already have visitor_data and po_token cached
+      ansible.builtin.stat:
+        path: /tmp/visitor_data_po_token_cache.json
+      register: cache_check
+
+    - name: Run Docker container and capture visitor_data and po_token (if cache not present)
+      community.docker.docker_container:
+        name: youtube-session-generator
+        image: "{{ invidious_docker_youtube_generator_image }}"
+        detach: false
+        cleanup: true
+      register: container_output
+      when: not cache_check.stat.exists
+
+    - name: Extract visitor_data and po_token (if cache not present)
+      ansible.builtin.set_fact:
+        visitor_data: "{{ container_output.container['Output'] | regex_search('visitor_data: (.+?)\\n', '\\1') | first}}"
+        po_token: "{{ container_output.container['Output'] | regex_search('po_token: (.+?)\\n', '\\1') | first }}"
+      when: not cache_check.stat.exists
+
+    - name: Cache visitor_data and po_token in a file
+      ansible.builtin.copy:
+        content: |
+          {
+            "visitor_data": "{{ visitor_data }}",
+            "po_token": "{{ po_token }}"
+          }
+        dest: /tmp/visitor_data_po_token_cache.json
+      when: not cache_check.stat.exists
+
+    - name: Load cached visitor_data and po_token (if cache exists)
+      ansible.builtin.slurp:
+        src: /tmp/visitor_data_po_token_cache.json
+      register: cached_data
+      when: cache_check.stat.exists
+
+    - name: Set facts from cached data
+      ansible.builtin.set_fact:
+        visitor_data: "{{ cached_data.content | b64decode | from_json | json_query('visitor_data') }}"
+        po_token: "{{ cached_data.content | b64decode | from_json | json_query('po_token') }}"
+      when: cache_check.stat.exists
+      # tags: molecule-idempotence-notest
+
+    - name: Display captured variables
+      ansible.builtin.debug:
+        msg:
+          - "visitor_data: {{ visitor_data }}"
+          - "po_token: {{ po_token }}"
+          - "invidious_config: {{ invidious_config }}"
+
     - name: Create Invidious Postgress Docker Container
       community.docker.docker_container:
         name: "{{ invidious_postgres_container_name }}"
@@ -65,6 +115,28 @@
           retries: 5
           timeout: 5s
 
+    - name: Create Invidious Sig Helper Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ invidious_sig_helper_container_name }}"
+        image: "{{ invidious_sig_helper_image_name }}:{{ invidious_sig_helper_image_version }}"
+        pull: true
+        networks:
+          - name: "{{ invidious_network_name }}"
+        network_mode: "{{ invidious_network_name }}"
+        command: ["--tcp", "0.0.0.0:12999"]
+        env:
+          RUST_LOG: "{{ invidious_sig_helper_log_level }}"
+        restart_policy: unless-stopped
+        cap_drop:
+          - ALL
+        read_only: true
+        security_opts:
+          - no-new-privileges:true
+        memory: "{{ invidious_sig_helper_memory }}"
+        labels:
+          traefik.enable: "false"
+
     - name: Create Invidious Docker Container
       community.docker.docker_container:
         container_default_behavior: no_defaults
@@ -82,7 +154,7 @@
           TZ: "{{ ansible_nas_timezone }}"
           PUID: "{{ invidious_user_id | quote }}"
           PGID: "{{ invidious_group_id | quote }}"
-          INVIDIOUS_CONFIG: "{{ invidious_config }}"
+          INVIDIOUS_CONFIG: "{{ invidious_config | replace('dummy_visitor_data', visitor_data) | replace('dummy_po_token', po_token) }}"
         restart_policy: unless-stopped
         memory: "{{ invidious_memory }}"
         labels:
@@ -93,7 +165,7 @@
           traefik.http.routers.invidious.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.invidious.loadbalancer.server.port: "3000"
         healthcheck:
-          test: wget -nv --tries=1 --spider http://127.0.0.1:3000/api/v1/comments/jNQXAC9IVRw || exit 1
+          test: wget -nv --tries=1 --spider http://127.0.0.1:3000/api/v1/trending || exit 1
           interval: 30s
           timeout: 5s
           retries: 2
@@ -104,6 +176,11 @@
     - name: Stop invidious postgres
       community.docker.docker_container:
         name: "{{ invidious_postgres_container_name }}"
+        state: absent
+
+    - name: Stop invidious sig helper
+      community.docker.docker_container:
+        name: "{{ invidious_sig_helper_container_name }}"
         state: absent
 
     - name: Stop invidious
