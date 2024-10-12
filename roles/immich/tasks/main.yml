@@ -96,7 +96,7 @@
           homepage.widget.type: immich
           homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ immich_port }}"
           homepage.widget.key: "{{ immich_api_key }}"
-          homepage.widget.showStats: false
+          homepage.widget.showStats: "false"
         restart_policy: unless-stopped
         memory: "{{ immich_server_memory }}"
         memory_swap: "{{ immich_server_memory }}"
