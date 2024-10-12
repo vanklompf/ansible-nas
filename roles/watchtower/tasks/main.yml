@@ -10,9 +10,21 @@
           - "/var/run/docker.sock:/var/run/docker.sock"
         env:
           TZ: "{{ ansible_nas_timezone }}"
+          WATCHTOWER_HTTP_API_TOKEN: "{{ watchtower_api_token }}"
+          WATCHTOWER_HTTP_API_METRICS: "true"
         command: "{{ watchtower_command }}"
         restart_policy: unless-stopped
         memory: "{{ watchtower_memory }}"
+        ports:
+          - "{{ watchtower_port }}:8080"        
+        labels:
+          homepage.group: System
+          homepage.name: Watchtower
+          homepage.icon: watchtower.png
+          homepage.widget.type: watchtower
+          homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ watchtower_port }}"
+          homepage.widget.key: "{{ watchtower_api_token }}"
+
   when: watchtower_enabled is true
 
 - name: Stop Watchtower
