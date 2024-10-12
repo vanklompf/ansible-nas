@@ -71,6 +71,9 @@ documents_root: "{{ samba_shares_root }}/documents"
 # Where personal repos and code are stored
 code_root: "{{ samba_shares_root }}/code"
 
+# Where recordings are stored
+recordings_root: "{{ samba_shares_root }}/recordings"
+
 # Where roms are stored
 roms_root: "{{ samba_shares_root }}/roms"
 
