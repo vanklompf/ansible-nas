@@ -141,7 +141,7 @@
       ansible.builtin.service_facts:
 
     - name: Check if Rclone service exists
-      set_fact:
+      ansible.builtin.set_fact:
         rclone_service_exists: "{{ 'rclone' in ansible_facts.services }}"
 
     - name: Stop Rclone
