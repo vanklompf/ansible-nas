@@ -88,6 +88,10 @@
       tags:
         - airsonic
 
+    - role: apcupsd
+      tags:
+        - apcupsd
+
     - role: appsmith
       tags:
         - appsmith
@@ -224,6 +228,10 @@
       tags:
         - domain_watchdog
 
+    - role: dozzle
+      tags:
+        - dozzle
+
     - role: drone-ci
       tags:
         - drone_ci
@@ -332,9 +340,17 @@
       tags:
         - gitlab
 
+    - role: glance
+      tags:
+        - glance
+
     - role: glances
       tags:
         - glances
+
+    - role: glpi
+      tags:
+        - glpi
 
     - role: gotify
       tags:
@@ -431,6 +447,10 @@
     - role: invidious
       tags:
         - invidious
+
+    - role: ispyagentdvr
+      tags:
+        - ispyagentdvr
 
     - role: jackett
       tags:
@@ -820,6 +840,10 @@
       tags:
         - restic
 
+    - role: richy
+      tags:
+        - richy
+
     - role: romm
       tags:
         - romm
@@ -879,6 +903,10 @@
     - role: silverbullet
       tags:
         - silverbullet
+
+    - role: simplelogin
+      tags:
+        - simplelogin
 
     - role: siyuan
       tags:

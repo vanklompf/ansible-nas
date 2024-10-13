@@ -1,0 +1,63 @@
+---
+dozzle_enabled: false
+dozzle_available_externally: false
+dozzle_agent_mode: false
+
+# directories
+dozzle_data_directory: "{{ docker_home }}/dozzle"
+
+# network
+dozzle_port: "8179"
+dozzle_hostname: "dozzle"
+
+# specs
+dozzle_memory: 1g
+
+# docker
+dozzle_container_name: dozzle
+dozzle_image_name: amir20/dozzle
+dozzle_image_version: latest
+
+dozzle_addr: ":8080"
+dozzle_agent_addr: ""
+dozzle_auth_ttl: "48h"
+dozzle_base: "/"
+dozzle_env_hostname: "{{ dozzle_hostname }}.{{ ansible_nas_domain }}"
+dozzle_log_level: "info"
+dozzle_auth_provider: "{{ 'simple' if dozzle_users else 'none' }}"
+dozzle_auth_header_user: "Remote-User"
+dozzle_auth_header_email: "Remote-Email"
+dozzle_auth_header_name: "Remote-Name"
+dozzle_enable_actions: "false"
+dozzle_filter: ""
+dozzle_no_analytics: "true"
+dozzle_mode: "server"
+# dozzle_remote_host: "localhost"
+# dozzle_remote_agent: "false"
+dozzle_users:
+  amir:
+    email: "amir@example.com"
+    name: Amir
+    password: $2y$10$60LcsfALV7YlAAC04ebxQ.0qBa.WBVe54T1R973qODc57qRwo0HjK
+  adam:
+    email: "adam@example.com"
+    name: Adam
+    password: $2y$10$60LcsfALV7YlAAC04ebxQ.0qBa.WBVe54T1R973qODc57qRwo0HjK
+
+dozzle_env:
+  DOZZLE_ADDR: "{{ dozzle_addr }}"
+  DOZZLE_AGENT_ADDR: "{{ dozzle_agent_addr }}"
+  DOZZLE_AUTH_TTL: "{{ dozzle_auth_ttl }}"
+  DOZZLE_BASE: "{{ dozzle_base }}"
+  DOZZLE_HOSTNAME: "{{ dozzle_env_hostname }}"
+  DOZZLE_LEVEL: "{{ dozzle_log_level }}"
+  DOZZLE_AUTH_PROVIDER: "{{ dozzle_auth_provider | default(omit) }}"
+  DOZZLE_AUTH_HEADER_USER: "{{ dozzle_auth_header_user if dozzle_auth_provider == 'none' | bool else omit }}"
+  DOZZLE_AUTH_HEADER_EMAIL: "{{ dozzle_auth_header_email if dozzle_auth_provider == 'none' | bool else omit }}"
+  DOZZLE_AUTH_HEADER_NAME: "{{ dozzle_auth_header_name if dozzle_auth_provider == 'none' | bool else omit }}"
+  DOZZLE_ENABLE_ACTIONS: "{{ dozzle_enable_actions if dozzle_auth_provider == 'none' | bool else omit }}"
+  DOZZLE_FILTER: "{{ dozzle_filter }}"
+  DOZZLE_NO_ANALYTICS: "{{ dozzle_no_analytics }}"
+  DOZZLE_MODE: "{{ dozzle_mode }}"
+  DOZZLE_REMOTE_HOST: "{{ dozzle_remote_host | default(omit) }}"
+  DOZZLE_REMOTE_AGENT: "{{ dozzle_remote_agent | default(omit) }}"

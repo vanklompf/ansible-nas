@@ -22,6 +22,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Admidio](https://www.admidio.org/) - a free online membership management
 * [Adventure Log](https://github.com/seanmorley15/AdventureLog) - Self-hostable travel tracker and trip planner.
 * [Airsonic](https://airsonic.github.io/) - catalog and stream music
+* [Apcupsd](http://www.apcupsd.org/) - A daemon for controlling APC UPSes
 * [Appsmith](https://www.appsmith.com/) -  low-code application platform to quickly build, deploy, and manage effective software
 * [Aria2](https://github.com/aria2/aria2) - a lightweight multi-protocol & multi-source, cross platform download utility operated in command-line
 * [Authelia](https://www.authelia.com/) - The Single Sign-On Multi-Factor portal for web apps
@@ -54,6 +55,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Dockge](https://github.com/louislam/dockge) - A fancy, easy-to-use and reactive self-hosted docker compose.yaml stack-oriented manager
 * [DokuWiki](https://www.dokuwiki.org/) - A simple to use and highly versatile Open Source wiki software that doesn't require a database.
 * [Domain Watchdog](https://github.com/maelgangloff/domain-watchdog) - DNS domain monitoring tool
+* [Dozzle](https://github.com/amir20/dozzle) - Realtime log viewer for docker containers
 * [Drone CI](https://drone.io) - A self-service Continuous Integration platform for busy development teams.
 * [Duplicacy](https://duplicacy.com/) - A web UI for the Duplicacy cloud backup program, which provides lock-free deduplication backups to multiple providers
 * [Dufs](https://github.com/sigoden/dufs) - distinctive utility file server
@@ -80,7 +82,9 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Ghostfolio](https://github.com/ghostfolio/ghostfolio) - Open Source Wealth Management Software
 * [Gitea](https://gitea.io/en-us/) - Simple self-hosted GitHub clone
 * [GitLab](https://about.gitlab.com/features/) - Self-hosted GitHub clone of the highest order
+* [Glance](https://github.com/glanceapp/glance) - A self-hosted dashboard that puts all your feeds in one place
 * [Glances](https://nicolargo.github.io/glances/) - for seeing the state of your system via a web browser
+* [Glpi](https://github.com/glpi-project/glpi) - Free Asset and IT Management Software package
 * [Gotify](https://gotify.net/) - Self-hosted server for sending push notifications
 * [Grafana](https://grafana.com/) - Query, visualize, alert on, and understand your data no matter where it’s stored (via stats role).
 * [Graylog](https://www.graylog.org/) - Free and open source log management
@@ -106,6 +110,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Input](https://github.com/deck9/input) - A privacy-focused, no-code, open-source form builder.
 * [Influxdb](https://github.com/influxdata/influxdb) - Time series database used for stats collection
 * [Invidious](https://invidious.io/) - An open source alternative front-end to YouTube
+* [iSpy Agent DVR](https://www.ispyconnect.com/) - iSpy - Agent DVR is a video surveillance software
 * [Jackett](https://github.com/Jackett/Jackett) - API Support for your favorite torrent trackers
 * [Jellyfin](https://jellyfin.github.io) - The Free Software Media System
 * [Joomla](https://www.joomla.org/) - Open source content management system
@@ -203,6 +208,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Readeck](https://codeberg.org/readeck/readeck) - a simple web application that lets you save the precious readable content of web pages you like and want to keep forever.
 * [Releasebell](https://github.com/anarion80/releasebell) - Starred GitHub repositories notifications
 * [Restic](https://restic.net/) - A modern backup program
+* [Richy](https://gitlab.com/imn1/richy) - Application that helps you to manage your investing portfolio
 * [Romm](https://github.com/zurdi15/romm) - A game library manager focused on retro gaming
 * [Route53 DDNS](https://crazymax.dev/ddns-route53/) - Automatically update AWS Route53 with your IP address
 * [RSS-Bridge](https://rss-bridge.github.io/rss-bridge/) - The RSS feed for websites missing it
@@ -216,6 +222,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Shiori](https://github.com/go-shiori/shiori) - Simple bookmark manager built with Go
 * [Sickchill](https://sickchill.github.io/) - for managing TV episodes
 * [Silverbullet](https://silverbullet.md) - Note-taking application optimized for people with a hacker mindset
+* [Simplelogin](https://simplelogin.io/) - Receive and send emails anonymously
 * [SiYuan](https://github.com/siyuan-note/siyuan) - A privacy-first, self-hosted, fully open source personal knowledge management software
 * [Snipe-IT](https://snipeitapp.com/) - A free open source IT asset/license management system
 * [Sonarr](https://sonarr.tv/) - for downloading and managing TV episodes

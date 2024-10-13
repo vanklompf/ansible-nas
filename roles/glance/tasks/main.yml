@@ -1,0 +1,47 @@
+---
+- name: Start Glance
+  block:
+    - name: Create Glance Directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ glance_data_directory }}"
+        - "{{ glance_data_directory }}/assets"
+
+    - name: Copy base config
+      ansible.builtin.template:
+        src: "glance.yml.j2"
+        dest: "{{ glance_data_directory }}/glance.yml"
+      become: true
+
+    - name: Glance Docker Container
+      community.docker.docker_container:
+        name: "{{ glance_container_name }}"
+        image: "{{ glance_image_name }}:{{ glance_image_version }}"
+        pull: true
+        ports:
+          - "{{ glance_port }}:8080"
+        restart_policy: unless-stopped
+        memory: "{{ glance_memory }}"
+        volumes:
+          - "{{ glance_data_directory }}/glance.yml:/app/glance.yml"
+          - "{{ glance_data_directory }}/assets:/app/assets"
+          - "/etc/timezone:/etc/timezone:ro"
+          - "/etc/localtime:/etc/localtime:ro"
+        labels:
+          traefik.enable: "{{ glance_available_externally | string }}"
+          traefik.http.routers.glance.rule: "Host(`{{ glance_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.glance.tls.certresolver: "letsencrypt"
+          traefik.http.routers.glance.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.glance.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.glance.loadbalancer.server.port: "8080"
+  when: glance_enabled is true
+
+- name: Stop Glance
+  block:
+    - name: Stop Glance
+      community.docker.docker_container:
+        name: "{{ glance_container_name }}"
+        state: absent
+  when: glance_enabled is false

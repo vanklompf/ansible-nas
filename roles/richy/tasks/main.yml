@@ -1,0 +1,258 @@
+---
+- name: Start Richy
+  block:
+    - name: Create Richy Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ richy_user_id }}"
+        group: "{{ richy_group_id }}"
+      with_items:
+        - "{{ richy_data_directory }}"
+
+    - name: Create Richy mount directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ richy_user_id }}"
+        group: "{{ richy_group_id }}"
+      with_items:
+        - "{{ richy_data_directory }}/static"
+        - "{{ richy_data_directory }}/config"
+        - "{{ richy_data_directory }}/media"
+        - "{{ richy_data_directory }}/logs"
+
+    - name: Copy Richy Nginx config
+      ansible.builtin.template:
+        src: nginx.conf
+        dest: "{{ richy_data_directory }}/config/nginx.conf"
+
+    - name: Create Richy Network
+      community.docker.docker_network:
+        name: "{{ richy_network_name }}"
+
+    - name: Create Richy Database Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ richy_db_container_name }}"
+        image: "{{ richy_db_image_name }}:{{ richy_db_image_version }}"
+        pull: true
+        networks:
+          - name: "{{ richy_network_name }}"
+        network_mode: "{{ richy_network_name }}"
+        exposed_ports:
+          - 5432
+        volumes:
+          - "{{ richy_data_directory }}/postgres-data:/var/lib/postgresql/data/:rw"
+        env:
+          POSTGRES_PASSWORD: "{{ richy_db_pass }}"
+          POSTGRES_USER: "{{ richy_db_user }}"
+          POSTGRES_DB: "{{ richy_db_name }}"
+        labels:
+          traefik.enable: "false"
+        restart_policy: unless-stopped
+        memory: "{{ richy_db_memory }}"
+        healthcheck:
+          test: "pg_isready -U {{ richy_db_user }}"
+          interval: 10s
+          timeout: 5s
+          retries: 5
+
+    - name: Create Richy Redis Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ richy_redis_container_name }}"
+        image: "{{ richy_redis_image_name }}:{{ richy_redis_image_version }}"
+        pull: true
+        exposed_ports:
+          - 6379
+        networks:
+          - name: "{{ richy_network_name }}"
+        network_mode: "{{ richy_network_name }}"
+        restart_policy: unless-stopped
+        memory: "{{ richy_redis_memory }}"
+        labels:
+          traefik.enable: "false"
+        healthcheck:
+          test: "redis-cli ping"
+          interval: 10s
+          timeout: 5s
+          retries: 5
+
+    - name: Create Richy Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ richy_container_name }}"
+        image: "{{ richy_image_name }}:{{ richy_image_version }}"
+        pull: true
+        volumes:
+          - "{{ richy_data_directory }}/media:/var/www/app/richy/media"
+          - "{{ richy_data_directory }}/logs:/var/www/app/logs"
+          - "{{ richy_data_directory }}/static:/var/www/app/richy/static"
+        networks:
+          - name: "{{ richy_network_name }}"
+        network_mode: "{{ richy_network_name }}"
+        exposed_ports:
+          - 8000
+        env: "{{ richy_optional_env | default({}) | combine(richy_env) }}"
+        restart_policy: unless-stopped
+        memory: "{{ richy_memory }}"
+        labels:
+          traefik.enable: "false"
+
+    - name: Create Richy Nginx Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ richy_nginx_container_name }}"
+        image: "{{ richy_nginx_image_name }}:{{ richy_nginx_image_version }}"
+        pull: true
+        ports:
+          - "{{ richy_port }}:80"
+        volumes:
+          - "{{ richy_data_directory }}/config/nginx.conf:/etc/nginx/conf.d/default.conf:rw"
+          - "{{ richy_data_directory }}/static:/static:ro"
+          - "{{ richy_data_directory }}/media:/media:ro"
+        networks:
+          - name: "{{ richy_network_name }}"
+        network_mode: "{{ richy_network_name }}"
+        restart_policy: unless-stopped
+        memory: "{{ richy_nginx_memory }}"
+        labels:
+          traefik.enable: "{{ richy_available_externally | string }}"
+          traefik.http.routers.richy.rule: "Host(`{{ richy_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.richy.tls.certresolver: "letsencrypt"
+          traefik.http.routers.richy.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.richy.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.richy.loadbalancer.server.port: "80"
+        healthcheck:
+          test: "service nginx status"
+          interval: 10s
+          timeout: 5s
+          retries: 5
+
+    - name: Create Richy Worker Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ richy_worker_container_name }}"
+        image: "{{ richy_worker_image_name }}:{{ richy_worker_image_version }}"
+        pull: true
+        command: celery -A richy worker -c 2 -Q celery -O fair -l error --max-tasks-per-child=3
+        env: "{{ richy_optional_env | default({}) | combine(richy_env) }}"
+        networks:
+          - name: "{{ richy_network_name }}"
+        network_mode: "{{ richy_network_name }}"
+        volumes:
+          - "{{ richy_data_directory }}/logs:/var/www/app/logs"
+          - "{{ richy_data_directory }}/media:/var/www/app/richy/media"
+        restart_policy: unless-stopped
+        memory: "{{ richy_worker_memory }}"
+        labels:
+          traefik.enable: "false"
+        healthcheck:
+          test: celery -A {{ richy_container_name }} inspect ping
+          interval: 10s
+          timeout: 5s
+          retries: 5
+
+    - name: Create Richy Worker Slow Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ richy_worker_slow_container_name }}"
+        image: "{{ richy_worker_slow_image_name }}:{{ richy_worker_slow_image_version }}"
+        pull: true
+        command: celery -A richy worker -c 1 -Q slow -O fair -l error --max-tasks-per-child=3
+        env: "{{ richy_optional_env | default({}) | combine(richy_env) }}"
+        networks:
+          - name: "{{ richy_network_name }}"
+        network_mode: "{{ richy_network_name }}"
+        volumes:
+          - "{{ richy_data_directory }}/logs:/var/www/app/logs"
+          - "{{ richy_data_directory }}/media:/var/www/app/richy/media"
+        restart_policy: unless-stopped
+        memory: "{{ richy_worker_slow_memory }}"
+        labels:
+          traefik.enable: "false"
+        healthcheck:
+          test: celery -A {{ richy_container_name }} inspect ping
+          interval: 10s
+          timeout: 5s
+          retries: 5
+
+    - name: Create Richy Worker Fast Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ richy_worker_fast_container_name }}"
+        image: "{{ richy_worker_fast_image_name }}:{{ richy_worker_fast_image_version }}"
+        pull: true
+        command: celery -A richy worker -c 2 -Q fast -O fair -l error --max-tasks-per-child=3
+        env: "{{ richy_optional_env | default({}) | combine(richy_env) }}"
+        networks:
+          - name: "{{ richy_network_name }}"
+        network_mode: "{{ richy_network_name }}"
+        volumes:
+          - "{{ richy_data_directory }}/logs:/var/www/app/logs"
+          - "{{ richy_data_directory }}/media:/var/www/app/richy/media"
+        restart_policy: unless-stopped
+        memory: "{{ richy_worker_fast_memory }}"
+        labels:
+          traefik.enable: "false"
+        healthcheck:
+          test: celery -A {{ richy_container_name }} inspect ping
+          interval: 10s
+          timeout: 5s
+          retries: 5
+
+    - name: Create Richy Beat Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ richy_beat_container_name }}"
+        image: "{{ richy_beat_image_name }}:{{ richy_beat_image_version }}"
+        pull: true
+        command: /var/www/app/wait_for_it.sh -t 120 -s richy:8000 -- celery -A richy beat -l error -S django
+        env: "{{ richy_optional_env | default({}) | combine(richy_env) }}"
+        volumes:
+          - "{{ richy_data_directory }}/logs:/var/www/app/logs"
+        networks:
+          - name: "{{ richy_network_name }}"
+        network_mode: "{{ richy_network_name }}"
+        restart_policy: unless-stopped
+        memory: "{{ richy_beat_memory }}"
+        labels:
+          traefik.enable: "false"
+  when: richy_enabled is true
+
+- name: Stop Richy
+  block:
+    - name: Stop Richy
+      community.docker.docker_container:
+        name: "{{ richy_container_name }}"
+        state: absent
+    - name: Stop Richy DB
+      community.docker.docker_container:
+        name: "{{ richy_db_container_name }}"
+        state: absent
+    - name: Stop Richy Nginx
+      community.docker.docker_container:
+        name: "{{ richy_nginx_container_name }}"
+        state: absent
+    - name: Stop Richy Redis
+      community.docker.docker_container:
+        name: "{{ richy_redis_container_name }}"
+        state: absent
+    - name: Stop Richy Worker
+      community.docker.docker_container:
+        name: "{{ richy_worker_container_name }}"
+        state: absent
+    - name: Stop Richy Worker Slow
+      community.docker.docker_container:
+        name: "{{ richy_worker_slow_container_name }}"
+        state: absent
+    - name: Stop Richy Worker Fast
+      community.docker.docker_container:
+        name: "{{ richy_worker_fast_container_name }}"
+        state: absent
+    - name: Stop Richy Beat
+      community.docker.docker_container:
+        name: "{{ richy_beat_container_name }}"
+        state: absent
+  when: richy_enabled is false

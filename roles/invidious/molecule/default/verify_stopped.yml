@@ -13,6 +13,12 @@
         state: absent
       register: result_db
 
+    - name: Try and stop and remove invidious sig helper
+      community.docker.docker_container:
+        name: "{{ invidious_sig_helper_container_name }}"
+        state: absent
+      register: result_sig_helper
+
     - name: Try and stop and remove invidious
       community.docker.docker_container:
         name: "{{ invidious_container_name }}"
@@ -23,4 +29,5 @@
       ansible.builtin.assert:
         that:
           - not result_db.changed
+          - not result_sig_helper.changed
           - not result.changed

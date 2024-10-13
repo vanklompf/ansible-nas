@@ -1,0 +1,68 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+
+    - name: Get richy db container state
+      community.docker.docker_container:
+        name: "{{ richy_db_container_name }}"
+      register: result_db
+
+    - name: Get richy redis container state
+      community.docker.docker_container:
+        name: "{{ richy_redis_container_name }}"
+      register: result_redis
+
+    - name: Get richy nginx container state
+      community.docker.docker_container:
+        name: "{{ richy_nginx_container_name }}"
+      register: result_nginx
+
+    - name: Get richy worker container state
+      community.docker.docker_container:
+        name: "{{ richy_worker_container_name }}"
+      register: result_worker
+
+    - name: Get richy worker slow container state
+      community.docker.docker_container:
+        name: "{{ richy_worker_slow_container_name }}"
+      register: result_worker_slow
+
+    - name: Get richy worker fast container state
+      community.docker.docker_container:
+        name: "{{ richy_worker_fast_container_name }}"
+      register: result_worker_fast
+
+    - name: Get richy beat container state
+      community.docker.docker_container:
+        name: "{{ richy_beat_container_name }}"
+      register: result_beat
+
+    - name: Get richy container state
+      community.docker.docker_container:
+        name: "{{ richy_container_name }}"
+      register: result
+
+    - name: Check if richy containers are running
+      ansible.builtin.assert:
+        that:
+          - result_db.container['State']['Status'] == "running"
+          - result_db.container['State']['Restarting'] == false
+          - result_redis.container['State']['Status'] == "running"
+          - result_redis.container['State']['Restarting'] == false
+          - result_nginx.container['State']['Status'] == "running"
+          - result_nginx.container['State']['Restarting'] == false
+          - result_worker.container['State']['Status'] == "running"
+          - result_worker.container['State']['Restarting'] == false
+          - result_worker_slow.container['State']['Status'] == "running"
+          - result_worker_slow.container['State']['Restarting'] == false
+          - result_worker_fast.container['State']['Status'] == "running"
+          - result_worker_fast.container['State']['Restarting'] == false
+          - result_beat.container['State']['Status'] == "running"
+          - result_beat.container['State']['Restarting'] == false
+          - result.container['State']['Status'] == "running"
+          - result.container['State']['Restarting'] == false

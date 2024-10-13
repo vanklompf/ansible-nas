@@ -7,6 +7,8 @@
         state: directory
       with_items:
         - "{{ mantium_data_directory }}"
+        - "{{ mantium_data_directory }}/postgres"
+        - "{{ mantium_data_directory }}/configs"
 
     - name: Create Mantium network
       community.docker.docker_network:

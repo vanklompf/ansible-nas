@@ -9,6 +9,14 @@
         group: "{{ huly_group_id }}"
       with_items:
         - "{{ huly_data_directory }}"
+
+    - name: Create Elastic Directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: 1000
+        group: root
+      with_items:
         - "{{ huly_data_directory }}/elastic"
 
     - name: Create Huly Network
@@ -105,6 +113,7 @@
           SERVER_PORT: "{{ huly_account_server_port }}"
           SERVER_SECRET: "{{ huly_account_server_secret }}"
           MONGO_URL: "{{ huly_mongo_url }}"
+          DB_URL: "{{ huly_mongo_url }}"
           TRANSACTOR_URL: "{{ huly_transactor_url }}"
           ENDPOINT_URL: "{{ huly_endpoint_url }}"
           MINIO_ENDPOINT: "{{ huly_minio_endpoint }}"
@@ -219,6 +228,7 @@
           SERVER_CURSOR_MAXTIMEMS: "{{ huly_transactor_cursor_maxtimesms }}"
           ELASTIC_URL: "{{ huly_elastic_url }}"
           MONGO_URL: "{{ huly_mongo_url }}"
+          DB_URL: "{{ huly_mongo_url }}"
           METRICS_CONSOLE: "{{ huly_transactor_metrics_console }}"
           METRICS_FILE: "{{ huly_transactor_metrics_file }}"
           MINIO_ENDPOINT: "{{ huly_minio_endpoint }}"
