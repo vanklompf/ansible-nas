@@ -39,6 +39,22 @@
           interval: 30s
           retries: 5
           timeout: 5s
+        command:
+          [
+            'postgres',
+            '-c',
+            'shared_preload_libraries=vectors.so',
+            '-c',
+            'search_path="$$user", public, vectors',
+            '-c',
+            'logging_collector=on',
+            '-c',
+            'max_wal_size=2GB',
+            '-c',
+            'shared_buffers=512MB',
+            '-c',
+            'wal_compression=on',
+          ]
 
     - name: Immich Redis Docker Container
       community.docker.docker_container:
@@ -73,68 +89,17 @@
         networks:
           - name: "{{ immich_network_name }}"
         ports:
-          - "{{ immich_port }}:3001"
-        env:
-          TZ: "{{ ansible_nas_timezone }}"
-          PUID: "{{ immich_user_id | quote }}"
-          PGID: "{{ immich_group_id | quote }}"
-          NODE_ENV: "production"
-          IMMICH_VERSION: "{{ immich_version }}"
-          REDIS_HOSTNAME: "{{ immich_redis_container_name }}"
-          DB_HOSTNAME: "{{ immich_postgres_container_name }}"
-          DB_USERNAME: "{{ immich_db_username }}"
-          DB_PASSWORD: "{{ immich_db_password }}"
-          DB_DATABASE_NAME: "{{ immich_db_name }}"
-          DB_PORT: "{{ immich_db_port }}"
-          JWT_SECRET: "{{ immich_jwt_secret }}"
-          ENABLE_MAPBOX: "{{ immich_enable_mapbox }}"
-          MAPBOX_KEY: "{{ immich_mapbox_key }}"
-          UPLOAD_LOCATION: "{{ immich_upload_location }}"
-          PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
-          IMMICH_WORKERS_INCLUDE: 'api'
+          - "{{ immich_port }}:2283"
+        env: "{{ immich_env }}"
         labels:
           traefik.enable: "{{ immich_available_externally | string }}"
           traefik.http.routers.immich.rule: "Host(`{{ immich_hostname }}.{{ ansible_nas_domain }}`)"
           traefik.http.routers.immich.tls.certresolver: "letsencrypt"
           traefik.http.routers.immich.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.immich.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
-          traefik.http.services.immich.loadbalancer.server.port: "3001"
+          traefik.http.services.immich.loadbalancer.server.port: "2283"
         restart_policy: unless-stopped
         memory: "{{ immich_server_memory }}"
-
-    - name: Immich Microservices Docker Container
-      community.docker.docker_container:
-        name: "{{ immich_microservices_container_name }}"
-        image: "{{ immich_microservices_image }}:{{ immich_microservices_tag }}"
-        pull: true
-        volumes:
-          - "{{ immich_data_directory }}/data:/data:rw"
-          - "{{ immich_upload_directory }}:/usr/src/app/upload:rw"
-          - /etc/localtime:/etc/localtime:ro
-        networks:
-          - name: "{{ immich_network_name }}"
-        env:
-          TZ: "{{ ansible_nas_timezone }}"
-          PUID: "{{ immich_user_id | quote }}"
-          PGID: "{{ immich_group_id | quote }}"
-          NODE_ENV: "production"
-          IMMICH_VERSION: "{{ immich_version }}"
-          REDIS_HOSTNAME: "{{ immich_redis_container_name }}"
-          DB_HOSTNAME: "{{ immich_postgres_container_name }}"
-          DB_USERNAME: "{{ immich_db_username }}"
-          DB_PASSWORD: "{{ immich_db_password }}"
-          DB_DATABASE_NAME: "{{ immich_db_name }}"
-          DB_PORT: "{{ immich_db_port }}"
-          JWT_SECRET: "{{ immich_jwt_secret }}"
-          ENABLE_MAPBOX: "{{ immich_enable_mapbox }}"
-          MAPBOX_KEY: "{{ immich_mapbox_key }}"
-          UPLOAD_LOCATION: "{{ immich_upload_location }}"
-          PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
-          IMMICH_WORKERS_INCLUDE: 'microservices'
-        labels:
-          traefik.enable: "false"
-        restart_policy: unless-stopped
-        memory: "{{ immich_microservices_memory }}"
 
     - name: Immich Machine Learning Docker Container
       community.docker.docker_container:
@@ -147,23 +112,7 @@
           - "model-cache:/cache"
         networks:
           - name: "{{ immich_network_name }}"
-        env:
-          TZ: "{{ ansible_nas_timezone }}"
-          PUID: "{{ immich_user_id | quote }}"
-          PGID: "{{ immich_group_id | quote }}"
-          NODE_ENV: "production"
-          IMMICH_VERSION: "{{ immich_version }}"
-          REDIS_HOSTNAME: "{{ immich_redis_container_name }}"
-          DB_HOSTNAME: "{{ immich_postgres_container_name }}"
-          DB_USERNAME: "{{ immich_db_username }}"
-          DB_PASSWORD: "{{ immich_db_password }}"
-          DB_DATABASE_NAME: "{{ immich_db_name }}"
-          DB_PORT: "{{ immich_db_port }}"
-          JWT_SECRET: "{{ immich_jwt_secret }}"
-          ENABLE_MAPBOX: "{{ immich_enable_mapbox }}"
-          MAPBOX_KEY: "{{ immich_mapbox_key }}"
-          UPLOAD_LOCATION: "{{ immich_upload_location }}"
-          PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
+        env: "{{ immich_env }}"
         labels:
           traefik.enable: "false"
         restart_policy: unless-stopped
@@ -217,11 +166,6 @@
     - name: Stop Immich Server
       community.docker.docker_container:
         name: "{{ immich_server_container_name }}"
-        state: absent
-
-    - name: Stop Immich Microservices
-      community.docker.docker_container:
-        name: "{{ immich_microservices_container_name }}"
         state: absent
 
     - name: Stop Immich Machine Learning
