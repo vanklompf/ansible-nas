@@ -1,0 +1,53 @@
+---
+scribblers_enabled: false
+scribblers_available_externally: false
+
+# directories
+scribblers_data_directory: "{{ docker_home }}/scribblers"
+
+# network
+scribblers_port: "8183"
+scribblers_hostname: "scribblers"
+
+# specs
+scribblers_memory: 1g
+
+# docker
+scribblers_container_name: scribblers
+scribblers_image_name: biosmarcel/scribble.rs
+scribblers_image_version: latest
+
+scribblers_env_port: "8080"
+scribblers_public: "false"
+scribblers_drawing_time: "120"
+scribblers_rounds: "4"
+scribblers_max_players: "12"
+scribblers_custom_words: ""
+scribblers_custom_words_per_turn: "3"
+scribblers_clients_per_ip_limit: "4"
+scribblers_language: "english"
+scribblers_allowed_origins: "*"
+scribblers_allow_credentials: "false"
+scribblers_interval: "90s"
+scribblers_player_inactivity_threshold: "75s"
+scribblers_network_address: ""
+scribblers_root_path: "/"
+scribblers_cpu_profile_path: ""
+
+scribblers_env:
+  PORT: "{{ scribblers_env_port | default(omit) }}"
+  PUBLIC: "{{ scribblers_public | default(omit) }}"
+  DRAWING_TIME: "{{ scribblers_drawing_time | default(omit) }}"
+  ROUNDS: "{{ scribblers_rounds | default(omit) }}"
+  MAX_PLAYERS: "{{ scribblers_max_players | default(omit) }}"
+  CUSTOM_WORDS: "{{ scribblers_custom_words | default(omit) }}"
+  CUSTOM_WORDS_PER_TURN: "{{ scribblers_custom_words_per_turn | default(omit) }}"
+  CLIENTS_PER_IP_LIMIT: "{{ scribblers_clients_per_ip_limit | default(omit) }}"
+  LANGUAGE: "{{ scribblers_language | default(omit) }}"
+  ALLOWED_ORIGINS: "{{ scribblers_allowed_origins | default(omit) }}"
+  ALLOW_CREDENTIALS: "{{ scribblers_allow_credentials | default(omit) }}"
+  INTERVAL: "{{ scribblers_interval | default(omit) }}"
+  PLAYER_INACTIVITY_THRESHOLD: "{{ scribblers_player_inactivity_threshold | default(omit) }}"
+  NETWORK_ADDRESS: "{{ scribblers_network_address | default(omit) }}"
+  ROOT_PATH: "{{ scribblers_root_path | default(omit) }}"
+  CPU_PROFILE_PATH: "{{ scribblers_cpu_profile_path | default(omit) }}"

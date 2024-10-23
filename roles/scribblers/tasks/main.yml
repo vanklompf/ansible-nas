@@ -1,0 +1,36 @@
+---
+- name: Start Scribble.rs
+  block:
+    - name: Create Scribble.rs Directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ scribblers_data_directory }}"
+
+    - name: Scribble.rs Docker Container
+      community.docker.docker_container:
+        name: "{{ scribblers_container_name }}"
+        image: "{{ scribblers_image_name }}:{{ scribblers_image_version }}"
+        pull: true
+        ports:
+          - "{{ scribblers_port }}:{{ scribblers_env_port }}"
+        restart_policy: unless-stopped
+        memory: "{{ scribblers_memory }}"
+        env: "{{ scribblers_optional_env | default({}) | combine(scribblers_env) }}"
+        labels:
+          traefik.enable: "{{ scribblers_available_externally | string }}"
+          traefik.http.routers.scribblers.rule: "Host(`{{ scribblers_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.scribblers.tls.certresolver: "letsencrypt"
+          traefik.http.routers.scribblers.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.scribblers.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.scribblers.loadbalancer.server.port: "8080"
+  when: scribblers_enabled is true
+
+- name: Stop Scribble.rs
+  block:
+    - name: Stop Scribble.rs
+      community.docker.docker_container:
+        name: "{{ scribblers_container_name }}"
+        state: absent
+  when: scribblers_enabled is false

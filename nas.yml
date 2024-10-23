@@ -849,6 +849,10 @@
       tags:
         - searxng
 
+    - role: scribblers
+      tags:
+        - scribblers
+
     - role: shaarli
       tags:
         - shaarli
