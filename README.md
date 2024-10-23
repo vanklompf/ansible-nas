@@ -217,6 +217,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Sabnzbd](https://sabnzbd.org/) - A powerful usenet downloader that FreeNAS provides
 * [Seafile](https://www.seafile.com/en/home/) - High performance file syncing and sharing
 * [SearxNG](https://github.com/searxng/searxng) - Free internet metasearch engine
+* [Scribble.rs](https://github.com/scribble-rs/scribble.rs) - A skribbl.io alternative
 * [Servas](https://github.com/beromir/Servas) - A self-hosted bookmark management tool
 * [Shaarli](https://github.com/shaarli/Shaarli) - Personal, minimalist, super-fast, database free, bookmarking service
 * [Shiori](https://github.com/go-shiori/shiori) - Simple bookmark manager built with Go
