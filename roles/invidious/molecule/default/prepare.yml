@@ -9,8 +9,9 @@
 - name: Prepare instance
   hosts: all
   tasks:
-    - name: Install docker python module
+    - name: Install python modules
       ansible.builtin.pip:
         name:
           - docker
           - urllib3<2
+          - jmespath
