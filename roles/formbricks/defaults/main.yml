@@ -19,8 +19,8 @@ formbricks_container_name: formbricks
 formbricks_image_name: "ghcr.io/formbricks/formbricks"
 formbricks_image_version: latest
 formbricks_db_container_name: formbricks-postgres
-formbricks_db_image_name: postgres
-formbricks_db_image_version: 15-alpine
+formbricks_db_image_name: pgvector/pgvector
+formbricks_db_image_version: pg17
 formbricks_user_id: "1000"
 formbricks_group_id: "1000"
 
