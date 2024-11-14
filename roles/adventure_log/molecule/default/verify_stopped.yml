@@ -25,16 +25,9 @@
         state: absent
       register: result_db
 
-    - name: Try and stop and remove Adventure Log nginx
-      community.docker.docker_container:
-        name: "{{ adventure_log_nginx_container_name }}"
-        state: absent
-      register: result_nginx
-
     - name: Check if Adventure Log is stopped
       ansible.builtin.assert:
         that:
           - not result_server.changed
           - not result_web.changed
           - not result_db.changed
-          - not result_nginx.changed

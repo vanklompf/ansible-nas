@@ -15,7 +15,6 @@ adventure_log_network_name: "adventurelog"
 adventure_log_web_memory: 1g
 adventure_log_db_memory: 1g
 adventure_log_server_memory: 1g
-adventure_log_nginx_memory: 1g
 # docker
 adventure_log_web_container_name: adventure-log-web
 adventure_log_web_image_name: ghcr.io/seanmorley15/adventurelog-frontend
@@ -26,9 +25,6 @@ adventure_log_db_image_version: 15-3.3
 adventure_log_server_container_name: adventure-log-server
 adventure_log_server_image_name: ghcr.io/seanmorley15/adventurelog-backend
 adventure_log_server_image_version: latest
-adventure_log_nginx_container_name: adventure-log-nginx
-adventure_log_nginx_image_name: nginx
-adventure_log_nginx_image_version: stable-alpine
 adventure_log_user_id: "1000"
 adventure_log_group_id: "1000"
 
@@ -36,7 +32,7 @@ adventure_log_group_id: "1000"
 # adventure_log
 adventure_log_public_server_url: "http://{{ adventure_log_server_container_name }}:8000"
 adventure_log_origin: "https://{{ adventure_log_hostname }}.{{ ansible_nas_domain }}"
-adventure_log_body_size_limit: "Infinity"
+adventure_log_body_size_limit: "100000"
 adventure_log_postgres_port: "5432"
 adventure_log_postgres_db: "adventure_log"
 adventure_log_postgres_user: "adventure_log"
