@@ -77,14 +77,14 @@
         visitor_data: "{{ cached_data.content | b64decode | from_json | json_query('visitor_data') }}"
         po_token: "{{ cached_data.content | b64decode | from_json | json_query('po_token') }}"
       when: cache_check.stat.exists
-      # tags: molecule-idempotence-notest
+      tags: molecule-idempotence-notest
 
-    - name: Display captured variables
-      ansible.builtin.debug:
-        msg:
-          - "visitor_data: {{ visitor_data }}"
-          - "po_token: {{ po_token }}"
-          - "invidious_config: {{ invidious_config }}"
+    # - name: Display captured variables
+    #   ansible.builtin.debug:
+    #     msg:
+    #       - "visitor_data: {{ visitor_data }}"
+    #       - "po_token: {{ po_token }}"
+    #       - "invidious_config: {{ invidious_config }}"
 
     - name: Create Invidious Postgress Docker Container
       community.docker.docker_container:
@@ -169,6 +169,7 @@
           interval: 30s
           timeout: 5s
           retries: 2
+      tags: molecule-idempotence-notest
   when: invidious_enabled is true
 
 - name: Stop Invidious
