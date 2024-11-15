@@ -18,9 +18,9 @@ linkwarden_postgres_memory: 1g
 linkwarden_container_name: linkwarden
 linkwarden_postgres_container_name: linkwarden-db
 linkwarden_image_name: "ghcr.io/linkwarden/linkwarden"
-linkwarden_image_version: main
+linkwarden_image_version: latest
 linkwarden_postgres_image_name: "docker.io/library/postgres"
-linkwarden_postgres_image_version: "13"
+linkwarden_postgres_image_version: "16-alpine"
 linkwarden_user_id: "1000"
 linkwarden_group_id: "1000"
 
