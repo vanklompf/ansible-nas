@@ -65,8 +65,9 @@
           - "{{ immich_upload_directory }}:/usr/src/app/upload:rw"
         networks:
           - name: "{{ immich_network_name }}"
+        devices: "{{ immich_devices | default(omit) }}"
         ports:
-          - "{{ immich_port }}:3001"
+          - "{{ immich_port }}:2283"
         env:
           PUID: "{{ immich_user_id | quote }}"
           PGID: "{{ immich_group_id | quote }}"
@@ -88,7 +89,7 @@
           traefik.http.routers.immich.tls.certresolver: "letsencrypt"
           traefik.http.routers.immich.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.immich.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
-          traefik.http.services.immich.loadbalancer.server.port: "3001"
+          traefik.http.services.immich.loadbalancer.server.port: "2283"
           homepage.group: Media
           homepage.name: Immich
           homepage.icon: immich.png
@@ -97,6 +98,7 @@
           homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ immich_port }}"
           homepage.widget.key: "{{ immich_api_key }}"
           homepage.widget.showStats: "false"
+          homepage.widget.version: "2"
         restart_policy: unless-stopped
         memory: "{{ immich_server_memory }}"
         memory_swap: "{{ immich_server_memory }}"
