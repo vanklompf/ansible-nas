@@ -14,9 +14,8 @@ entryPoints:
           main: "{{ ansible_nas_domain }}"
           sans:
             - "*.{{ ansible_nas_domain }}"
-      middlewares:
-        - geoblock@file
-        - secure-headers@file
+#      middlewares:
+#        - geoblock@file
   traefik:
     address: ":{{ traefik_port_ui }}"
 providers:
@@ -57,4 +56,4 @@ experimental:
   plugins:
     GeoBlock:
       moduleName: "github.com/PascalMinder/geoblock"
-      version: "v0.2.7"
+      version: "v0.2.8"
