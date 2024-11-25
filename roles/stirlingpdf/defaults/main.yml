@@ -14,7 +14,11 @@ stirlingpdf_memory: 1g
 
 # docker
 stirlingpdf_container_name: stirlingpdf
-stirlingpdf_image_name: "frooodle/s-pdf"
+stirlingpdf_image_name: "stirlingtools/stirling-pdf"
 stirlingpdf_image_version: latest
 stirlingpdf_user_id: "1000"
 stirlingpdf_group_id: "1000"
+
+# stirlingpdf
+stirlingpdf_install_book_and_advanced_html_ops: "false"
+stirlingpdf_langs: "en_GB"
