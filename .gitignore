@@ -22,3 +22,6 @@ Session.vim
 
 # VSCodium
 *.code-workspace
+
+*.lock
+
