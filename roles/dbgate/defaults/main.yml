@@ -65,21 +65,21 @@ dbgate_env:
   TOKEN_LIFETIME: "{{ dbgate_token_lifetime }}" # lifetime of access token. After this time, logged user will be redirected to login page. Default is 1d (means 1 day). Possible are values like 3h (3 hours), 10m (10 minutes), 2d (2 days)
   SINGLE_CONNECTION: "{{ dbgate_single_connection }}" # connection id. If defined, only this connection will be available (must be used with SINGLE_DATABASE)
   SINGLE_DATABASE: "{{ dbgate_single_database }}" # database name, only this database will be available. (must be used with SINGLE_CONNECTION)
-  BASIC_AUTH: "{{ dbgate_basic_auth }}" # if true or 1 and LOGIN or LOGINS are defined, baseic authentization of both web and API is used. Otherwise, login form and JWT token base API authentization is used. Basic authentization cannot be used for active directory/LDAP authentization.
+  # BASIC_AUTH: "{{ dbgate_basic_auth }}" # if true or 1 and LOGIN or LOGINS are defined, baseic authentization of both web and API is used. Otherwise, login form and JWT token base API authentization is used. Basic authentization cannot be used for active directory/LDAP authentization.
   LOG_LEVEL: "{{ dbgate_log_level }}" # all messages with this log level or bigger will be logged. One of values trace, debug, info, warn, error, fatal. Default is info
   FILE_LOG_LEVEL: "{{ dbgate_file_log_level }}" # log level for logging into log file. For file logging, this has bigger priority than LOG_LEVEL
   CONSOLE_LOG_LEVEL: "{{ dbgate_console_log_level }}" # log level for logging into log file. For console logging, this has bigger priority than LOG_LEVEL
-  OAUTH_AUTH: "{{ dbgate_oauth_auth }}" # authentication endpoint of OAuth protocol
-  OAUTH_TOKEN: "{{ dbgate_oauth_token }}" # token endpoint of OAuth protocol
-  OAUTH_LOGOUT: "{{ dbgate_oauth_logout }}" # logout URL of OAuth provider. User will be redirected to this URL when he requests logging out
-  OAUTH_CLIENT_ID: "{{ dbgate_oauth_client_id }}" # client ID
-  OAUTH_CLIENT_SECRET: "{{ dbgate_oauth_client_secret }}" # client secret
-  OAUTH_LOGIN_FIELD: "{{ dbgate_oauth_login_field }}" # field name from payload, which holds login name. For availabe fields, you could inspect dbgate log, payload sent from OAuth provider are logged to console. This login name is used eg. for configuring permissions. It is not neccessary login entered in OAuth. If not specified, all users from OAuth provider will have the same login name.
-  OAUTH_ALLOWED_LOGINS: "{{ dbgate_oauth_allowed_logins }}" # comma separator login names, which will be allowed to login. If not specified, all logins will be allowed to use DbGate app.
-  OAUTH_SCOPE: "{{ dbgate_oauth_scope }}" # scope, which is sent to OAuth authorize and token endpoint
-  OAUTH_PERMISSIONS: "{{ dbgate_oauth_permissions }}" # set 1 or true, when set, LOGIN_PERMISSIONS_[login] could be used also for users authentificated by OAuth
-  OAUTH_GROUP_FIELD: "{{ dbgate_oauth_group_field }}" # field in payload from OAuth which denotes group
-  OAUTH_ALLOWED_GROUPS: "{{ dbgate_oauth_allowed_groups }}" # comma separated alowed group names
+  # OAUTH_AUTH: "{{ dbgate_oauth_auth }}" # authentication endpoint of OAuth protocol
+  # OAUTH_TOKEN: "{{ dbgate_oauth_token }}" # token endpoint of OAuth protocol
+  # OAUTH_LOGOUT: "{{ dbgate_oauth_logout }}" # logout URL of OAuth provider. User will be redirected to this URL when he requests logging out
+  # OAUTH_CLIENT_ID: "{{ dbgate_oauth_client_id }}" # client ID
+  # OAUTH_CLIENT_SECRET: "{{ dbgate_oauth_client_secret }}" # client secret
+  # OAUTH_LOGIN_FIELD: "{{ dbgate_oauth_login_field }}" # field name from payload, which holds login name. For availabe fields, you could inspect dbgate log, payload sent from OAuth provider are logged to console. This login name is used eg. for configuring permissions. It is not neccessary login entered in OAuth. If not specified, all users from OAuth provider will have the same login name.
+  # OAUTH_ALLOWED_LOGINS: "{{ dbgate_oauth_allowed_logins }}" # comma separator login names, which will be allowed to login. If not specified, all logins will be allowed to use DbGate app.
+  # OAUTH_SCOPE: "{{ dbgate_oauth_scope }}" # scope, which is sent to OAuth authorize and token endpoint
+  # OAUTH_PERMISSIONS: "{{ dbgate_oauth_permissions }}" # set 1 or true, when set, LOGIN_PERMISSIONS_[login] could be used also for users authentificated by OAuth
+  # OAUTH_GROUP_FIELD: "{{ dbgate_oauth_group_field }}" # field in payload from OAuth which denotes group
+  # OAUTH_ALLOWED_GROUPS: "{{ dbgate_oauth_allowed_groups }}" # comma separated alowed group names
   AD_URL: "{{ dbgate_ad_url }}" # URL of LDAP provider (eg ldap://domain.com)
   AD_BASEDN: "{{ dbgate_ad_basedn }}" # eg. dc=domain,dc=com
   AD_USERNAME: "{{ dbgate_ad_username }}" # username to active directory
