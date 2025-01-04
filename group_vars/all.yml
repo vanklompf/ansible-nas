@@ -71,11 +71,11 @@ documents_root: "{{ samba_shares_root }}/documents"
 # Where personal repos and code are stored
 code_root: "{{ samba_shares_root }}/code"
 
-# Where recordings are stored
-recordings_root: "{{ samba_shares_root }}/recordings"
-
 # Where roms are stored
 roms_root: "{{ samba_shares_root }}/roms"
+
+# Where video and audio recordings are stored
+recordings_root: "{{ samba_shares_root }}/recordings"
 
 # The description that'll appear next to your Ansible-NAS box when browsing your network
 samba_server_string: Ansible NAS
