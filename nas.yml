@@ -121,10 +121,6 @@
       tags:
         - blocky
 
-    - role: booksonic
-      tags:
-        - booksonic
-
     - role: budibase
       tags:
         - budibase
