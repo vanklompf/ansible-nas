@@ -49,7 +49,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [CouchPotato](https://couchpota.to/) - for downloading and managing movies
 * [Dashy](https://dashy.to/) - A self-hosted startpage for your server. Easy to use visual editor, status checking, widgets, themes and tons more!
 * [DbGate](https://github.com/dbgate/dbgate) - Database manager for MySQL, PostgreSQL, SQL Server, MongoDB, SQLite and others
-* [DDNS Updater](https://github.com/qdm12/ddns-updater) - dynamic dns updater for serveral providers
+* [DDNS Updater](https://github.com/qdm12/ddns-updater) - dynamic dns updater for several providers
 * [Deluge](https://dev.deluge-torrent.org/) - A lightweight, Free Software, cross-platform BitTorrent client.
 * [Directus](https://github.com/directus/directus) - An instant REST+GraphQL API and intuitive no-code data collaboration app for any SQL database.
 * [Dockge](https://github.com/louislam/dockge) - A fancy, easy-to-use and reactive self-hosted docker compose.yaml stack-oriented manager
