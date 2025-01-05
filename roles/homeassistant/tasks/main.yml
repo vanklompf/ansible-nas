@@ -104,7 +104,8 @@
         env:
           TZ: "{{ ansible_nas_timezone }}"
           ZIGBEE2MQTT_CONFIG_MQTT_SERVER : mqtt://{{ mosquitto_container_name }}
-        homepage.group: Home
+        labels:
+          homepage.group: Home
           homepage.name: Zigbee2MQTT
           homepage.icon: zigbee2mqtt.png
           homepage.href: "http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ zigbee2mqtt_port }}"
