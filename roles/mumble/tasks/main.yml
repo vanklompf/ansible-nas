@@ -24,6 +24,7 @@
           - "{{ mumble_udp_port }}:64738/udp"
         env:
           MUMBLE_CONFIG_SERVER_PASSWORD: "{{ mumble_server_password }}"
+          MUMBLE_CHOWN_DATA: "{{ mumble_chown_data }}"
         restart_policy: unless-stopped
         labels:
           traefik.enable: "{{ mumble_available_externally | string }}"
