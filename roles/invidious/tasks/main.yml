@@ -52,7 +52,7 @@
 
     - name: Extract visitor_data and po_token (if cache not present)
       ansible.builtin.set_fact:
-        visitor_data: "{{ container_output.container['Output'] | regex_search('visitor_data: (.+?)\\n', '\\1') | first}}"
+        visitor_data: "{{ container_output.container['Output'] | regex_search('visitor_data: (.+?)\\n', '\\1') | first }}"
         po_token: "{{ container_output.container['Output'] | regex_search('po_token: (.+?)\\n', '\\1') | first }}"
       when: not cache_check.stat.exists
 
