@@ -1,0 +1,24 @@
+---
+cwa_enabled: false
+cwa_available_externally: false
+
+# uid / gid
+cwa_user_id: "1000"
+cwa_group_id: "1000"
+
+# directories
+cwa_data_directory: "{{ docker_home }}/cwa"
+cwa_books_root: "{{ books_root }}"
+
+# other
+cwa_ebook_conversion: "lscr.io/linuxserver/mods:universal-calibre-v7.16.0"
+
+# network
+cwa_port: "8160"
+cwa_hostname: "cwa"
+
+# specs
+cwa_memory: 1g
+
+# docker
+cwa_container_name: cwa

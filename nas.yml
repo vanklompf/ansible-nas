@@ -133,6 +133,10 @@
       tags:
         - calibreweb
 
+    - role: cwa
+      tags:
+        - cwa
+
     - role: casdoor
       tags:
         - casdoor

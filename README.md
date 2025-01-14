@@ -36,6 +36,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Budibase](https://github.com/Budibase/budibase) - Low code platform for building business apps and workflows in minutes
 * [Calibre](https://calibre-ebook.com) - Calibre is a powerful and easy to use e-book manager.
 * [Calibre-web](https://github.com/janeczku/calibre-web) - Provides a clean interface for browsing, reading and downloading eBooks using an existing Calibre database.
+* [Calibre-web-automated](https://github.com/crocodilestick/Calibre-Web-Automated) - Calibre-Web but automated and with Calibre features!
 * [Casdoor](https://github.com/casdoor/casdoor) - An open-source UI-first Identity and Access Management (IAM) / Single-Sign-On (SSO) platform.
 * [Changedetection.io](https://github.com/dgtlmoon/changedetection.io) - Free open source website change detection, monitor and notification service
 * [Chatpad](https://chatpad.ai/) - Not just another ChatGPT user-interface!
