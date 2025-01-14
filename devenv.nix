@@ -9,8 +9,6 @@
   # https://devenv.sh/basics/
   env = {
     GREET = "ansible-nas devenv";
-    VIRTUAL_ENV = "ansible-nas";
-    VIRTUAL_ENV_PROMPT = "(ansiblenas)";
   };
 
   # https://devenv.sh/packages/
