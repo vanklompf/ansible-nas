@@ -13,6 +13,11 @@ rules:
 
 ignore: |
   .cache
+  .venv
+  .devenv
+  .direnv
+  .git
+  .ansible
   .github/workflows/*.yml
   roles/stats/files/dashboards/ansible-nas.yml
   roles/stats/templates/prometheus.yml

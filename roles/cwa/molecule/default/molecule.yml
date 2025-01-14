@@ -1,0 +1,7 @@
+---
+provisioner:
+  inventory:
+    group_vars:
+      all:
+        cwa_enabled: true
+        cwa_port: "8085" # 8084 is used by github actions
