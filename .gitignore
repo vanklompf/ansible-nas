@@ -11,6 +11,9 @@ roles/geerlingguy.nfs
 website/.docusaurus
 website/node_modules
 
+# MacOS
+.DS_Store
+
 # Vim
 [._]sw[a-p]
 
