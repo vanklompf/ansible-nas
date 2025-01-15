@@ -20,7 +20,7 @@
         volumes:
           - "{{ cwa_data_directory }}/config:/config"
           - "{{ cwa_books_root }}:/calibre-library"
-          - "{{ cwa_data_directory }}/ingest:/cwa-book-ingest"
+          - "{{ cwa_ingest_directory }}:/cwa-book-ingest"
         env:
           TZ: "{{ ansible_nas_timezone }}"
           PUID: "{{ cwa_user_id }}"

@@ -9,6 +9,7 @@ cwa_group_id: "1000"
 # directories
 cwa_data_directory: "{{ docker_home }}/cwa"
 cwa_books_root: "{{ books_root }}"
+cwa_ingest_directory: "{{ cwa_data_directory }}/ingest"
 
 # other
 cwa_ebook_conversion: "lscr.io/linuxserver/mods:universal-calibre-v7.16.0"
