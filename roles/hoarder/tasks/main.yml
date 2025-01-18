@@ -62,6 +62,7 @@
           - --remote-debugging-address=0.0.0.0
           - --remote-debugging-port=9222
           - --hide-scrollbars
+          - --enable-features=ConversionMeasurement,AttributionReportingCrossAppWeb
         memory: "{{ hoarder_chrome_memory }}"
         labels:
           traefik.enable: "false"
