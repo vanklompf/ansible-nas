@@ -20,8 +20,8 @@ chatwoot_rails_memory: 1g
 # docker
 
 chatwoot_postgres_container_name: chatwoot-postgres
-chatwoot_postgres_image_name: postgres
-chatwoot_postgres_image_version: 12
+chatwoot_postgres_image_name: pgvector/pgvector
+chatwoot_postgres_image_version: pg16
 chatwoot_redis_container_name: chatwoot-redis
 chatwoot_redis_image_name: redis
 chatwoot_redis_image_version: alpine
