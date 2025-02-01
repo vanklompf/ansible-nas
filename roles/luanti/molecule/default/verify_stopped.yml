@@ -7,13 +7,13 @@
       ansible.builtin.include_vars:
         file: ../../defaults/main.yml
 
-    - name: Try and stop and remove minetest_server
+    - name: Try and stop and remove luanti
       community.docker.docker_container:
-        name: "{{ minetest_server_container_name }}"
+        name: "{{ luanti_container_name }}"
         state: absent
       register: result
 
-    - name: Check if minetest_server is stopped
+    - name: Check if luanti is stopped
       ansible.builtin.assert:
         that:
           - not result.changed

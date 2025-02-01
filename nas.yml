@@ -577,9 +577,9 @@
       tags:
         - minecraft-server
 
-    - role: minetest-server
+    - role: luanti-server
       tags:
-        - minetest-server
+        - luanti-server
 
     - role: minidlna
       tags:

@@ -1120,8 +1120,8 @@ address = {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
 
 #    Port to connect to (UDP).
 #    Note that the port field in the main menu overrides this setting.
-#    type: int min: 1 max: 65535
-remote_port = {{ minetest_server_port_http }}
+#    t65535
+remote_port = {{ luanti_port_http }}
 
 #    Prometheus listener address.
 #    If minetest is compiled with ENABLE_PROMETHEUS option enabled,
@@ -1185,11 +1185,11 @@ remote_port = {{ minetest_server_port_http }}
 
 #    Name of the server, to be displayed when players join and in the serverlist.
 #    type: string
-server_name = {{ minecraft_server_name }}
+server_name = {{ luanti_server_name }}
 
 #    Description of server, to be displayed when players join and in the serverlist.
 #    type: string
-server_description = {{ minecraft_server_description }}
+server_description = {{ luanti_description }}
 
 #    Domain name of server, to be displayed in the serverlist.
 #    type: string
@@ -1201,7 +1201,7 @@ server_url = https://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['ad
 
 #    Automatically report to the serverlist.
 #    type: bool
-server_announce = {{ minecraft_server_announce }}
+server_announce = {{ luanti_announce }}
 
 #    Announce to this serverlist.
 #    type: string
@@ -1274,11 +1274,11 @@ server_announce = {{ minecraft_server_announce }}
 #    Default game when creating a new world.
 #    This will be overridden when creating a world from the main menu.
 #    type: string
-default_game = {{ minecraft_server_default_game }}
+default_game = {{ luanti_default_game }}
 
 #    Message of the day displayed to players connecting.
 #    type: string
-motd = {{ minecraft_server_motd }}
+motd = {{ luanti_motd }}
 
 #    Maximum number of players that can be connected simultaneously.
 #    type: int
@@ -1301,11 +1301,11 @@ motd = {{ minecraft_server_motd }}
 
 #    Enable players getting damage and dying.
 #    type: bool
-enable_damage = {{ minecraft_server_enable_damage }}
+enable_damage = {{ luanti_enable_damage }}
 
 #    Enable creative mode for all players
 #    type: bool
-creative_mode = {{ minecraft_server_creative_mode }}
+creative_mode = {{ luanti_creative_mode }}
 
 #    A chosen map seed for a new map, leave empty for random.
 #    Will be overridden when creating a new world in the main menu.
@@ -1678,7 +1678,7 @@ creative_mode = {{ minecraft_server_creative_mode }}
 #    When running a server, clients connecting with this name are admins.
 #    When starting from the main menu, this is overridden.
 #    type: string
-name = {{ minetest_server_admin_user }}
+name = {{ luanti_admin_user }}
 
 #    Set the language. Leave empty to use the system language.
 #    A restart is required after changing this.

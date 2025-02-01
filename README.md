@@ -136,6 +136,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [LiveHelperChat](https://github.com/LiveHelperChat/livehelperchat) - live support for your website
 * [Loki](https://grafana.com/oss/loki/) - Loki is a horizontally scalable, highly available, multi-tenant log aggregation system inspired by Prometheus.
 * [Lowcoder](https://github.com/lowcoder-org/lowcoder) - The Open Source Retool, Tooljet and Appsmith Alternative.
+* [Luanti Server](https://www.luanti.org/) - An open source voxel game engine server
 * [LubeLogger](https://github.com/hargata/lubelog) - LubeLogger is a web-based vehicle maintenance and fuel mileage tracker.
 * [Mainsail](https://github.com/mainsail-crew/mainsail) -  popular web interface for managing and controlling 3D printers with Klipper
 * [Maker Management Platform](https://github.com/Maker-Management-Platform/docs) -  management of a variety of digital assets related to 3d printing, manufacturing, laser engraving and such.
@@ -149,7 +150,6 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Metube](https://github.com/alexta69/metube) - Self-hosted YouTube downloader (web UI for youtube-dl / yt-dlp)
 * [Minecraft Java Server](https://www.minecraft.net/) - Java server edition of the popular building and exploring game
 * [Minecraft Bedrock Server](https://www.minecraft.net/) - Bedrock server edition of the popular building and exploring game
-* [Minetest Server](https://www.minetest.net/) - An open source voxel game engine server
 * [MiniDLNA](https://sourceforge.net/projects/minidlna/) - simple media server which is fully compliant with DLNA/UPnP-AV clients
 * [Miniflux](https://miniflux.app/) - An RSS news reader
 * [Minio](https://min.io/) - MinIO is a high-performance, S3 compatible object store

@@ -1,0 +1,51 @@
+---
+- name: Start Luanti
+  block:
+    - name: Create Luanti Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ luanti_data_directory }}/config"
+        - "{{ luanti_data_directory }}/config/main-config"
+
+    - name: Template minetest.conf
+      ansible.builtin.template:
+        src: minetest.conf.j2
+        dest: "{{ luanti_data_directory }}/config/main-config/minetest.conf"
+      register: minetest_config
+
+    - name: Create Luanti Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ luanti_container_name }}"
+        image: "{{ luanti_image_name }}:{{ luanti_image_version }}"
+        pull: true
+        volumes:
+          - "{{ luanti_data_directory }}/config:/config/.minetest:rw"
+        ports:
+          - "{{ luanti_port_http }}:30000/tcp"
+          - "{{ luanti_port_http }}:30000/udp"
+        env:
+          TZ: "{{ ansible_nas_timezone }}"
+          PUID: "{{ luanti_user_id }}"
+          PGID: "{{ luanti_group_id }}"
+          CLI_ARGS: "--gameid {{ luanti_gameid }}" # optional
+        restart_policy: unless-stopped
+        memory: "{{ luanti_memory }}"
+        labels:
+          traefik.enable: "{{ luanti_available_externally | string }}"
+          traefik.http.routers.luanti.rule: "Host(`{{ luanti_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.luanti.tls.certresolver: "letsencrypt"
+          traefik.http.routers.luanti.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.luanti.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.luanti.loadbalancer.server.port: "30000"
+  when: luanti_enabled is true
+
+- name: Stop Luanti
+  block:
+    - name: Stop Luanti
+      community.docker.docker_container:
+        name: "{{ luanti_container_name }}"
+        state: absent
+  when: luanti_enabled is false

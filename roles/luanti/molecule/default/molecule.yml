@@ -1,0 +1,7 @@
+---
+provisioner:
+  inventory:
+    group_vars:
+      all:
+        luanti_enabled: true
+        luanti_data_directory: "/tmp/luanti"
