@@ -577,7 +577,7 @@
       tags:
         - minecraft-server
 
-    - role: luanti-server
+    - role: luanti
       tags:
         - luanti-server
 
