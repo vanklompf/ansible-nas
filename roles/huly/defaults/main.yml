@@ -19,6 +19,7 @@ huly_hostname: "huly"
 huly_account_hostname: "huly-account"
 huly_collaborator_hostname: "huly-collaborator"
 huly_transactor_hostname: "huly-transactor"
+huly_rekoni_hostname: "huly-rekoni"
 huly_network_name: "huly"
 
 # specs
@@ -26,6 +27,7 @@ huly_mongo_memory: 1g
 huly_minio_memory: 1g
 huly_elastic_memory: 1g
 huly_account_memory: 1g
+huly_workspace_memory: 1g
 huly_front_memory: 1g
 huly_collaborator_memory: 1g
 huly_transactor_memory: 1g
@@ -48,6 +50,10 @@ huly_elastic_image_version: "7.14.2"
 huly_account_container_name: huly-account
 huly_account_image_name: "hardcoreeng/account"
 huly_account_image_version: "latest"
+
+huly_workspace_container_name: huly-workspace
+huly_workspace_image_name: "hardcoreeng/workspace"
+huly_workspace_image_version: "latest"
 
 huly_front_container_name: huly-front
 huly_front_image_name: "hardcoreeng/front"
@@ -89,6 +95,7 @@ huly_front_url: "https://{{ huly_hostname }}.{{ ansible_nas_domain }}"
 huly_init_workspace: "demo-tracker"
 huly_model_enabled: "*"
 huly_accounts_url: "https://{{ huly_account_hostname }}.{{ ansible_nas_domain }}"
+huly_accounts_port: "3000"
 
 huly_front_server_port: "8080"
 huly_front_server_secret: secret
@@ -113,3 +120,6 @@ huly_transactor_metrics_console: "false"
 huly_transactor_metrics_file: "metrics.txt"
 huly_transactor_server_provider: ws
 huly_transactor_elastic_index_name: local_storage_index
+huly_storage_config: "minio|{{ huly_minio_endpoint }}?accessKey={{ huly_minio_access_key }}&secretKey={{ huly_minio_secret_key }}"
+huly_notify_inbox_only: "true"
+huly_fulltext_url: "http://{{ huly_server_address }}:8089" # TODO: to be updated

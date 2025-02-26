@@ -4,3 +4,4 @@ provisioner:
     group_vars:
       all:
         affine_enabled: true
+        affine_data_directory: /tmp/affine

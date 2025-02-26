@@ -19,19 +19,14 @@
       vars:
         dozzle_command: "{{ ['agent'] if dozzle_agent_mode | default(false) | bool else omit }}"
         dozzle_container_port: "{{ '7007' if dozzle_agent_mode | default(false) | bool else '8080' }}"
-        dozzle_labels: "{{
-            {
-              'traefik.enable': 'false'
-            } if dozzle_agent_mode | default(false) | bool
-            else
-            {
-              'traefik.enable': (dozzle_available_externally | string),
-              'traefik.http.routers.dozzle.rule': 'Host(`' + dozzle_hostname + '.' + ansible_nas_domain + '`)',
-              'traefik.http.routers.dozzle.tls.certresolver': 'letsencrypt',
-              'traefik.http.routers.dozzle.tls.domains[0].main': ansible_nas_domain,
-              'traefik.http.routers.dozzle.tls.domains[0].sans': '*.' + ansible_nas_domain,
-              'traefik.http.services.dozzle.loadbalancer.server.port': '8080'
-            }
+        dozzle_labels: "{{ {'traefik.enable': 'false'} if dozzle_agent_mode | default(false) | bool
+          else
+          {'traefik.enable': (dozzle_available_externally | string),
+           'traefik.http.routers.dozzle.rule': 'Host(`' + dozzle_hostname + '.' + ansible_nas_domain + '`)',
+           'traefik.http.routers.dozzle.tls.certresolver': 'letsencrypt',
+           'traefik.http.routers.dozzle.tls.domains[0].main': ansible_nas_domain,
+           'traefik.http.routers.dozzle.tls.domains[0].sans': '*.' + ansible_nas_domain,
+           'traefik.http.services.dozzle.loadbalancer.server.port': '8080'}
           }}"
       community.docker.docker_container:
         name: "{{ dozzle_container_name }}"

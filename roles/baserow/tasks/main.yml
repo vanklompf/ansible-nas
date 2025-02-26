@@ -28,7 +28,7 @@
         dest: "{{ baserow_data_directory }}/Caddyfile"
       register: beets_config
 
-    - name: Create Baserow Postgress Docker Container
+    - name: Create Baserow Postgres Docker Container
       community.docker.docker_container:
         container_default_behavior: no_defaults
         name: "{{ baserow_db_container_name }}"
@@ -82,7 +82,6 @@
         volumes:
           - "{{ baserow_data_directory }}/Caddyfile:/etc/caddy/Caddyfile"
           - "{{ baserow_data_directory }}/media:/baserow/media"
-          - "{{ baserow_data_directory }}/plugins:/baserow/plugins"
           - "{{ baserow_data_directory }}/caddy_config:/config"
           - "{{ baserow_data_directory }}/caddy_data:/data"
 

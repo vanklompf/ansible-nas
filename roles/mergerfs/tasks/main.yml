@@ -75,6 +75,13 @@
 
 - name: Stop Mergerfs
   block:
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+    - name: Check if Mergerfs service exists
+      ansible.builtin.set_fact:
+        mergerfs_service_exists: "{{ 'mergerfs' in ansible_facts.services }}"
+
     - name: Stop Mergerfs
       ansible.builtin.systemd:
         name: mergerfs
@@ -82,9 +89,9 @@
         masked: true
         state: stopped
       register: stop_service
-      until: stop_service.status["ActiveState"] == "inactive"
       retries: 5
       delay: 5
+      until: (stop_service is defined and stop_service.status is defined and stop_service.status.ActiveState == 'inactive') or (stop_service is defined and stop_service.failed is defined)
+      when: mergerfs_service_exists
 
-      # TODO: Add proper service removal
   when: mergerfs_enabled is false

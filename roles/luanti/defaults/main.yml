@@ -1,0 +1,31 @@
+---
+luanti_enabled: false
+luanti_available_externally: false
+
+# directories
+luanti_data_directory: "{{ docker_home }}/luanti"
+
+# network
+luanti_port_http: "30000"
+luanti_hostname: "luanti"
+
+# specs
+luanti_memory: 1g
+
+# docker
+luanti_container_name: luanti-server
+luanti_image_name: "linuxserver/luanti"
+luanti_image_version: latest
+luanti_user_id: "1000"
+luanti_group_id: "1000"
+
+# minetest
+luanti_gameid: luanti
+luanti_default_game: luanti
+luanti_server_name: "Ansible-NAS Luanti"
+luanti_description: "Ansible-NAS Luanti"
+luanti_motd: "Welcome to Ansible-NAS Luanti!"
+luanti_announce: false
+luanti_enable_damage: false
+luanti_creative_mode: false
+luanti_admin_user: ansible-nas

@@ -25,12 +25,6 @@
         state: absent
       register: result_server
 
-    - name: Try and stop and remove Immich Microservices
-      community.docker.docker_container:
-        name: "{{ immich_microservices_container_name }}"
-        state: absent
-      register: result_microservices
-
     - name: Try and stop and remove Immich Machine Learning
       community.docker.docker_container:
         name: "{{ immich_machinelearning_container_name }}"
@@ -49,6 +43,5 @@
           - not result_postgres.changed
           - not result_redis.changed
           - not result_server.changed
-          - not result_microservices.changed
           - not result_machinelearning.changed
           - not result_powertools.changed

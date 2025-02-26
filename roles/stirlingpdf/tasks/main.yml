@@ -17,7 +17,7 @@
         image: "{{ stirlingpdf_image_name }}:{{ stirlingpdf_image_version }}"
         pull: true
         volumes:
-          - "{{ stirlingpdf_data_directory }}/trainingData:/usr/share/tesseract-ocr/4.00/tessdata" # Required for extra OCR languages
+          - "{{ stirlingpdf_data_directory }}/trainingData:/usr/share/tessdata" # Required for extra OCR languages
           - "{{ stirlingpdf_data_directory }}/extraConfigs:/configs"
         ports:
           - "{{ stirlingpdf_port }}:8080"
@@ -26,6 +26,8 @@
           PUID: "{{ stirlingpdf_user_id | quote }}"
           PGID: "{{ stirlingpdf_group_id | quote }}"
           DOCKER_ENABLE_SECURITY: "false"
+          INSTALL_BOOK_AND_ADVANCED_HTML_OPS: "{{ stirlingpdf_install_book_and_advanced_html_ops }}"
+          LANGS: "{{ stirlingpdf_langs }}"
         restart_policy: unless-stopped
         memory: "{{ stirlingpdf_memory }}"
         labels:

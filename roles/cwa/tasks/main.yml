@@ -1,0 +1,48 @@
+---
+- name: Start Calibre-web Automated
+  block:
+    - name: Create Calibre-web Automated Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ cwa_user_id }}"
+        group: "{{ cwa_group_id }}"
+      with_items:
+        - "{{ cwa_data_directory }}/config"
+        - "{{ cwa_data_directory }}/data"
+        - "{{ cwa_data_directory }}/ingest"
+
+    - name: Calibre-web Automated Docker Container
+      community.docker.docker_container:
+        name: "{{ cwa_container_name }}"
+        image: crocodilestick/calibre-web-automated:latest
+        pull: true
+        volumes:
+          - "{{ cwa_data_directory }}/config:/config"
+          - "{{ cwa_books_root }}:/calibre-library"
+          - "{{ cwa_ingest_directory }}:/cwa-book-ingest"
+        env:
+          TZ: "{{ ansible_nas_timezone }}"
+          PUID: "{{ cwa_user_id }}"
+          PGID: "{{ cwa_group_id }}"
+          DOCKER_MODS: "{{ cwa_ebook_conversion }}"
+        ports:
+          - "{{ cwa_port }}:8083"
+        restart_policy: unless-stopped
+        memory: "{{ cwa_memory }}"
+        labels:
+          traefik.enable: "{{ cwa_available_externally | string }}"
+          traefik.http.routers.cwa.rule: "Host(`{{ cwa_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.cwa.tls.certresolver: "letsencrypt"
+          traefik.http.routers.cwa.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.cwa.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.cwa.loadbalancer.server.port: "8083"
+  when: cwa_enabled is true
+
+- name: Stop Calibre-web
+  block:
+    - name: Stop Calibre-web automated
+      community.docker.docker_container:
+        name: "{{ cwa_container_name }}"
+        state: absent
+  when: cwa_enabled is false

@@ -115,6 +115,7 @@
           MONGO_URL: "{{ huly_mongo_url }}"
           DB_URL: "{{ huly_mongo_url }}"
           TRANSACTOR_URL: "{{ huly_transactor_url }}"
+          STORAGE_CONFIG: "{{ huly_storage_config }}"
           ENDPOINT_URL: "{{ huly_endpoint_url }}"
           MINIO_ENDPOINT: "{{ huly_minio_endpoint }}"
           MINIO_ACCESS_KEY: "{{ huly_minio_access_key }}"
@@ -123,6 +124,7 @@
           INIT_WORKSPACE: "{{ huly_init_workspace }}"
           MODEL_ENABLED: "{{ huly_model_enabled }}"
           ACCOUNTS_URL: "{{ huly_accounts_url }}"
+          ACCOUNTS_PORT: "{{ huly_accounts_port }}"
         labels:
           traefik.enable: "{{ huly_available_externally | string }}"
           traefik.http.routers.huly-account.rule: "Host(`{{ huly_account_hostname }}.{{ ansible_nas_domain }}`)"
@@ -132,6 +134,36 @@
           traefik.http.services.huly-account.loadbalancer.server.port: "3000"
         restart_policy: always
         memory: "{{ huly_account_memory }}"
+
+    - name: Create Huly Workspace Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ huly_workspace_container_name }}"
+        image: "{{ huly_workspace_image_name }}:{{ huly_workspace_image_version }}"
+        pull: true
+        networks:
+          - name: "{{ huly_network_name }}"
+        network_mode: "{{ huly_network_name }}"
+        env:
+          SERVER_PORT: "{{ huly_account_server_port }}"
+          SERVER_SECRET: "{{ huly_account_server_secret }}"
+          MONGO_URL: "{{ huly_mongo_url }}"
+          DB_URL: "{{ huly_mongo_url }}"
+          TRANSACTOR_URL: "{{ huly_transactor_url }}"
+          STORAGE_CONFIG: "{{ huly_storage_config }}"
+          ENDPOINT_URL: "{{ huly_endpoint_url }}"
+          MINIO_ENDPOINT: "{{ huly_minio_endpoint }}"
+          MINIO_ACCESS_KEY: "{{ huly_minio_access_key }}"
+          MINIO_SECRET_KEY: "{{ huly_minio_secret_key }}"
+          FRONT_URL: "{{ huly_front_url }}"
+          INIT_WORKSPACE: "{{ huly_init_workspace }}"
+          MODEL_ENABLED: "{{ huly_model_enabled }}"
+          ACCOUNTS_URL: "{{ huly_accounts_url }}"
+          NOTIFY_INBOX_ONLY: "{{ huly_notify_inbox_only }}"
+        labels:
+          traefik.enable: "false"
+        restart_policy: always
+        memory: "{{ huly_workspace_memory }}"
 
     - name: Create Huly Front Container
       community.docker.docker_container:
@@ -158,6 +190,7 @@
           TRANSACTOR_URL: "{{ huly_transactor_url }}"
           ELASTIC_URL: "{{ huly_elastic_url }}"
           MONGO_URL: "{{ huly_mongo_url }}"
+          STORAGE_CONFIG: "{{ huly_storage_config }}"
           COLLABORATOR_URL: "{{ huly_collaborator_url }}"
           COLLABORATOR_API_URL: "{{ huly_collaborator_api_url }}"
           MINIO_ENDPOINT: "{{ huly_minio_endpoint }}"
@@ -194,6 +227,7 @@
           SECRET: "{{ huly_collaborator_server_secret }}"
           ACCOUNTS_URL: "{{ huly_accounts_url }}"
           TRANSACTOR_URL: "{{ huly_transactor_url }}"
+          STORAGE_CONFIG: "{{ huly_storage_config }}"
           UPLOAD_URL: "{{ huly_upload_url }}"
           MONGO_URL: "{{ huly_mongo_url }}"
           MINIO_ENDPOINT: "{{ huly_minio_endpoint }}"
@@ -227,20 +261,22 @@
           SERVER_SECRET: "{{ huly_transactor_server_secret }}"
           SERVER_CURSOR_MAXTIMEMS: "{{ huly_transactor_cursor_maxtimesms }}"
           ELASTIC_URL: "{{ huly_elastic_url }}"
-          MONGO_URL: "{{ huly_mongo_url }}"
+          ELASTIC_INDEX_NAME: "{{ huly_transactor_elastic_index_name }}"
           DB_URL: "{{ huly_mongo_url }}"
+          MONGO_URL: "{{ huly_mongo_url }}"
           METRICS_CONSOLE: "{{ huly_transactor_metrics_console }}"
           METRICS_FILE: "{{ huly_transactor_metrics_file }}"
-          MINIO_ENDPOINT: "{{ huly_minio_endpoint }}"
-          MINIO_ACCESS_KEY: "{{ huly_minio_access_key }}"
-          MINIO_SECRET_KEY: "{{ huly_minio_secret_key }}"
+          STORAGE_CONFIG: "{{ huly_storage_config }}"
           REKONI_URL: "{{ huly_rekoni_url }}"
           FRONT_URL: "{{ huly_front_url }}"
-          SERVER_PROVIDER: "{{ huly_transactor_server_provider }}"
           ACCOUNTS_URL: "{{ huly_accounts_url }}"
           LAST_NAME_FIRST: "{{ huly_last_name_first }}"
-          ELASTIC_INDEX_NAME: "{{ huly_transactor_elastic_index_name }}"
-          UPLOAD_URL: "{{ huly_upload_url }}"
+          FULLTEXT_URL: "{{ huly_fulltext_url }}"
+          # MINIO_ENDPOINT: "{{ huly_minio_endpoint }}"
+          # MINIO_ACCESS_KEY: "{{ huly_minio_access_key }}"
+          # MINIO_SECRET_KEY: "{{ huly_minio_secret_key }}"
+          # SERVER_PROVIDER: "{{ huly_transactor_server_provider }}"
+          # UPLOAD_URL: "{{ huly_upload_url }}"
         labels:
           traefik.enable: "{{ huly_available_externally | string }}"
           traefik.http.routers.huly-transactor.rule: "Host(`{{ huly_transactor_hostname }}.{{ ansible_nas_domain }}`)"
@@ -265,7 +301,12 @@
         restart_policy: unless-stopped
         memory: "{{ huly_rekoni_memory }}"
         labels:
-          traefik.enable: "false"
+          traefik.enable: "{{ huly_available_externally | string }}"
+          traefik.http.routers.huly-rekoni.rule: "Host(`{{ huly_rekoni_hostname }}.{{ ansible_nas_domain }}`) && PathPrefix(`/rekoni`)"
+          traefik.http.routers.huly-rekoni.tls.certresolver: "letsencrypt"
+          traefik.http.routers.huly-rekoni.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.huly-rekoni.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.huly-rekoni.loadbalancer.server.port: "4004"
   when: huly_enabled is true
 
 - name: Stop Huly

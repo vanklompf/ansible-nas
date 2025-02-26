@@ -33,10 +33,10 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Beets](https://beets.io/) - media library management system for obsessive music geeks
 * [Blaze](https://github.com/blenderskool/blaze) - File sharing progressive web app
 * [Blocky](https://0xerr0r.github.io/blocky/) - Fast and lightweight DNS proxy as ad-blocker
-* [Booksonic](https://booksonic.org/) - The selfhosted audiobook server
 * [Budibase](https://github.com/Budibase/budibase) - Low code platform for building business apps and workflows in minutes
 * [Calibre](https://calibre-ebook.com) - Calibre is a powerful and easy to use e-book manager.
 * [Calibre-web](https://github.com/janeczku/calibre-web) - Provides a clean interface for browsing, reading and downloading eBooks using an existing Calibre database.
+* [Calibre-web-automated](https://github.com/crocodilestick/Calibre-Web-Automated) - Calibre-Web but automated and with Calibre features!
 * [Casdoor](https://github.com/casdoor/casdoor) - An open-source UI-first Identity and Access Management (IAM) / Single-Sign-On (SSO) platform.
 * [Changedetection.io](https://github.com/dgtlmoon/changedetection.io) - Free open source website change detection, monitor and notification service
 * [Chatpad](https://chatpad.ai/) - Not just another ChatGPT user-interface!
@@ -49,7 +49,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [CouchPotato](https://couchpota.to/) - for downloading and managing movies
 * [Dashy](https://dashy.to/) - A self-hosted startpage for your server. Easy to use visual editor, status checking, widgets, themes and tons more!
 * [DbGate](https://github.com/dbgate/dbgate) - Database manager for MySQL, PostgreSQL, SQL Server, MongoDB, SQLite and others
-* [DDNS Updater](https://github.com/qdm12/ddns-updater) - dynamic dns updater for serveral providers
+* [DDNS Updater](https://github.com/qdm12/ddns-updater) - dynamic dns updater for several providers
 * [Deluge](https://dev.deluge-torrent.org/) - A lightweight, Free Software, cross-platform BitTorrent client.
 * [Directus](https://github.com/directus/directus) - An instant REST+GraphQL API and intuitive no-code data collaboration app for any SQL database.
 * [Dockge](https://github.com/louislam/dockge) - A fancy, easy-to-use and reactive self-hosted docker compose.yaml stack-oriented manager
@@ -67,9 +67,9 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Evershop](https://github.com/evershopcommerce/evershop) - NodeJS E-commerce Platform
 * [Excalidraw](https://excalidraw.com/) - Virtual whiteboard for sketching hand-drawn like diagrams
 * [Firefly III](https://firefly-iii.org/) - Free and open source personal finance manager
-* [Flame](https://github.com/pawelmalak/flame/) - Flarum is a delightfully simple discussion platform for your website
+* [Flame](https://github.com/pawelmalak/flame/) - Self-hosted startpage for your server
 * [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) - FlareSolverr is a proxy server to bypass Cloudflare and DDoS-GUARD protection
-* [Flarum](https://flarum.org/) - Self-hosted startpage for your server
+* [Flarum](https://flarum.org/) - Flarum is a delightfully simple discussion platform for your website
 * [Flatnotes](https://flatnotes.io/) - Self-hosted, database-less note taking web app
 * [Formbricks](https://github.com/formbricks/formbricks) - An Open Source Survey Platform
 * [FormIO](https://github.com/formio/formio) - SA Form and Data Management Platform for Progressive Web Applications
@@ -136,6 +136,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [LiveHelperChat](https://github.com/LiveHelperChat/livehelperchat) - live support for your website
 * [Loki](https://grafana.com/oss/loki/) - Loki is a horizontally scalable, highly available, multi-tenant log aggregation system inspired by Prometheus.
 * [Lowcoder](https://github.com/lowcoder-org/lowcoder) - The Open Source Retool, Tooljet and Appsmith Alternative.
+* [Luanti Server](https://www.luanti.org/) - An open source voxel game engine server
 * [LubeLogger](https://github.com/hargata/lubelog) - LubeLogger is a web-based vehicle maintenance and fuel mileage tracker.
 * [Mainsail](https://github.com/mainsail-crew/mainsail) -  popular web interface for managing and controlling 3D printers with Klipper
 * [Maker Management Platform](https://github.com/Maker-Management-Platform/docs) -  management of a variety of digital assets related to 3d printing, manufacturing, laser engraving and such.
@@ -149,7 +150,6 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Metube](https://github.com/alexta69/metube) - Self-hosted YouTube downloader (web UI for youtube-dl / yt-dlp)
 * [Minecraft Java Server](https://www.minecraft.net/) - Java server edition of the popular building and exploring game
 * [Minecraft Bedrock Server](https://www.minecraft.net/) - Bedrock server edition of the popular building and exploring game
-* [Minetest Server](https://www.minetest.net/) - An open source voxel game engine server
 * [MiniDLNA](https://sourceforge.net/projects/minidlna/) - simple media server which is fully compliant with DLNA/UPnP-AV clients
 * [Miniflux](https://miniflux.app/) - An RSS news reader
 * [Minio](https://min.io/) - MinIO is a high-performance, S3 compatible object store
@@ -217,6 +217,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Sabnzbd](https://sabnzbd.org/) - A powerful usenet downloader that FreeNAS provides
 * [Seafile](https://www.seafile.com/en/home/) - High performance file syncing and sharing
 * [SearxNG](https://github.com/searxng/searxng) - Free internet metasearch engine
+* [Scribble.rs](https://github.com/scribble-rs/scribble.rs) - A skribbl.io alternative
 * [Servas](https://github.com/beromir/Servas) - A self-hosted bookmark management tool
 * [Shaarli](https://github.com/shaarli/Shaarli) - Personal, minimalist, super-fast, database free, bookmarking service
 * [Shiori](https://github.com/go-shiori/shiori) - Simple bookmark manager built with Go

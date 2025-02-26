@@ -81,6 +81,7 @@ hoppscotch_enable_subpath_based_access: "false"
 hoppscotch_backend_env: "{{ hoppscotch_env }}"
 hoppscotch_frontend_env: "{{ hoppscotch_env }}"
 hoppscotch_admin_env: "{{ hoppscotch_env }}"
+hoppscotch_data_encryption_key: "uqGsTSwaxjYIKyfoinTFlISqOdmEOJzN" # "{{ lookup('pipe', 'openssl rand -base64 24') }}"
 hoppscotch_env:
   # -----------------------Backend Config------------------------------#
   # Prisma Config
@@ -146,3 +147,6 @@ hoppscotch_env:
 
   # Set to `true` for subpath based access
   ENABLE_SUBPATH_BASED_ACCESS: "{{ hoppscotch_enable_subpath_based_access }}"
+
+  # Sensitive Data Encryption Key while storing in Database (32 character)
+  DATA_ENCRYPTION_KEY: "{{ hoppscotch_data_encryption_key }}"

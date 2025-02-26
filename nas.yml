@@ -132,10 +132,6 @@
       tags:
         - blocky
 
-    - role: booksonic
-      tags:
-        - booksonic
-
     - role: budibase
       tags:
         - budibase
@@ -147,6 +143,10 @@
     - role: calibreweb
       tags:
         - calibreweb
+
+    - role: cwa
+      tags:
+        - cwa
 
     - role: casdoor
       tags:
@@ -600,9 +600,9 @@
       tags:
         - minecraft-server
 
-    - role: minetest-server
+    - role: luanti
       tags:
-        - minetest-server
+        - luanti-server
 
     - role: minidlna
       tags:
@@ -883,6 +883,10 @@
     - role: searxng
       tags:
         - searxng
+
+    - role: scribblers
+      tags:
+        - scribblers
 
     - role: shaarli
       tags:

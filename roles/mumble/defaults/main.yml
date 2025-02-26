@@ -12,6 +12,7 @@ mumble_hostname: mumble
 
 # Configuration
 # It is strongly advised this password is change, especially if this is publicly available.
+mumble_chown_data: "false"
 mumble_server_password: "abcpassword123"
 
 mumble_container_name: mumble-server

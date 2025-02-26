@@ -17,15 +17,10 @@
         name: "{{ adventure_log_web_container_name }}"
       register: result_web
 
-    - name: Get Adventure Log dashboard container state
+    - name: Get Adventure Log server container state
       community.docker.docker_container:
         name: "{{ adventure_log_server_container_name }}"
       register: result_server
-
-    - name: Get Adventure Log nginx container state
-      community.docker.docker_container:
-        name: "{{ adventure_log_nginx_container_name }}"
-      register: result_nginx
 
     - name: Check if Adventure Log containers are running
       ansible.builtin.assert:
@@ -36,5 +31,3 @@
           - result_web.container['State']['Restarting'] == false
           - result_server.container['State']['Status'] == "running"
           - result_server.container['State']['Restarting'] == false
-          - result_nginx.container['State']['Status'] == "running"
-          - result_nginx.container['State']['Restarting'] == false
