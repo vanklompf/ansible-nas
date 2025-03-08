@@ -75,6 +75,11 @@
           traefik.http.routers.searxng.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.searxng.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.searxng.loadbalancer.server.port: "8080"
+          homepage.group: System
+          homepage.name: SearxNG
+          homepage.icon: searxng.png
+          homepage.description: "Free internet metasearch engine"
+          homepage.href: "http://{{ ansible_nas_hostname }}:{{ searxng_port }}"
         log_driver: "json-file"
         log_options:
           max-size: "1m"
