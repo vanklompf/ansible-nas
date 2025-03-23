@@ -1,6 +1,10 @@
 ---
 - name: Start Radarr
   block:
+    - name: Create Radarr network
+      community.docker.docker_network:
+        name: "{{ radarr_network_name }}"
+
     - name: Create Radarr Directories
       ansible.builtin.file:
         path: "{{ item }}"
@@ -25,6 +29,7 @@
           PGID: "{{ radarr_group_id }}"
         restart_policy: unless-stopped
         memory: "{{ radarr_memory }}"
+        network_mode: "{{ radarr_network_name }}"
         labels:
           traefik.enable: "{{ radarr_available_externally | string }}"
           traefik.http.routers.radarr.rule: "Host(`{{ radarr_hostname }}.{{ ansible_nas_domain }}`)"

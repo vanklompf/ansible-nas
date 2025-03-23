@@ -1,6 +1,10 @@
 ---
 - name: Start Transmission with OpenVPM
   block:
+    - name: Create Radarr network
+      community.docker.docker_network:
+        name: "{{ radarr_network_name }}"
+
     - name: Create Transmission Directories
       ansible.builtin.file:
         path: "{{ item }}"
@@ -50,6 +54,7 @@
           - NET_ADMIN
         restart_policy: unless-stopped
         memory: "{{ transmission_openvpn_memory }}"
+        network_mode: "{{ radarr_network_name }}"
         memory_swap: "{{ transmission_openvpn_memory }}"
         labels:
           traefik.enable: "{{ transmission_with_openvpn_available_externally | string }}"

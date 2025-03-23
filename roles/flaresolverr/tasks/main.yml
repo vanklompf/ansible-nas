@@ -1,6 +1,10 @@
 ---
 - name: Start FlareSolverr
   block:
+    - name: Create Radarr network
+      community.docker.docker_network:
+        name: "{{ radarr_network_name }}"
+
     - name: Create FlareSolverr Directories
       ansible.builtin.file:
         path: "{{ item }}"
@@ -21,6 +25,7 @@
           TZ: "{{ ansible_nas_timezone }}"
         restart_policy: unless-stopped
         memory: "{{ flaresolverr_memory }}"
+        network_mode: "{{ radarr_network_name }}"
         labels:
           traefik.enable: "{{ flaresolverr_available_externally | string }}"
           traefik.http.routers.flaresolverr.rule: "Host(`flaresolverr.{{ ansible_nas_domain }}`)"

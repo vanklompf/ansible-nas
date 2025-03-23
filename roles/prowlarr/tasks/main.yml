@@ -1,6 +1,10 @@
 ---
 - name: Start Prowlarr
   block:
+    - name: Create Radarr network
+      community.docker.docker_network:
+        name: "{{ radarr_network_name }}"
+
     - name: Create Prowlarr Directories
       ansible.builtin.file:
         path: "{{ item }}"
@@ -23,6 +27,7 @@
           PGID: "{{ prowlarr_group_id }}"
         restart_policy: unless-stopped
         memory: "{{ prowlarr_memory }}"
+        network_mode: "{{ radarr_network_name }}"
         labels:
           traefik.enable: "{{ prowlarr_available_externally | string }}"
           traefik.http.routers.prowlarr.rule: "Host(`{{ prowlarr_hostname }}.{{ ansible_nas_domain }}`)"
