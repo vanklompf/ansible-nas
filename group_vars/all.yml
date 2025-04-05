@@ -72,7 +72,7 @@ documents_root: "{{ samba_shares_root }}/documents"
 code_root: "{{ samba_shares_root }}/code"
 
 # Where roms are stored
-roms_root: "{{ samba_shares_root }}/roms"
+roms_root: "{{ samba_shares_root }}/games/roms"
 
 # Where video and audio recordings are stored
 recordings_root: "{{ samba_shares_root }}/recordings"
