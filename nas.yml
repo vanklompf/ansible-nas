@@ -124,6 +124,10 @@
       tags:
         - beets
 
+    - role: beszel
+      tags:
+        - beszel
+
     - role: blaze
       tags:
         - blaze

@@ -1,0 +1,21 @@
+---
+beszel_agent_enabled: false
+beszel_enabled: false
+beszel_available_externally: false
+beszel_key: "ssh-ed25519 xxx"
+beszel_hub_data_directory: "{{ docker_home }}/beszel"
+
+# network
+beszel_hostname: "beszel"
+beszel_agent_hostname: "beszel-agent"
+beszel_port: "3885"
+
+# docker
+beszel_container_name: "beszel"
+beszel_agent_container_name: "beszel-agent"
+beszel_image_name: "henrygd/beszel"
+beszel_agent_image_name: "henrygd/beszel-agent"
+beszel_image_version: "latest"
+
+# specs
+beszel_memory: 1g
