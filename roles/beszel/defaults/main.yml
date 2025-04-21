@@ -4,6 +4,8 @@ beszel_enabled: false
 beszel_available_externally: false
 beszel_key: "ssh-ed25519 xxx"
 beszel_hub_data_directory: "{{ docker_home }}/beszel"
+beszel_username: user
+beszel_password: passwd
 
 # network
 beszel_hostname: "beszel"

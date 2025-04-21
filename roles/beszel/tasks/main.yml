@@ -28,6 +28,10 @@
           homepage.href: "http://{{ ansible_nas_hostname }}:{{ beszel_port }}"
           homepage.widget.type: beszel
           homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ beszel_port }}"
+          homepage.widget.username: "{{beszel_username}}"
+          homepage.widget.password: "{{beszel_password}}"
+          homepage.widget.version: "2"
+
 
     - name: Beszel Local Agent Docker Container
       community.docker.docker_container:
