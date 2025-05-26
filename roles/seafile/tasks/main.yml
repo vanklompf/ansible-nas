@@ -24,12 +24,9 @@
         volumes:
           - "{{ seafile_data_directory }}/db:/var/lib/mysql"
         env:
-          MYSQL_DATABASE: "{{ seafile_database }}"
-          MYSQL_USER: "{{ seafile_db_user }}"
-          MYSQL_PASSWORD: "s{{ seafile_db_password }}"
           MYSQL_ROOT_PASSWORD: "{{ seafile_db_root_password }}"
-        labels:
-          traefik.enable: "false"
+          MYSQL_LOG_CONSOLE: "true"
+          MARIADB_AUTO_UPGRADE: "1"
         restart_policy: unless-stopped
         memory: "{{ seafile_db_memory }}"
 
@@ -75,6 +72,11 @@
           traefik.http.routers.seafile.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.seafile.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.seafile.loadbalancer.server.port: "80"
+          homepage.group: Media
+          homepage.name: Seafile
+          homepage.icon: seafile
+          homepage.href: "http://{{ ansible_nas_hostname }}:{{ seafile_port }}"
+          homepage.description: File sync and share
   when: seafile_enabled is true
 
 - name: Stop Seafile
