@@ -42,10 +42,11 @@
         restart_policy: unless-stopped
         memory: "{{ ollama_webui_memory }}"
         labels:
-          flame.type: "application"
-          flame.name: "Ollama"
-          flame.url: "https://jezyk:{{ ollama_webui_port }}/"
-          flame.icon: "https://ollama.ai/public/ollama.png"
+          homepage.group: Applications
+          homepage.name: Ollama
+          homepage.icon: ollama
+          homepage.href: "http://{{ ansible_nas_hostname }}:{{ ollama_webui_port }}"
+          homepage.description: Large language models
   when: ollama_enabled is true
 
 - name: Stop Ollama
