@@ -1,0 +1,27 @@
+---
+dawarich_enabled: false
+dawarich_available_externally: false
+dawarich_directory: "{{ docker_home }}/dawarich"
+
+# network
+dawarich_network_name: "dawarich_network"
+dawarich_port: "3888"
+
+# docker
+dawarich_redis_container_name: "dawarich_redis"
+dawarich_redis_image_name: "redis"
+dawarich_redis_image_version: "7.0-alpine"
+
+dawarich_pg_container_name: "dawarich_pg"
+dawarich_pg_image_name: "postgis/postgis"
+dawarich_pg_image_version: "14-3.5-alpine"
+dawarich_pg_user: dawarich_pg_user
+dawarich_pg_password: "zaDHAAA9rEYX"
+
+dawarich_sidekiq_container_name: "dawarich_sidekiq"
+dawarich_app_container_name: "dawarich_app"
+dawarich_image_name: "freikin/dawarich"
+dawarich_image_version: "latest"
+
+# specs
+dawarich_memory: 1g
