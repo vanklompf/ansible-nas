@@ -1,0 +1,48 @@
+---
+- name: Start Adguard
+  block:
+    - name: Create Adguard Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ adguard_data_directory }}/workdir"
+        - "{{ adguard_data_directory }}/conf"
+
+    - name: Adguard Docker Container
+      community.docker.docker_container:
+        name: "{{ adguard_container_name }}"
+        image: "{{ adguard_image_name }}:{{ adguard_image_version }}"
+        hostname: "{{ ansible_nas_hostname }}.{{ ansible_nas_domain }}"
+        state: started
+        pull: true
+        ports:
+          - "{{ ansible_nas_ip }}:53:53/udp"
+          - "{{ ansible_nas_ip }}:53:53/tcp"
+          - "{{ ansible_nas_ip }}:5343:5343/udp"
+          - "{{ ansible_nas_ip }}:5343:5343/tcp"
+          - "{{ ansible_nas_ip }}:853:853"
+          - "{{ adguard_port }}:3000"
+        volumes:
+          - "{{ adguard_data_directory }}/workdir:/opt/adguardhome/work"
+          - "{{ adguard_data_directory }}/conf:/opt/adguardhome/conf"
+        restart_policy: unless-stopped
+        memory: "{{ adguard_memory }}"
+        labels:
+          homepage.group: "System"
+          homepage.name: "Adguard"
+          homepage.icon: "adguard-home"
+          homepage.href: "http://{{ ansible_nas_hostname }}:{{ adguard_port }}"
+          homepage.widget.type: adguard
+          homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ adguard_port }}"
+          homepage.widget.username: "{{ adguard_username }}"
+          homepage.widget.password: "{{ adguard_password }}"
+  when: adguard_enabled is true
+
+- name: Stop Adguard
+  block:
+    - name: Stop Adguard
+      community.docker.docker_container:
+        name: "{{ adguard_container_name }}"
+        state: absent
+  when: adguard_enabled is false

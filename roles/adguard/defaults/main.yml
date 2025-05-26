@@ -1,0 +1,18 @@
+---
+adguard_enabled: false
+adguard_available_externally: false
+adguard_data_directory: "{{ docker_home }}/adguard"
+adguard_username: "user"
+adguard_password: "password"
+
+# network
+adguard_hostname: "adguard"
+adguard_port: "3886"
+
+# docker
+adguard_container_name: "adguard"
+adguard_image_name: "adguard/adguardhome"
+adguard_image_version: "latest"
+
+# specs
+adguard_memory: 1g
