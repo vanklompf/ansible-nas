@@ -22,14 +22,14 @@ pretix_image_version: "stable"
 
 pretix_db_container_name: "pretix-db"
 pretix_db_image_name: "postgres"
-pretix_db_image_version: "15"
+pretix_db_image_version: "16-alpine3.20"
 
 pretix_redis_container_name: "pretix-redis"
 pretix_redis_image_name: "redis"
-pretix_redis_image_version: "alpine"
+pretix_redis_image_version: "alpine3.20"
 
 # specs
-pretix_memory: 1g
+pretix_memory: 4g
 pretix_db_memory: 1g
 pretix_redis_memory: 1g
 
@@ -39,6 +39,7 @@ pretix_postgres_user: "pretix"
 pretix_postgres_db: "pretix"
 pretix_url: "https://{{ pretix_hostname }}.{{ ansible_nas_domain }}"
 pretix_currency: "EUR"
+pretix_instance_name: "My Pretix Instance"
 pretix_db_backend: "postgresql"
 pretix_postgres_db_host: "{{ pretix_db_container_name }}"
 pretix_from_email: "pretix@{{ ansible_nas_domain }}"
