@@ -40,10 +40,11 @@
           traefik.http.routers.duplicacy.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.duplicacy.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.duplicacy.loadbalancer.server.port: "3875"
-          flame.type: "application"
-          flame.name: "Duplicacy"
-          flame.url: "http://jezyk:{{ duplicacy_port }}/"
-          flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/duplicacy.png"
+          homepage.group: Applications
+          homepage.name: Duplicacy
+          homepage.icon: duplicacy
+          homepage.href: "http://{{ ansible_nas_hostname }}:{{ duplicacy_port }}"
+          homepage.description : "A new generation cross-platform cloud backup tool"
         network_mode: host
   when: duplicacy_enabled is true
 

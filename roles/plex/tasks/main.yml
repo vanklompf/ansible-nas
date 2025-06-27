@@ -41,6 +41,16 @@
           traefik.http.routers.plex.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.plex.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.plex.loadbalancer.server.port: "32400"
+          homepage.group: Media
+          homepage.name: Plex
+          homepage.icon: plex.png
+          homepage.href: "http://{{ ansible_nas_hostname }}:32400"
+          homepage.widget.type: tautulli
+          homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ tautulli_port }}"
+          homepage.widget.key: "{{ tautulli_api_key }}"
+          homepage.widget.enableUser: "true"
+          homepage.widget.showEpisodeNumber: "true"
+
     - name: Start Plex Autoscan
       block:
         - name: Create config file

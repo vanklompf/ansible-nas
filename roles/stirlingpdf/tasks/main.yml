@@ -25,7 +25,8 @@
           TZ: "{{ ansible_nas_timezone }}"
           PUID: "{{ stirlingpdf_user_id | quote }}"
           PGID: "{{ stirlingpdf_group_id | quote }}"
-          DOCKER_ENABLE_SECURITY: "false"
+          DOCKER_ENABLE_SECURITY: "true"
+          SECURITY_ENABLELOGIN: "false"
           INSTALL_BOOK_AND_ADVANCED_HTML_OPS: "{{ stirlingpdf_install_book_and_advanced_html_ops }}"
           LANGS: "{{ stirlingpdf_langs }}"
         restart_policy: unless-stopped
@@ -37,11 +38,11 @@
           traefik.http.routers.stirlingpdf.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.stirlingpdf.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.stirlingpdf.loadbalancer.server.port: "8080"
-          flame.type: "application"
-          flame.name: "Stirling Pdf"
-          flame.url: "http://jezyk:{{ stirlingpdf_port }}"
-          flame.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/stirling-pdf.png"
-
+          homepage.group: Applications
+          homepage.name: StirlingPdf
+          homepage.icon: stirling-pdf
+          homepage.href: "http://{{ ansible_nas_hostname }}:{{ stirlingpdf_port }}"
+          homepage.description : "Free Adobe Acrobat Alternative"
   when: stirlingpdf_enabled is true
 
 - name: Stop Stirling-PDF

@@ -21,6 +21,7 @@
           homepage.group: System
           homepage.name: Watchtower
           homepage.icon: watchtower.png
+          homepage.href: "http://{{ ansible_nas_hostname }}:{{ watchtower_port }}"
           homepage.widget.type: watchtower
           homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ watchtower_port }}"
           homepage.widget.key: "{{ watchtower_api_token }}"
