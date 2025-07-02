@@ -97,6 +97,10 @@
       tags:
         - authentik
 
+    - role: bambustudio
+      tags:
+        - bambustudio
+
     - role: barcodebuddy
       tags:
         - barcodebuddy
