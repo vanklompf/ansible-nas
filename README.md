@@ -27,6 +27,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Aria2](https://github.com/aria2/aria2) - a lightweight multi-protocol & multi-source, cross platform download utility operated in command-line
 * [Authelia](https://www.authelia.com/) - The Single Sign-On Multi-Factor portal for web apps
 * [Authentik](https://goauthentik.io/) - an open-source Identity Provider focused on flexibility and versatility
+* [Bambu Studio](https://bambulab.com/en/download/studio) - an open-source, cutting-edge, feature-rich slicing software
 * [Barcode Buddy](https://github.com/Forceu/barcodebuddy/) - Barcode system for Grocy
 * [Baserow](https://gitlab.com/baserow/baserow) - an open source no-code database and Airtable alternative
 * [Bazarr](https://github.com/morpheus65535/bazarr) - companion to Radarr and Sonarr for downloading subtitles

@@ -1,0 +1,55 @@
+---
+bambustudio_enabled: false
+bambustudio_available_externally: false
+
+# directories
+bambustudio_data_directory: "{{ docker_home }}/bambustudio"
+
+# network
+bambustudio_http_port: "3036"
+bambustudio_https_port: "3037"
+bambustudio_hostname: "bambustudio"
+bambustudio_network_name: "bambustudio"
+bambustudio_networks:
+  - name: "{{ bambustudio_network_name }}"
+
+# specs
+bambustudio_memory: 1g
+
+# docker
+bambustudio_container_name: bambustudio
+bambustudio_image_name: "lscr.io/linuxserver/bambustudio" # or index.docker.io/bambustudio/bambustudio-ee
+bambustudio_image_version: latest
+bambustudio_user_id: "1000"
+bambustudio_group_id: "1000"
+
+# bambustudio
+bambustudio_custom_port: "3000"
+bambustudio_custom_https_port: "3001"
+bambustudio_custom_user: "abc"
+bambustudio_password: "abc"
+bambustudio_subfolder: ""
+bambustudio_title: "Bambu Studio VNC"
+bambustudio_fm_home: "/config"
+bambustudio_start_docker: "false"
+bambustudio_drinode: "/dev/dri/renderD128"
+bambustudio_disable_ipv6: "true"
+bambustudio_lc_all: "en_EN.UTF-8"
+bambustudio_no_decor: "false"
+bambustudio_no_full: "true"
+bambustudio_security_opts: "seccomp=unconfined"
+
+bambustudio_env:
+  CUSTOM_PORT: "{{ bambustudio_custom_port }}"
+  CUSTOM_HTTPS_PORT: "{{ bambustudio_custom_https_port }}"
+  CUSTOM_USER: "{{ bambustudio_custom_user }}"
+  PASSWORD: "{{ bambustudio_password }}"
+  SUBFOLDER: "{{ bambustudio_subfolder }}"
+  TITLE: "{{ bambustudio_title }}"
+  FM_HOME: "{{ bambustudio_fm_home }}"
+  START_DOCKER: "{{ bambustudio_start_docker }}"
+  DRINODE: "{{ bambustudio_drinode }}"
+  DISABLE_IPV6: "{{ bambustudio_disable_ipv6 }}"
+  LC_ALL: "{{ bambustudio_lc_all }}"
+  NO_DECOR: "{{ bambustudio_no_decor }}"
+  NO_FULL: "{{ bambustudio_no_full }}"
