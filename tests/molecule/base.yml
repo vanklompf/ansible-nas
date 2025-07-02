@@ -36,6 +36,8 @@ provisioner:
   playbooks:
     prepare: ../../../../tests/molecule/resources/playbooks/prepare.yml
     converge: ../../../../tests/molecule/resources/playbooks/converge.yml
+  env:
+    ANSIBLE_ROLES_PATH: ../../../../roles/
 verifier:
   name: ansible
 scenario:

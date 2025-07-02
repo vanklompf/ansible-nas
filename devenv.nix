@@ -22,19 +22,9 @@
       enable = true;
       version = "3.12";
       uv.enable = true;
+      uv.sync.enable = true;
       venv.enable = true;
-      venv.requirements = ''
-        pre-commit>=4.0.1
-        molecule>=24.9.0
-        pytest>=8.3.4
-        pytest-molecule>=2.0.0
-        molecule-plugins[docker]>=23.5.3
-        yamllint>=1.35.1
-        ansible-lint>=24.10.0
-        pymarkdownlnt>=0.9.25
-        ansible>=11.1.0
-        jmespath>=1.0.1
-      '';
+      venv.requirements = ./requirements-dev.txt;
     };
     ansible = {
       enable = true;
@@ -51,6 +41,14 @@
     EOF
     echo
   '';
+
+  scripts.setup = {
+    exec = ''
+      echo '🛠️ Running setup'
+      uv pip sync requirements-dev.txt
+    '';
+    description = "Install dependencies";
+  };
 
   scripts.run = {
     exec = ''
