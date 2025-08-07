@@ -1,0 +1,47 @@
+---
+- name: Start Handbrake
+  block:
+    - name: Create Handbrake Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ handbrake_data_directory }}"
+
+    - name: Create Handbrake Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ handbrake_container_name }}"
+        image: "{{ handbrake_image_name }}:{{ handbrake_image_version }}"
+        pull: true
+        volumes:
+          - "{{ handbrake_data_directory }}/config:/config:rw"
+          - "{{ samba_shares_root }}:/storage:ro"
+          - "{{ samba_shares_root }}/dump:/output:rw"
+        ports:
+          - "{{ handbrake_port }}:5800"
+        env:
+          TZ: "{{ ansible_nas_timezone }}"
+          USER_ID: "{{ handbrake_user_id }}"
+          GROUP_ID: "{{ handbrake_group_id }}"
+          DISPLAY_WIDTH: "1280"
+          DISPLAY_HEIGHT: "720"
+          APP_NICENESS: "10"
+        restart_policy: unless-stopped
+        memory: "{{ handbrake_memory }}"
+        memory_swap: "{{ handbrake_memory }}"
+        labels:
+          homepage.group: Applications
+          homepage.name: Handbrake
+          homepage.icon: handbrake
+          homepage.href: "http://{{ ansible_nas_hostname }}:{{ handbrake_port }}"
+          homepage.description : "Cconverting video"
+  when: handbrake_enabled is true
+
+- name: Stop Handbrake
+  block:
+    - name: Stop Handbrake
+      community.docker.docker_container:
+        name: "{{ handbrake_container_name }}"
+        state: absent
+  when: handbrake_enabled is false

@@ -1,0 +1,20 @@
+---
+handbrake_enabled: false
+handbrake_available_externally: false
+
+# directories
+handbrake_data_directory: "{{ docker_home }}/handbrake"
+
+# network
+handbrake_port: "3891"
+handbrake_hostname: "handbrake"
+
+# specs
+handbrake_memory: 8g
+
+# docker
+handbrake_container_name: handbrake
+handbrake_image_name: "jlesage/handbrake"
+handbrake_image_version: latest
+handbrake_user_id: "1000"
+handbrake_group_id: "1000"
