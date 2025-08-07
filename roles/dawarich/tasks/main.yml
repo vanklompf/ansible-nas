@@ -74,7 +74,7 @@
           - "{{ dawarich_port }}:3000"
         env:
           RAILS_ENV: "development"
-          REDIS_URL: "redis://{{ dawarich_redis_container_name }}:6379/0"
+          REDIS_URL: "redis://{{ dawarich_redis_container_name }}:6379"
           DATABASE_HOST: "{{ dawarich_pg_container_name }}"
           DATABASE_USERNAME: "{{ dawarich_pg_user }}"
           DATABASE_PASSWORD: "{{ dawarich_pg_password }}"
@@ -114,7 +114,7 @@
           - "{{ dawarich_directory }}/storage:/var/app/storage"
         env:
           RAILS_ENV: "development"
-          REDIS_URL: "redis://{{ dawarich_redis_container_name }}:6379/0"
+          REDIS_URL: "redis://{{ dawarich_redis_container_name }}:6379"
           DATABASE_HOST: "{{ dawarich_pg_container_name }}"
           DATABASE_USERNAME: "{{ dawarich_pg_user }}"
           DATABASE_PASSWORD: "{{ dawarich_pg_password }}"

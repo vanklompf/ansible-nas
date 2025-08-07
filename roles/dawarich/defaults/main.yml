@@ -10,7 +10,7 @@ dawarich_port: "3888"
 # docker
 dawarich_redis_container_name: "dawarich_redis"
 dawarich_redis_image_name: "redis"
-dawarich_redis_image_version: "7.0-alpine"
+dawarich_redis_image_version: "7.4-alpine"
 
 dawarich_pg_container_name: "dawarich_pg"
 dawarich_pg_image_name: "postgis/postgis"
