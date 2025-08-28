@@ -897,6 +897,10 @@
       tags:
         - sonarr
 
+    - role: sparkyfitness
+      tags:
+        - sparkyfitness
+
     - role: speedtest-tracker
       tags:
         - speedtest-tracker
