@@ -42,4 +42,3 @@ The core philosophy is to provide a stable, maintainable, and flexible NAS solut
 * **Documentation:** Add documentation for new applications in `roles/<application>/docs/` and in `website/docs/` and update the main `README.md` list.
 * **Testing:** Include Molecule tests for new roles.
 * **PRs:** Focus on one piece of functionality or bugfix per pull request.
-
