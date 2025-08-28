@@ -1,0 +1,40 @@
+---
+sparkyfitness_enabled: false
+sparkyfitness_available_externally: false
+
+# directories
+sparkyfitness_data_directory: "{{ docker_home }}/sparkyfitness"
+sparkyfitness_postgresql_data_directory: "{{ sparkyfitness_data_directory }}/postgresql"
+
+# network
+sparkyfitness_port: "3004"
+sparkyfitness_hostname: "sparkyfitness"
+sparkyfitness_db_port: "5432"
+
+# specs
+sparkyfitness_memory: 1g
+sparkyfitness_db_memory: 512m
+sparkyfitness_network_name: "sparkyfitness"
+
+# docker
+sparkyfitness_frontend_container_name: sparkyfitness-frontend
+sparkyfitness_server_container_name: sparkyfitness-server
+sparkyfitness_db_container_name: sparkyfitness-db
+
+# images
+sparkyfitness_frontend_image: codewithcj/sparkyfitness:latest
+sparkyfitness_server_image: codewithcj/sparkyfitness_server:latest
+sparkyfitness_db_image: postgres:15-alpine
+
+# environment variables
+sparkyfitness_log_level: "info"
+sparkyfitness_db_name: "sparkyfitness"
+sparkyfitness_db_user: "sparkyfitness"
+sparkyfitness_db_password: "sparkyfitness"
+# You can generate a new secret on the command line with:
+# openssl rand -base64 44
+sparkyfitness_api_encryption_key: "6FY0aTuea4NiExORg0FmWZ4SrfZpQ6h3LhPletQ/YhCPhd1BtT/MHny27/82mziB"
+sparkyfitness_jwt_secret: "6FY0aTuea4NiExORg0FmWZ4SrfZpQ6h3LhPletQ/YhCPhd1BtT/MHny27/82mziB"
+sparkyfitness_frontend_url: "http://localhost:3004"
+sparkyfitness_disable_signup: "false"
+sparkyfitness_admin_email: "admin@example.com"
