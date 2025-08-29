@@ -6,7 +6,7 @@ dawarich_directory: "{{ docker_home }}/dawarich"
 # network
 dawarich_network_name: "dawarich_network"
 dawarich_port: "3888"
-
+dawarich_hostname: dawarich
 # docker
 dawarich_redis_container_name: "dawarich_redis"
 dawarich_redis_image_name: "redis"
