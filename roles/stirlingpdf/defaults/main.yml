@@ -7,7 +7,7 @@ stirlingpdf_data_directory: "{{ docker_home }}/stirlingpdf"
 
 # network
 stirlingpdf_port: "8124"
-stirlingpdf_hostname: "stirlingpdf"
+stirlingpdf_hostname: "pdf"
 
 # specs
 stirlingpdf_memory: 1g
