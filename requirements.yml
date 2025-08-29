@@ -12,8 +12,6 @@ roles:
 
   - name: andrewrothstein.restic
 
-  - name: artis3n.tailscale
-
 collections:
   - name: ansible.posix
   - name: community.crypto
@@ -21,3 +19,4 @@ collections:
   - name: community.general
   - name: community.windows
   - name: vladgh.samba
+  - name: artis3n.tailscale
