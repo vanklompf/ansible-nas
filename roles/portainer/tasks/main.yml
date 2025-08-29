@@ -33,12 +33,12 @@
           traefik.http.routers.portainer.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.portainer.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.portainer.loadbalancer.server.port: "9443"
-          traefik.http.routers.portainer.middlewares: "portainer-ipallowlist@docker"
-          traefik.http.middlewares.portainer-ipallowlist.ipallowlist.sourcerange: "{{ portainer_ip_allowlist }}"
+          #traefik.http.routers.portainer.middlewares: "portainer-ipallowlist@docker"
+          #traefik.http.middlewares.portainer-ipallowlist.ipallowlist.sourcerange: "{{ portainer_ip_allowlist }}"
           homepage.group: System
           homepage.name: Portainer
           homepage.icon: portainer
-          homepage.href: "https://{{ ansible_nas_hostname }}:{{ portainer_port }}"
+          homepage.href: "https://{{ portainer_hostname }}.{{ ansible_nas_domain }}"
           homepage.description: Container management
           homepage.widget.type: portainer
           homepage.widget.url: "https://{{ ansible_nas_hostname }}:{{ portainer_port }}"
