@@ -85,6 +85,10 @@
       tags:
         - appsmith
 
+    - role: arcane
+      tags:
+        - arcane
+
     - role: aria2
       tags:
         - aria2

@@ -1,0 +1,24 @@
+---
+arcane_enabled: false
+arcane_available_externally: false
+
+# directories
+arcane_data_directory: '{{ docker_home }}/arcane'
+
+# network
+arcane_port: '3552'
+arcane_hostname: arcane
+
+# specs
+arcane_memory: 1g
+
+# docker
+arcane_container_name: arcane
+arcane_image_name: ghcr.io/ofkm/arcane
+arcane_image_version: latest
+arcane_user_id: '1000'
+arcane_group_id: '1000'
+
+# arcane
+arcane_encryption_key: BfSQVy0XxFr3lyZHU1zAbCIBc25C5cJg23wLu2VSUPQ=
+arcane_jwt_secret: 6FY0aTuea4NiExORg0FmWZ4SrfZpQ6h3LhPletQ/YhCPhd1BtT/MHny27/82mziB
