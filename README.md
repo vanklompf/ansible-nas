@@ -24,6 +24,7 @@ If you have a spare domain name you can configure applications to be accessible 
 * [Airsonic](https://airsonic.github.io/) - catalog and stream music
 * [Apcupsd](http://www.apcupsd.org/) - A daemon for controlling APC UPSes
 * [Appsmith](https://www.appsmith.com/) -  low-code application platform to quickly build, deploy, and manage effective software
+* [Arcane](https://github.com/ofkm/arcane) - A self-hosted platform for managing and deploying applications with Docker
 * [Aria2](https://github.com/aria2/aria2) - a lightweight multi-protocol & multi-source, cross platform download utility operated in command-line
 * [Authelia](https://www.authelia.com/) - The Single Sign-On Multi-Factor portal for web apps
 * [Authentik](https://goauthentik.io/) - an open-source Identity Provider focused on flexibility and versatility

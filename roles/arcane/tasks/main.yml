@@ -1,0 +1,54 @@
+---
+- name: Start Arcane
+  block:
+    - name: Create Arcane Directories
+      ansible.builtin.file:
+        path: '{{ item }}'
+        state: directory
+        mode: '0755'
+      with_items:
+        - '{{ arcane_data_directory }}'
+        - '{{ arcane_data_directory }}/data'
+        - '{{ arcane_data_directory }}/projects'
+    - name: Create Arcane Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: '{{ arcane_container_name }}'
+        image: '{{ arcane_image_name }}:{{ arcane_image_version }}'
+        pull: true
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+          - '{{ arcane_data_directory }}/data:/app/data:rw'
+          - '{{ arcane_data_directory }}/projects:/app/data/projects:rw'
+        ports: ['{{ arcane_port }}:3552']
+        env:
+          PUID: '{{ arcane_user_id }}'
+          PGID: '{{ arcane_group_id }}'
+          ENCRYPTION_KEY: '{{ arcane_encryption_key }}'
+          JWT_SECRET: '{{ arcane_jwt_secret }}'
+        restart_policy: unless-stopped
+        memory: '{{ arcane_memory }}'
+        labels:
+          traefik.enable: '{{ arcane_available_externally | string }}'
+          traefik.http.routers.arcane.rule: Host(`{{ arcane_hostname }}.{{ ansible_nas_domain
+            }}`)
+          # traefik.http.routers.arcane.tls.certresolver: letsencrypt
+          # traefik.http.routers.arcane.tls.domains[0].main: '{{ ansible_nas_domain }}'
+          # traefik.http.routers.arcane.tls.domains[0].sans: '*.{{ ansible_nas_domain }}'
+          traefik.http.services.arcane.loadbalancer.server.port: '3552'
+        healthcheck:
+          test:
+            - CMD-SHELL
+            - curl -fsS http://localhost:3552/api/health >/dev/null || exit 1
+          interval: 10s
+          timeout: 3s
+          retries: 5
+          start_period: 15s
+  when: arcane_enabled is true
+- name: Stop Arcane
+  block:
+    - name: Stop Arcane
+      community.docker.docker_container:
+        name: '{{ arcane_container_name }}'
+        state: absent
+  when: arcane_enabled is false
