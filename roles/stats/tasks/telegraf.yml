@@ -3,30 +3,27 @@
   block:
     - name: Create Telegraf Directory
       ansible.builtin.file:
-        path: "{{ item }}"
+        path: '{{ item }}'
         state: directory
-      with_items:
-        - "{{ stats_telegraf_config_directory }}"
-
+      with_items: ['{{ stats_telegraf_config_directory }}']
     - name: Template telegraf.conf
       ansible.builtin.template:
         src: telegraf.conf.j2
-        dest: "{{ stats_telegraf_config_directory }}/telegraf.conf"
-      register: telegraf_config
-
+        dest: '{{ stats_telegraf_config_directory }}/telegraf.conf'
+      register: stats_config
     - name: Get Docker daemon uid
       ansible.builtin.command: stat -c '%g' /var/run/docker.sock
-      register: docker_uid
+      register: stats_docker_uid
       changed_when: false
-
     - name: Telegraf Docker Container
       community.docker.docker_container:
-        name: "{{ stats_telegraf_container_name }}"
-        image: "{{ stats_telegraf_docker_image_name }}:{{ stats_telegraf_docker_image_version }}"
+        name: '{{ stats_telegraf_container_name }}'
+        image: '{{ stats_telegraf_docker_image_name }}:{{ stats_telegraf_docker_image_version
+          }}'
         pull: true
         networks:
-          - name: "{{ stats_network_name }}"
-        network_mode: "{{ stats_network_name }}"
+          - name: '{{ stats_network_name }}'
+        network_mode: '{{ stats_network_name }}'
         container_default_behavior: no_defaults
         privileged: true
         ipc_mode: host
@@ -36,32 +33,31 @@
             +
             [stats_telegraf_port + ':9273']
           }}
-        user: "telegraf:{{ docker_uid.stdout }}"
+        user: telegraf:{{ stats_docker_uid.stdout }}
         volumes:
-          - "{{ stats_telegraf_config_directory }}:/etc/telegraf/:ro"
-          - "/var/run/docker.sock:/var/run/docker.sock:ro"
-          - "/:/hostfs:ro"
-          - "/etc:/hostfs/etc:ro"
-          - "/proc:/hostfs/proc:ro"
-          - "/sys:/hostfs/sys:ro"
-          - "/var:/hostfs/var:ro"
-          - "/run:/hostfs/run:ro"
+          - '{{ stats_telegraf_config_directory }}:/etc/telegraf/:ro'
+          - /var/run/docker.sock:/var/run/docker.sock:ro
+          - /:/hostfs:ro
+          - /etc:/hostfs/etc:ro
+          - /proc:/hostfs/proc:ro
+          - /sys:/hostfs/sys:ro
+          - /var:/hostfs/var:ro
+          - /run:/hostfs/run:ro
         env:
-          HOST_ETC: "/hostfs/etc"
-          HOST_PROC: "/hostfs/proc"
-          HOST_SYS: "/hostfs/sys"
-          HOST_VAR: "/hostfs/var"
-          HOST_RUN: "/hostfs/run"
-          HOST_MOUNT_PREFIX: "/hostfs"
+          HOST_ETC: /hostfs/etc
+          HOST_PROC: /hostfs/proc
+          HOST_SYS: /hostfs/sys
+          HOST_VAR: /hostfs/var
+          HOST_RUN: /hostfs/run
+          HOST_MOUNT_PREFIX: /hostfs
         restart_policy: unless-stopped
         memory: 1g
-        restart: "{{ telegraf_config is changed }}"
+        restart: '{{ telegraf_config is changed }}'
   when: stats_enabled is true
-
 - name: Stop Telegraf
   block:
     - name: Stop Telegraf
       community.docker.docker_container:
-        name: "{{ stats_telegraf_container_name }}"
+        name: '{{ stats_telegraf_container_name }}'
         state: absent
   when: stats_enabled is false

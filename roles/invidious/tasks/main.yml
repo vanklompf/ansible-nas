@@ -39,7 +39,7 @@
     - name: Check if we already have visitor_data and po_token cached
       ansible.builtin.stat:
         path: /tmp/visitor_data_po_token_cache.json
-      register: cache_check
+      register: invidious_cache_check
 
     - name: Run Docker container and capture visitor_data and po_token (if cache not present)
       community.docker.docker_container:
@@ -47,36 +47,36 @@
         image: "{{ invidious_docker_youtube_generator_image }}"
         detach: false
         cleanup: true
-      register: container_output
-      when: not cache_check.stat.exists
+      register: invidious_container_output
+      when: not invidious_cache_check.stat.exists
 
     - name: Extract visitor_data and po_token (if cache not present)
       ansible.builtin.set_fact:
-        visitor_data: "{{ container_output.container['Output'] | regex_search('visitor_data: (.+?)\\n', '\\1') | first }}"
-        po_token: "{{ container_output.container['Output'] | regex_search('po_token: (.+?)\\n', '\\1') | first }}"
-      when: not cache_check.stat.exists
+        invidious_visitor_data: "{{ invidious_container_output.container['Output'] | regex_search('visitor_data: (.+?)\\n', '\\1') | first }}"
+        invidious_po_token: "{{ invidious_container_output.container['Output'] | regex_search('po_token: (.+?)\\n', '\\1') | first }}"
+      when: not invidious_cache_check.stat.exists
 
     - name: Cache visitor_data and po_token in a file
       ansible.builtin.copy:
         content: |
           {
-            "visitor_data": "{{ visitor_data }}",
-            "po_token": "{{ po_token }}"
+            "visitor_data": "{{ invidious_visitor_data }}",
+            "po_token": "{{ invidious_po_token }}"
           }
         dest: /tmp/visitor_data_po_token_cache.json
-      when: not cache_check.stat.exists
+      when: not invidious_cache_check.stat.exists
 
     - name: Load cached visitor_data and po_token (if cache exists)
       ansible.builtin.slurp:
         src: /tmp/visitor_data_po_token_cache.json
-      register: cached_data
-      when: cache_check.stat.exists
+      register: invidious_cached_data
+      when: invidious_cache_check.stat.exists
 
     - name: Set facts from cached data
       ansible.builtin.set_fact:
-        visitor_data: "{{ cached_data.content | b64decode | from_json | json_query('visitor_data') }}"
-        po_token: "{{ cached_data.content | b64decode | from_json | json_query('po_token') }}"
-      when: cache_check.stat.exists
+        invidious_visitor_data: "{{ invidious_cached_data.content | b64decode | from_json | json_query('visitor_data') }}"
+        invidious_po_token: "{{ invidious_cached_data.content | b64decode | from_json | json_query('po_token') }}"
+      when: invidious_cache_check.stat.exists
       tags: molecule-idempotence-notest
 
     # - name: Display captured variables
