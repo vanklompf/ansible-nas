@@ -17,6 +17,11 @@
         state: started
         pull: true
         ports:
+          - "{{ ansible_nas_tailscale_ip }}:53:53/udp"
+          - "{{ ansible_nas_tailscale_ip }}:53:53/tcp"
+          - "{{ ansible_nas_tailscale_ip }}:5343:5343/udp"
+          - "{{ ansible_nas_tailscale_ip }}:5343:5343/tcp"
+          - "{{ ansible_nas_tailscale_ip }}:853:853"
           - "{{ ansible_nas_ip }}:53:53/udp"
           - "{{ ansible_nas_ip }}:53:53/tcp"
           - "{{ ansible_nas_ip }}:5343:5343/udp"
@@ -29,10 +34,16 @@
         restart_policy: unless-stopped
         memory: "{{ adguard_memory }}"
         labels:
+          traefik.enable: "{{ adguard_available_externally | string }}"
+          traefik.http.routers.adguard.rule: "Host(`{{ adguard_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.adguard.tls.certresolver: "letsencrypt"
+          traefik.http.routers.adguard.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.adguard.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.adguard.loadbalancer.server.port: "3000"
           homepage.group: "System"
           homepage.name: "Adguard"
           homepage.icon: "adguard-home"
-          homepage.href: "http://{{ ansible_nas_hostname }}:{{ adguard_port }}"
+          homepage.href: "https://{{ adguard_hostname }}.{{ ansible_nas_domain }}"
           homepage.widget.type: adguard
           homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ adguard_port }}"
           homepage.widget.username: "{{ adguard_username }}"
