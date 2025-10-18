@@ -1,0 +1,23 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+    - name: Get booklore container state
+      community.docker.docker_container:
+        name: '{{ booklore_container_name }}'
+      register: result
+    - name: Get booklore db container state
+      community.docker.docker_container:
+        name: '{{ booklore_mariadb_container_name }}'
+      register: result_mariadb
+    - name: Check if booklore containers are running
+      ansible.builtin.assert:
+        that:
+          - result.container['State']['Status'] == "running"
+          - result.container['State']['Restarting'] == false
+          - result_mariadb.container['State']['Status'] == "running"
+          - result_mariadb.container['State']['Restarting'] == false
