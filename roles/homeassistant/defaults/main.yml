@@ -22,7 +22,8 @@ mosquitto_port_a: "1883"
 mosquitto_port_b: "9001"
 zigbee2mqtt_port: "3882"
 
-homeassistant_hostname: "homeassistant"
+homeassistant_hostname: "home"
+zigbee2mqtt_hostname: "z2m"
 
 # docker
 homeassistant_container_name: "homeassistant"
