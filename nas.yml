@@ -1,26 +1,16 @@
 ---
 - name: Ansible-NAS
   hosts: all
-
   roles:
     ###
     ### Requirements
     ###
     - role: ansible-nas-users
-      tags:
-        - ansible-nas-users
-        - ansible-nas
-
+      tags: [ansible-nas-users, ansible-nas]
     - role: vladgh.samba.server
-      tags:
-        - samba
-        - skip_ansible_lint
-
+      tags: [samba, skip_ansible_lint]
     - role: geerlingguy.nfs
-      tags:
-        - nfs
-        - skip_ansible_lint
-
+      tags: [nfs, skip_ansible_lint]
     - role: geerlingguy.docker
       vars:
         docker_apt_filename: download_docker_com_linux_ubuntu
@@ -32,10 +22,7 @@
     ### Ansible-NAS Roles
     ###
     - role: ansible-nas-general
-      tags:
-        - ansible-nas-general
-        - ansible-nas
-
+      tags: [ansible-nas-general, ansible-nas]
     - role: ansible-nas-docker
       tags:
         - ansible-nas-docker
@@ -44,1023 +31,518 @@
     ###
     ### Stacks
     ###
-
     - role: logging
       tags:
         - logging
-
 
     ###
     ### Applications
     ###
     - role: activepieces
-      tags:
-        - activepieces
-
+      tags: [activepieces]
     - role: actual
-      tags:
-        - actual
-
+      tags: [actual]
     - role: admidio
-      tags:
-        - admidio
-
+      tags: [admidio]
     - role: adventure_log
-      tags:
-        - adventure_log
-
+      tags: [adventure_log]
     - role: affine
-      tags:
-        - affine
-
+      tags: [affine]
     - role: airsonic
-      tags:
-        - airsonic
-
+      tags: [airsonic]
     - role: apcupsd
-      tags:
-        - apcupsd
-
+      tags: [apcupsd]
     - role: appsmith
-      tags:
-        - appsmith
-
+      tags: [appsmith]
     - role: arcane
-      tags:
-        - arcane
-
+      tags: [arcane]
     - role: aria2
-      tags:
-        - aria2
-
+      tags: [aria2]
     - role: authelia
-      tags:
-        - authelia
-
+      tags: [authelia]
     - role: authentik
-      tags:
-        - authentik
-
+      tags: [authentik]
     - role: bambustudio
-      tags:
-        - bambustudio
-
+      tags: [bambustudio]
     - role: barcodebuddy
-      tags:
-        - barcodebuddy
-
+      tags: [barcodebuddy]
     - role: baserow
-      tags:
-        - baserow
-
+      tags: [baserow]
     - role: bazarr
-      tags:
-        - bazarr
-
+      tags: [bazarr]
     - role: beets
-      tags:
-        - beets
-
+      tags: [beets]
     - role: blaze
-      tags:
-        - blaze
-
+      tags: [blaze]
     - role: blocky
-      tags:
-        - blocky
-
+      tags: [blocky]
+    - role: booklore
+      tags: [booklore]
     - role: budibase
-      tags:
-        - budibase
-
+      tags: [budibase]
     - role: calibre
-      tags:
-        - calibre
-
+      tags: [calibre]
     - role: calibreweb
-      tags:
-        - calibreweb
-
+      tags: [calibreweb]
     - role: cwa
-      tags:
-        - cwa
-
+      tags: [cwa]
     - role: casdoor
-      tags:
-        - casdoor
-
+      tags: [casdoor]
     - role: changedetection
-      tags:
-        - changedetection
-
+      tags: [changedetection]
     - role: chatpad
-      tags:
-        - chatpad
-
+      tags: [chatpad]
     - role: chatwoot
-      tags:
-        - chatwoot
-
+      tags: [chatwoot]
     - role: claper
-      tags:
-        - claper
-
+      tags: [claper]
     - role: cloudcmd
-      tags:
-        - cloudcmd
-
+      tags: [cloudcmd]
     - role: cloudflare_ddns
-      tags:
-        - cloudflare_ddns
-
+      tags: [cloudflare_ddns]
     - role: couchdb
-      tags:
-        - couchdb
-
+      tags: [couchdb]
     - role: code-server
-      tags:
-        - code-server
-
+      tags: [code-server]
     - role: commafeed
-      tags:
-        - commafeed
-
+      tags: [commafeed]
     - role: couchpotato
-      tags:
-        - couchpotato
-
+      tags: [couchpotato]
     - role: dashy
-      tags:
-        - dashy
-
+      tags: [dashy]
     - role: dbgate
-      tags:
-        - dbgate
-
+      tags: [dbgate]
     - role: ddns_updater
-      tags:
-        - ddns_updater
-
+      tags: [ddns_updater]
     - role: deluge
-      tags:
-        - deluge
-
+      tags: [deluge]
     - role: directus
-      tags:
-        - directus
-
+      tags: [directus]
     - role: dockge
-      tags:
-        - dockge
-
+      tags: [dockge]
     - role: dokuwiki
-      tags:
-        - dokuwiki
-
+      tags: [dokuwiki]
     - role: domain_watchdog
-      tags:
-        - domain_watchdog
-
+      tags: [domain_watchdog]
     - role: dozzle
-      tags:
-        - dozzle
-
+      tags: [dozzle]
     - role: drone-ci
-      tags:
-        - drone_ci
-
+      tags: [drone_ci]
     - role: duplicacy
-      tags:
-        - duplicacy
-
+      tags: [duplicacy]
     - role: duplicati
-      tags:
-        - duplicati
-
+      tags: [duplicati]
     - role: dufs
-      tags:
-        - dufs
-
+      tags: [dufs]
     - role: emby
-      tags:
-        - emby
-
+      tags: [emby]
     - role: ebusd
-      tags:
-        - ebusd
-
+      tags: [ebusd]
     - role: esphome
-      tags:
-        - esphome
-
+      tags: [esphome]
     - role: espocrm
-      tags:
-        - espocrm
-
+      tags: [espocrm]
     - role: evershop
-      tags:
-        - evershop
-
+      tags: [evershop]
     - role: excalidraw
-      tags:
-        - excalidraw
-
+      tags: [excalidraw]
     - role: firefly
-      tags:
-        - firefly
-
+      tags: [firefly]
     - role: flame
-      tags:
-        - flame
-
+      tags: [flame]
     - role: flaresolverr
-      tags:
-        - flaresolverr
-
+      tags: [flaresolverr]
     - role: flarum
-      tags:
-        - flarum
-
+      tags: [flarum]
     - role: flatnotes
-      tags:
-        - flatnotes
-
+      tags: [flatnotes]
     - role: formbricks
-      tags:
-        - formbricks
-
+      tags: [formbricks]
     - role: formio
-      tags:
-        - formio
-
+      tags: [formio]
     - role: freshrss
-      tags:
-        - freshrss
-
+      tags: [freshrss]
     - role: frigate
-      tags:
-        - frigate
-
+      tags: [frigate]
     - role: fusion
-      tags:
-        - fusion
-
+      tags: [fusion]
     - role: gaps
-      tags:
-        - gaps
-
+      tags: [gaps]
     - role: get_iplayer
-      tags:
-        - get_iplayer
-
+      tags: [get_iplayer]
     - role: ghost
-      tags:
-        - ghost
-
+      tags: [ghost]
     - role: ghostfolio
-      tags:
-        - ghostfolio
-
+      tags: [ghostfolio]
     - role: gitea
-      tags:
-        - gitea
-
+      tags: [gitea]
     - role: gitlab
-      tags:
-        - gitlab
-
+      tags: [gitlab]
     - role: glance
-      tags:
-        - glance
-
+      tags: [glance]
     - role: glances
-      tags:
-        - glances
-
+      tags: [glances]
     - role: glpi
-      tags:
-        - glpi
-
+      tags: [glpi]
     - role: gotify
-      tags:
-        - gotify
-
+      tags: [gotify]
     - role: graylog
-      tags:
-        - graylog
-
+      tags: [graylog]
     - role: grist
-      tags:
-        - grist
-
+      tags: [grist]
     - role: grocy
-      tags:
-        - grocy
-
+      tags: [grocy]
     - role: guacamole
-      tags:
-        - guacamole
-
+      tags: [guacamole]
     - role: hafusion
-      tags:
-        - hafusion
-
+      tags: [hafusion]
     - role: healthchecks.io
-      tags:
-        - healthchecks.io
-
+      tags: [healthchecks.io]
     - role: heimdall
-      tags:
-        - heimdall
-
+      tags: [heimdall]
     - role: hello_world
-      tags:
-        - hello_world
-
+      tags: [hello_world]
     - role: heyform
-      tags:
-        - heyform
-
+      tags: [heyform]
     - role: hievents
-      tags:
-        - hievents
-
+      tags: [hievents]
     - role: hoarder
-      tags:
-        - hoarder
-
+      tags: [hoarder]
     - role: homarr
-      tags:
-        - homarr
-
+      tags: [homarr]
     - role: homeassistant
-      tags:
-        - homeassistant
-
+      tags: [homeassistant]
     - role: homebridge
-      tags:
-        - homebridge
-
+      tags: [homebridge]
     - role: homepage
-      tags:
-        - homepage
-
+      tags: [homepage]
     - role: hoppscotch
-      tags:
-        - hoppscotch
-
+      tags: [hoppscotch]
     - role: huginn
-      tags:
-        - huginn
-
+      tags: [huginn]
     - role: huly
-      tags:
-        - huly
-
+      tags: [huly]
     - role: huntly
-      tags:
-        - huntly
-
+      tags: [huntly]
     - role: icbinv
-      tags:
-        - icbinv
-
+      tags: [icbinv]
     - role: immich
-      tags:
-        - immich
-
+      tags: [immich]
     - role: input
-      tags:
-        - input
-
+      tags: [input]
     - role: invidious
-      tags:
-        - invidious
-
+      tags: [invidious]
     - role: ispyagentdvr
-      tags:
-        - ispyagentdvr
-
+      tags: [ispyagentdvr]
     - role: jackett
-      tags:
-        - jackett
-
+      tags: [jackett]
     - role: jellyfin
-      tags:
-        - jellyfin
-
+      tags: [jellyfin]
     - role: joomla
-      tags:
-        - joomla
-
+      tags: [joomla]
     - role: kavita
-      tags:
-        - kavita
-
+      tags: [kavita]
     - role: keycloak
-      tags:
-        - keycloak
-
+      tags: [keycloak]
     - role: komga
-      tags:
-        - komga
-
+      tags: [komga]
     - role: krusader
-      tags:
-        - krusader
-
+      tags: [krusader]
     - role: lazylibrarian
-      tags:
-        - lazylibrarian
-
+      tags: [lazylibrarian]
     - role: leantime
-      tags:
-        - leantime
-
+      tags: [leantime]
     - role: libreddit
-      tags:
-        - libreddit
-
+      tags: [libreddit]
     - role: librephotos
-      tags:
-        - librephotos
-
+      tags: [librephotos]
     - role: librespeed
-      tags:
-        - librespeed
-
+      tags: [librespeed]
     - role: libretranslate
-      tags:
-        - libretranslate
-
+      tags: [libretranslate]
     - role: librum
-      tags:
-        - librum
-
+      tags: [librum]
     - role: lidarr
-      tags:
-        - lidarr
-
+      tags: [lidarr]
     - role: lidatube
-      tags:
-        - lidatube
-
+      tags: [lidatube]
     - role: linkding
-      tags:
-        - linkding
-
+      tags: [linkding]
     - role: linkstack
-      tags:
-        - linkstack
-
+      tags: [linkstack]
     - role: linkwarden
-      tags:
-        - linkwarden
-
+      tags: [linkwarden]
     - role: listmonk
-      tags:
-        - listmonk
-
+      tags: [listmonk]
     - role: littlelink
-      tags:
-        - littlelink
-
+      tags: [littlelink]
     - role: livehelperchat
-      tags:
-        - livehelperchat
-
+      tags: [livehelperchat]
     - role: lldap
-      tags:
-        - lldap
-
+      tags: [lldap]
     - role: loki
-      tags:
-        - loki
-
+      tags: [loki]
     - role: lowcoder
-      tags:
-        - lowcoder
-
+      tags: [lowcoder]
     - role: lubelogger
-      tags:
-        - lubelogger
-
+      tags: [lubelogger]
     - role: mainsail
-      tags:
-        - mainsail
-
+      tags: [mainsail]
     - role: mantium
-      tags:
-        - mantium
-
+      tags: [mantium]
     - role: mattermost
-      tags:
-        - mattermost
-
+      tags: [mattermost]
     - role: maybe
-      tags:
-        - maybe
-
+      tags: [maybe]
     - role: mealie
-      tags:
-        - mealie
-
+      tags: [mealie]
     - role: memos
-      tags:
-        - memos
-
+      tags: [memos]
     - role: mergerfs
-      tags:
-        - mergerfs
-
+      tags: [mergerfs]
     - role: metabase
-      tags:
-        - metabase
-
+      tags: [metabase]
     - role: metube
-      tags:
-        - metube
-
+      tags: [metube]
     - role: minecraft-bedrock-server
-      tags:
-        - minecraft-bedrock-server
-
+      tags: [minecraft-bedrock-server]
     - role: minecraft-server
-      tags:
-        - minecraft-server
-
+      tags: [minecraft-server]
     - role: luanti
-      tags:
-        - luanti-server
-
+      tags: [luanti-server]
     - role: minidlna
-      tags:
-        - minidlna
-
+      tags: [minidlna]
     - role: miniflux
-      tags:
-        - miniflux
-
+      tags: [miniflux]
     - role: minio
-      tags:
-        - minio
-
+      tags: [minio]
     - role: miniserve
-      tags:
-        - miniserve
-
+      tags: [miniserve]
     - role: mmp
-      tags:
-        - mmp
-
+      tags: [mmp]
     - role: mosquitto
-      tags:
-        - mosquitto
-
+      tags: [mosquitto]
     - role: moviematch
-      tags:
-        - moviematch
-
+      tags: [moviematch]
     - role: mumble
-      tags:
-        - mumble
-
+      tags: [mumble]
     - role: mylar
-      tags:
-        - mylar
-
+      tags: [mylar]
     - role: mymediaforalexa
-      tags:
-        - mymediaforalexa
-
+      tags: [mymediaforalexa]
     - role: mysql
-      tags:
-        - mysql
-
+      tags: [mysql]
     - role: n8n
-      tags:
-        - n8n
-
+      tags: [n8n]
     - role: navidrome
-      tags:
-        - navidrome
-
+      tags: [navidrome]
     - role: neko
-      tags:
-        - neko
-
+      tags: [neko]
     - role: netbootxyz
-      tags:
-        - netbootxyz
-
+      tags: [netbootxyz]
     - role: netbox
-      tags:
-        - netbox
-
+      tags: [netbox]
     - role: netdata
-      tags:
-        - netdata
-
+      tags: [netdata]
     - role: nextcloud
-      tags:
-        - nextcloud
-
+      tags: [nextcloud]
     - role: nocodb
-      tags:
-        - nocodb
-
+      tags: [nocodb]
     - role: nodered
-      tags:
-        - nodered
-
+      tags: [nodered]
     - role: nomad
-      tags:
-        - nomad
-
+      tags: [nomad]
     - role: notifo
-      tags:
-        - notifo
-
+      tags: [notifo]
     - role: nzbget
-      tags:
-        - nzbget
-
+      tags: [nzbget]
     - role: nzbhydra2
-      tags:
-        - nzbhydra2
-
+      tags: [nzbhydra2]
     - role: obsidian
-      tags:
-        - obsidian
-
+      tags: [obsidian]
     - role: octoprint
-      tags:
-        - octoprint
-
+      tags: [octoprint]
     - role: olivetin
-      tags:
-        - olivetin
-
+      tags: [olivetin]
     - role: ombi
-      tags:
-        - ombi
-
+      tags: [ombi]
     - role: openbooks
-      tags:
-        - openbooks
-
+      tags: [openbooks]
     - role: openhab
-      tags:
-        - openhab
-
+      tags: [openhab]
     - role: openldap
-      tags:
-        - openldap
-
+      tags: [openldap]
     - role: open-resume
-      tags:
-        - openresume
-
+      tags: [openresume]
     - role: openwebui
-      tags:
-        - openwebui
-
+      tags: [openwebui]
     - role: organizr
-      tags:
-        - organizr
-
+      tags: [organizr]
     - role: outline
-      tags:
-        - outline
-
+      tags: [outline]
     - role: overleaf
-      tags:
-        - overleaf
-
+      tags: [overleaf]
     - role: overseerr
-      tags:
-        - overseerr
-
+      tags: [overseerr]
     - role: paperless_ng
-      tags:
-        - paperless_ng
-
+      tags: [paperless_ng]
     - role: photofield
-      tags:
-        - photofield
-
+      tags: [photofield]
     - role: photoprism
-      tags:
-        - photoprism
-
+      tags: [photoprism]
     - role: photostructure
-      tags:
-        - photostructure
-
+      tags: [photostructure]
     - role: phpmyadmin
-      tags:
-        - phpmyadmin
-
+      tags: [phpmyadmin]
     - role: pinchflat
-      tags:
-        - pinchflat
-
+      tags: [pinchflat]
     - role: piwigo
-      tags:
-        - piwigo
-
+      tags: [piwigo]
     - role: plex
-      tags:
-        - plex
-
+      tags: [plex]
     - role: pocketid
-      tags:
-        - pocketid
-
+      tags: [pocketid]
     - role: portainer
-      tags:
-        - portainer
-
+      tags: [portainer]
     - role: pretix
-      tags:
-        - pretix
-
+      tags: [pretix]
     - role: prowlarr
-      tags:
-        - prowlarr
-
+      tags: [prowlarr]
     - role: promtail
-      tags:
-        - promtail
-
+      tags: [promtail]
     - role: pyload
-      tags:
-        - pyload
-
+      tags: [pyload]
     - role: pytivo
-      tags:
-        - pytivo
-
+      tags: [pytivo]
     - role: radarr
-      tags:
-        - radarr
-
+      tags: [radarr]
     - role: rallly
-      tags:
-        - rallly
-
+      tags: [rallly]
     - role: rclone
-      tags:
-        - rclone
-
+      tags: [rclone]
     - role: readeck
-      tags:
-        - readeck
-
+      tags: [readeck]
     - role: releasebell
-      tags:
-        - releasebell
-
+      tags: [releasebell]
     - role: restic
-      tags:
-        - restic
-
+      tags: [restic]
     - role: richy
-      tags:
-        - richy
-
+      tags: [richy]
     - role: romm
-      tags:
-        - romm
-
+      tags: [romm]
     - role: route53_ddns
-      tags:
-        - route53_ddns
-
+      tags: [route53_ddns]
     - role: rssbridge
-      tags:
-        - rssbridge
-
+      tags: [rssbridge]
     - role: rsshub
-      tags:
-        - rsshub
-
+      tags: [rsshub]
     - role: ryot
-      tags:
-        - ryot
-
+      tags: [ryot]
     - role: sabnzbd
-      tags:
-        - sabnzbd
-
+      tags: [sabnzbd]
     - role: seafile
-      tags:
-        - seafile
-
+      tags: [seafile]
     - role: searxng
-      tags:
-        - searxng
-
+      tags: [searxng]
     - role: scribblers
-      tags:
-        - scribblers
-
+      tags: [scribblers]
     - role: shaarli
-      tags:
-        - shaarli
-
+      tags: [shaarli]
     - role: shiori
-      tags:
-        - shiori
-
+      tags: [shiori]
     - role: servas
-      tags:
-        - servas
-
+      tags: [servas]
     - role: sickchill
-      tags:
-        - sickchill
-
+      tags: [sickchill]
     - role: silverbullet
-      tags:
-        - silverbullet
-
+      tags: [silverbullet]
     - role: simplelogin
-      tags:
-        - simplelogin
-
+      tags: [simplelogin]
     - role: siyuan
-      tags:
-        - siyuan
-
+      tags: [siyuan]
     - role: snipeit
-      tags:
-        - snipeit
-
+      tags: [snipeit]
     - role: sonarr
-      tags:
-        - sonarr
-
+      tags: [sonarr]
     - role: sparkyfitness
-      tags:
-        - sparkyfitness
-
+      tags: [sparkyfitness]
     - role: speedtest-tracker
-      tags:
-        - speedtest-tracker
-
+      tags: [speedtest-tracker]
     - role: squirrel
-      tags:
-        - squirrel
-
+      tags: [squirrel]
     - role: stalwart
-      tags:
-        - stalwart
-
+      tags: [stalwart]
     - role: standardnotes
-      tags:
-        - standardnotes
-
+      tags: [standardnotes]
     - role: stats
-      tags:
-        - stats
-
+      tags: [stats]
     - role: stirlingpdf
-      tags:
-        - stirlingpdf
-
+      tags: [stirlingpdf]
     - role: suitecrm
-      tags:
-        - suitecrm
-
+      tags: [suitecrm]
     - role: syncthing
-      tags:
-        - syncthing
-
+      tags: [syncthing]
     - role: tautulli
-      tags:
-        - tautulli
-
+      tags: [tautulli]
     - role: thelounge
-      tags:
-        - thelounge
-
+      tags: [thelounge]
     - role: threadfin
-      tags:
-        - threadfin
-
+      tags: [threadfin]
     - role: tiddlywiki
-      tags:
-        - tiddlywiki
-
+      tags: [tiddlywiki]
     - role: timemachine
-      tags:
-        - timemachine
-
+      tags: [timemachine]
     - role: tooljet
-      tags:
-        - tooljet
-
+      tags: [tooljet]
     - role: traefik
-      tags:
-        - traefik
-
+      tags: [traefik]
     - role: transmission
-      tags:
-        - transmission
-
+      tags: [transmission]
     - role: transmission-with-openvpn
-      tags:
-        - transmission_with_openvpn
-
+      tags: [transmission_with_openvpn]
     - role: trilium
-      tags:
-        - trilium
-
+      tags: [trilium]
     - role: ttrss
-      tags:
-        - ttrss
-
+      tags: [ttrss]
     - role: twenty
-      tags:
-        - twenty
-
+      tags: [twenty]
     - role: ubooquity
-      tags:
-        - ubooquity
-
+      tags: [ubooquity]
     - role: unifi
-      tags:
-        - unifi
-
+      tags: [unifi]
     - role: uppy
-      tags:
-        - uppy
-
+      tags: [uppy]
     - role: utorrent
-      tags:
-        - utorrent
-
+      tags: [utorrent]
     - role: valheim
-      tags:
-        - valheim
-
+      tags: [valheim]
     - role: vaultwarden
-      tags:
-        - vaultwarden
-
+      tags: [vaultwarden]
     - role: virtual_desktop
-      tags:
-        - virtual_desktop
-
+      tags: [virtual_desktop]
     - role: wallabag
-      tags:
-        - wallabag
-
+      tags: [wallabag]
     - role: wallos
-      tags:
-        - wallos
-
+      tags: [wallos]
     - role: wanderer
-      tags:
-        - wanderer
-
+      tags: [wanderer]
     - role: watchtower
-      tags:
-        - watchtower
-
+      tags: [watchtower]
     - role: webtrees
-      tags:
-        - webtrees
-
+      tags: [webtrees]
     - role: wger
-      tags:
-        - wger
-
+      tags: [wger]
     - role: whatsupdocker
-      tags:
-        - whatsupdocker
-
+      tags: [whatsupdocker]
     - role: whoogle
-      tags:
-        - whoogle
-
+      tags: [whoogle]
     - role: wireshark
-      tags:
-        - wireshark
-
+      tags: [wireshark]
     - role: wishthis
-      tags:
-        - wishthis
-
+      tags: [wishthis]
     - role: woodpecker-ci
-      tags:
-        - woodpecker_ci
-
+      tags: [woodpecker_ci]
     - role: youtubedlmaterial
-      tags:
-        - youtubedlmaterial
-
+      tags: [youtubedlmaterial]
     - role: znc
-      tags:
-        - znc
+      tags: [znc]
