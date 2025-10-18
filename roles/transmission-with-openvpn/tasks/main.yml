@@ -1,10 +1,6 @@
 ---
 - name: Start Transmission with OpenVPM
   block:
-    - name: Create Radarr network
-      community.docker.docker_network:
-        name: "{{ radarr_network_name }}"
-
     - name: Create Transmission Directories
       ansible.builtin.file:
         path: "{{ item }}"
