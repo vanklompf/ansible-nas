@@ -8,9 +8,10 @@ romm_database_root_password: top_top_secret
 
 # directories
 romm_home: "{{ docker_home }}/romm"
-romm_data_directory: "{{ romm_home }}/romm"
+romm_data_directory: "{{ romm_home }}/resources"
 romm_db_data_directory: "{{ romm_home }}/db"
 romm_roms_directory: "{{ roms_root }}"
+romm_config_directory: "{{ romm_home }}/config"
 
 # network
 romm_port: "8484"

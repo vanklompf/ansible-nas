@@ -6,8 +6,9 @@
         path: "{{ item }}"
         state: directory
       with_items:
-        - "{{ romm_data_directory }}/resources"
+        - "{{ romm_data_directory }}"
         - "{{ romm_db_data_directory }}"
+        - "{{ romm_config_directory }}"
 
     - name: MariaDB Docker Container for Romm
       community.docker.docker_container:
@@ -39,7 +40,8 @@
         pull: true
         volumes:
           - "{{ romm_roms_directory }}:/romm/library/roms:rw"
-          - "{{ romm_data_directory }}/resources:/romm/resources:rw"
+          - "{{ romm_data_directory }}:/romm/resources:rw"
+          - "{{ romm_config_directory }}:/romm/config:rw"
         ports:
           - "{{ romm_port }}:8080"
         env:
