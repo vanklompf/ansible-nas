@@ -19,8 +19,8 @@ searxng_image_name: "searxng/searxng"
 searxng_image_version: latest
 
 searxng_redis_container_name: searxng-redis
-searxng_redis_image_name: "redis"
-searxng_redis_image_version: alpine
+searxng_redis_image_name: docker.io/valkey/valkey
+searxng_redis_image_version: 8-alpine
 
 searxng_instance_name: "searxng"
 searxng_secret_key: "supersecure"
