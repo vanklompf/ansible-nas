@@ -14,7 +14,7 @@ seafile_jwt_key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 # specs
 seafile_memory: 1g
 seafile_db_memory: 1g
-seafile_memcached_memory: 1g
+seafile_redis_memory: 1g
 
 # docker
 seafile_container_name: seafile
@@ -23,9 +23,11 @@ seafile_image_version: "11.0-latest"
 seafile_db_container_name: seafile-mysql
 seafile_db_image_name: "mariadb"
 seafile_db_image_version: "10.11"
-seafile_memcached_container_name: seafile-memcached
-seafile_memcached_image_name: "memcached"
-seafile_memcached_image_version: "1.6.18"
+seafile_db_port: "3306"
+seafile_redis_container_name: seafile-redis
+seafile_redis_image_name: "redis"
+seafile_redis_image_version: "8.2.1"
+seafile_redis_port: "6379"
 seafile_user_id: "1000"
 seafile_group_id: "1000"
 
@@ -35,15 +37,3 @@ seafile_db_root_password: "supersecure"
 seafile_admin_email: "me@example.com"
 seafile_admin_password: "supersecure"
 seafile_server_letsencrypt: "false"
-
-# main env dictionary for the container and for merging with optional environment variables
-seafile_env:
-  DB_HOST: "{{ seafile_db_container_name }}"
-  DB_ROOT_PASSWD: "{{ seafile_db_root_password }}"  # Requested, the value shuold be root's password of MySQL service.
-  SEAFILE_ADMIN_EMAIL: "{{ seafile_admin_email }}" # Specifies Seafile admin user, default is 'me@example.com'.
-  SEAFILE_ADMIN_PASSWORD: "{{ seafile_admin_password }}"     # Specifies Seafile admin password, default is 'asecret'.
-  SEAFILE_SERVER_LETSENCRYPT: "{{ seafile_server_letsencrypt }}"   # Whether to use https or not.
-  SEAFILE_SERVER_HOSTNAME: "{{ ansible_nas_hostname }}:{{ seafile_port}}" # Specifies your host name if https is enabled.
-  TIME_ZONE: "{{ ansible_nas_timezone }}"
-  JWT_PRIVATE_KEY: "{{ seafile_jwt_key }}"
-  SEAFILE_SERVER_PROTOCOL: "http"
