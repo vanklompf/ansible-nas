@@ -38,17 +38,14 @@
         env: "{{ traefik_environment_variables }}"
         restart_policy: unless-stopped
         memory: '{{ traefik_memory }}'
-        recreate: '{{ traefik_template_config is changed }}'
         labels:
           homepage.group: System
           homepage.name: Traefik
           homepage.icon: traefik
-          homepage.href: http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{
-            traefik_port_ui }}
+          homepage.href: "http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{traefik_port_ui }}"
           homepage.description: Reverse Proxy
           homepage.widget.type: traefik
-          homepage.widget.url: http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{
-            traefik_port_ui }}
+          homepage.widget.url: "http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{traefik_port_ui }}"
   when: traefik_enabled is true
 - name: Stop Traefik
   block:
