@@ -1,0 +1,16 @@
+---
+- name: Verify Stopped
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+    - name: Try and stop and remove arcane
+      community.docker.docker_container:
+        name: '{{ arcane_container_name }}'
+        state: absent
+      register: result
+    - name: Check that arcane container was removed
+      ansible.builtin.assert:
+        that: [not result.changed]

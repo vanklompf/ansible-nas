@@ -1,0 +1,21 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+    - name: Try and stop and remove booklore db
+      community.docker.docker_container:
+        name: '{{ booklore_mariadb_container_name }}'
+        state: absent
+      register: result_mariadb
+    - name: Try and stop and remove booklore
+      community.docker.docker_container:
+        name: '{{ booklore_container_name }}'
+        state: absent
+      register: result
+    - name: Check if booklore is stopped
+      ansible.builtin.assert:
+        that: [not result_mariadb.changed, not result.changed]

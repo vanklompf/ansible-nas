@@ -4,94 +4,83 @@
     - name: Include Mergerfs role
       ansible.builtin.include_role:
         name: tigattack.mergerfs
-
     - name: Create {{ mergerfs_service_user }} group
       ansible.builtin.group:
-        name: "{{ mergerfs_service_group }}"
+        name: '{{ mergerfs_service_group }}'
         state: present
-
     - name: Create {{ mergerfs_service_user }} user
       ansible.builtin.user:
-        name: "{{ mergerfs_service_user }}"
+        name: '{{ mergerfs_service_user }}'
         state: present
-        system: yes
+        system: true
         update_password: on_create
-        create_home: yes
-        group: "{{ mergerfs_service_group }}"
+        create_home: true
+        group: '{{ mergerfs_service_group }}'
         shell: /bin/bash
       tags: molecule-idempotence-notest
-
     - name: Create the branches if they dont exist
       ansible.builtin.file:
-        path: "{{ item }}"
+        path: '{{ item }}'
         mode: 0775
         state: directory
-        owner: "{{ mergerfs_service_user }}"
-        group: "{{ mergerfs_service_group }}"
-      with_items: "{{ mergerfs_branches_to_mount }}"
-
+        owner: '{{ mergerfs_service_user }}'
+        group: '{{ mergerfs_service_group }}'
+      with_items: '{{ mergerfs_branches_to_mount }}'
     - name: Create local directory
       ansible.builtin.file:
-        path: "{{ mergerfs_rclone_local_mount }}"
+        path: '{{ mergerfs_rclone_local_mount }}'
         mode: 0775
         state: directory
-        owner: "{{ mergerfs_service_user }}"
-        group: "{{ mergerfs_service_group }}"
+        owner: '{{ mergerfs_service_user }}'
+        group: '{{ mergerfs_service_group }}'
       when: rclone_mount_enabled is true
-
     - name: Create mergerfs directory
       ansible.builtin.file:
-        path: "{{ mergerfs_mount }}"
+        path: '{{ mergerfs_mount }}'
         mode: 0775
         state: directory
-        owner: "{{ mergerfs_service_user }}"
-        group: "{{ mergerfs_service_group }}"
-
+        owner: '{{ mergerfs_service_user }}'
+        group: '{{ mergerfs_service_group }}'
     - name: Create mergerfs service
       ansible.builtin.template:
         src: mergerfs.service.j2
-        dest: "/etc/systemd/system/mergerfs.service"
+        dest: /etc/systemd/system/mergerfs.service
       register: mergerfs_config
-
     - name: Force systemd to reload configs
       ansible.builtin.systemd:
-        daemon_reload: yes
-
+        daemon_reload: true
     - name: Enable service mergerfs, ensure it is not masked and start it
       ansible.builtin.systemd:
         name: mergerfs
-        enabled: yes
-        masked: no
+        enabled: true
+        masked: false
         state: started
-
-    - name: Restart the service if config changed # noqa no-handler
+    - name: Restart the service if config changed  # noqa no-handler
       ansible.builtin.systemd:
         name: mergerfs
-        enabled: yes
-        masked: no
+        enabled: true
+        masked: false
         state: restarted
       when: mergerfs_config.changed
   when: mergerfs_enabled is true
-
 - name: Stop Mergerfs
   block:
     - name: Gather service facts
       ansible.builtin.service_facts:
-
     - name: Check if Mergerfs service exists
       ansible.builtin.set_fact:
         mergerfs_service_exists: "{{ 'mergerfs' in ansible_facts.services }}"
-
     - name: Stop Mergerfs
       ansible.builtin.systemd:
         name: mergerfs
         enabled: false
         masked: true
         state: stopped
-      register: stop_service
+      register: mergerfs_stop_service
       retries: 5
       delay: 5
-      until: (stop_service is defined and stop_service.status is defined and stop_service.status.ActiveState == 'inactive') or (stop_service is defined and stop_service.failed is defined)
+      until: (mergerfs_stop_service is defined and mergerfs_stop_service.status
+        is defined and mergerfs_stop_service.status.ActiveState == 'inactive') or
+        (mergerfs_stop_service is defined and mergerfs_stop_service.failed is defined)
       when: mergerfs_service_exists
-
   when: mergerfs_enabled is false

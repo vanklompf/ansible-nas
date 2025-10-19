@@ -1,0 +1,97 @@
+---
+- name: Start BookLore
+  block:
+    - name: Create BookLore Directories
+      ansible.builtin.file:
+        path: '{{ item }}'
+        state: directory
+        mode: '0755'
+        owner: '{{ booklore_user_id }}'
+        group: '{{ booklore_group_id }}'
+      with_items:
+        - '{{ booklore_data_directory }}'
+        - '{{ booklore_config_directory }}'
+        - '{{ booklore_data_volume }}'
+        - '{{ booklore_books_volume }}'
+        - '{{ booklore_bookdrop_volume }}'
+    - name: Create BookLore network
+      community.docker.docker_network:
+        name: '{{ booklore_network_name }}'
+    - name: Create BookLore MariaDB Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: '{{ booklore_mariadb_container_name }}'
+        image: '{{ booklore_mariadb_image_name }}:{{ booklore_mariadb_image_version
+          }}'
+        pull: true
+        networks:
+          - name: '{{ booklore_network_name }}'
+        volumes: ['{{ booklore_config_directory }}:/config:rw']
+        env:
+          PUID: '{{ booklore_mariadb_puid }}'
+          PGID: '{{ booklore_mariadb_pgid }}'
+          TZ: '{{ booklore_mariadb_timezone }}'
+          MYSQL_ROOT_PASSWORD: '{{ booklore_mariadb_root_password }}'
+          MYSQL_DATABASE: '{{ booklore_mariadb_database }}'
+          MYSQL_USER: '{{ booklore_mariadb_user }}'
+          MYSQL_PASSWORD: '{{ booklore_mariadb_password }}'
+        restart_policy: '{{ booklore_restart_policy }}'
+        memory: '{{ booklore_mariadb_memory }}'
+        hostname: '{{ booklore_mariadb_hostname }}'
+        healthcheck:
+          test: [CMD, mariadb-admin, ping, -h, localhost]
+          interval: 5s
+          timeout: 5s
+          retries: 10
+    - name: Create BookLore Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: '{{ booklore_container_name }}'
+        image: '{{ booklore_image_name }}:{{ booklore_image_version }}'
+        pull: true
+        networks:
+          - name: '{{ booklore_network_name }}'
+        volumes:
+          - '{{ booklore_data_volume }}:/app/data:rw'
+          - '{{ booklore_books_volume }}:/books:rw'
+          - '{{ booklore_bookdrop_volume }}:/bookdrop:rw'
+        ports: ['{{ booklore_port }}:{{ booklore_port_container }}']
+        env:
+          USER_ID: '{{ booklore_user_id }}'
+          GROUP_ID: '{{ booklore_group_id }}'
+          TZ: '{{ booklore_timezone }}'
+          DATABASE_URL: '{{ booklore_database_url }}'
+          DATABASE_USERNAME: '{{ booklore_database_username }}'
+          DATABASE_PASSWORD: '{{ booklore_database_password }}'
+          BOOKLORE_PORT: '{{ booklore_port_container }}'
+          SWAGGER_ENABLED: '{{ booklore_swagger_enabled }}'
+          FORCE_DISABLE_OIDC: '{{ booklore_force_disable_oidc }}'
+        restart_policy: '{{ booklore_restart_policy }}'
+        memory: '{{ booklore_memory }}'
+        hostname: '{{ booklore_hostname }}'
+        labels:
+          traefik.enable: '{{ booklore_available_externally | string }}'
+          traefik.http.routers.booklore.rule: Host(`{{ booklore_hostname }}.{{ ansible_nas_domain
+            }}`)
+          traefik.http.routers.booklore.tls.certresolver: letsencrypt
+          traefik.http.routers.booklore.tls.domains[0].main: '{{ ansible_nas_domain }}'
+          traefik.http.routers.booklore.tls.domains[0].sans: '*.{{ ansible_nas_domain }}'
+          traefik.http.services.booklore.loadbalancer.server.port: '{{ booklore_port_container }}'
+  when: booklore_enabled is true
+  # Add proper dependency to ensure mariadb starts first
+  vars:
+    ansible_ssh_pipelining: true  # To improve performance
+- name: Stop BookLore
+  block:
+    - name: Stop BookLore containers
+      community.docker.docker_container:
+        name: '{{ item }}'
+        state: absent
+      loop:
+        - '{{ booklore_container_name }}'
+        - '{{ booklore_mariadb_container_name }}'
+    - name: Remove BookLore network
+      community.docker.docker_network:
+        name: booklore_network
+        state: absent
+  when: booklore_enabled is false

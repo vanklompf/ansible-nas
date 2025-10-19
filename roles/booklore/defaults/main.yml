@@ -1,0 +1,52 @@
+---
+booklore_enabled: false
+booklore_available_externally: false
+
+# directories
+booklore_data_directory: '{{ docker_home }}/booklore'
+booklore_config_directory: '{{ booklore_data_directory }}/config'
+booklore_data_volume: '{{ booklore_data_directory }}/data'
+booklore_books_volume: '{{ booklore_data_directory }}/books'
+booklore_bookdrop_volume: '{{ booklore_data_directory }}/bookdrop'
+
+# network
+booklore_port: '6060'
+booklore_hostname: booklore
+booklore_mariadb_port: '3306'
+booklore_mariadb_hostname: booklore-mariadb
+booklore_network_name: booklore
+
+# specs
+booklore_memory: 1g
+booklore_mariadb_memory: 1g
+
+# docker
+booklore_container_name: booklore
+booklore_image_name: booklore/booklore
+booklore_image_version: latest
+booklore_user_id: '1000'
+booklore_group_id: '1000'
+booklore_restart_policy: unless-stopped
+booklore_mariadb_container_name: booklore-mariadb
+booklore_mariadb_image_name: lscr.io/linuxserver/mariadb
+booklore_mariadb_image_version: 11.4.5
+booklore_mariadb_user_id: '1000'
+booklore_mariadb_group_id: '1000'
+
+# booklore specific settings
+booklore_timezone: Etc/UTC
+booklore_database_url: jdbc:mariadb://booklore-mariadb:3306/booklore
+booklore_database_username: booklore
+booklore_database_password: your_secure_password
+booklore_port_container: '6060'
+booklore_swagger_enabled: 'false'
+booklore_force_disable_oidc: 'false'
+
+# mariadb specific settings
+booklore_mariadb_puid: '1000'
+booklore_mariadb_pgid: '1000'
+booklore_mariadb_timezone: Etc/UTC
+booklore_mariadb_root_password: super_secure_password
+booklore_mariadb_database: booklore
+booklore_mariadb_user: booklore
+booklore_mariadb_password: your_secure_password

@@ -24,4 +24,4 @@ The Immich Power Tools web interface can then be found at [http://ansible_nas_ho
 
 ## Specific Configuration
 
-Please note the need for a CPU with AVX and AVX2 instruction set to run the Machine Learning container. Check [here](https://github.com/immich-app/immich/tree/c436c57cc9a2a23ae1fbd3ea52eeb947f32261cd#tensorflow-build-issue) for details.
+Please note the need for a CPU with AVX and AVX2 instruction set to run the Machine Learning container. Check [the relevant comment here](https://github.com/immich-app/immich/tree/c436c57cc9a2a23ae1fbd3ea52eeb947f32261cd#tensorflow-build-issue) for details.

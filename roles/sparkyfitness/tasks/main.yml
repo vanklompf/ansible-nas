@@ -1,0 +1,97 @@
+---
+- name: Start SparkyFitness
+  block:
+    - name: Create SparkyFitness Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      with_items:
+        - "{{ sparkyfitness_data_directory }}"
+        - "{{ sparkyfitness_postgresql_data_directory }}"
+
+    - name: Create SparkyFitness Servers Manager network
+      community.docker.docker_network:
+        name: "{{ sparkyfitness_network_name }}"
+
+    - name: SparkyFitness Database Container
+      community.docker.docker_container:
+        name: "{{ sparkyfitness_db_container_name }}"
+        image: "{{ sparkyfitness_db_image }}"
+        pull: true
+        volumes:
+          - "{{ sparkyfitness_postgresql_data_directory }}:/var/lib/postgresql/data:rw"
+        env:
+          POSTGRES_DB: "{{ sparkyfitness_db_name }}"
+          POSTGRES_USER: "{{ sparkyfitness_db_user }}"
+          POSTGRES_PASSWORD: "{{ sparkyfitness_db_password }}"
+        restart_policy: unless-stopped
+        memory: "{{ sparkyfitness_db_memory }}"
+        networks:
+          - name: "{{ sparkyfitness_network_name }}"
+        network_mode: "{{ sparkyfitness_network_name }}"
+        networks_cli_compatible: true
+
+    - name: SparkyFitness Server Container
+      community.docker.docker_container:
+        name: "{{ sparkyfitness_server_container_name }}"
+        image: "{{ sparkyfitness_server_image }}"
+        pull: true
+        env:
+          SPARKY_FITNESS_LOG_LEVEL: "{{ sparkyfitness_log_level }}"
+          SPARKY_FITNESS_DB_USER: "{{ sparkyfitness_db_user }}"
+          SPARKY_FITNESS_DB_HOST: "{{ sparkyfitness_db_container_name }}"
+          SPARKY_FITNESS_DB_NAME: "{{ sparkyfitness_db_name }}"
+          SPARKY_FITNESS_DB_PASSWORD: "{{ sparkyfitness_db_password }}"
+          SPARKY_FITNESS_DB_PORT: "{{ sparkyfitness_db_port }}"
+          SPARKY_FITNESS_API_ENCRYPTION_KEY: "{{ sparkyfitness_api_encryption_key }}"
+          JWT_SECRET: "{{ sparkyfitness_jwt_secret }}"
+          SPARKY_FITNESS_FRONTEND_URL: "{{ sparkyfitness_frontend_url }}"
+          SPARKY_FITNESS_DISABLE_SIGNUP: "{{ sparkyfitness_disable_signup }}"
+          SPARKY_FITNESS_ADMIN_EMAIL: "{{ sparkyfitness_admin_email }}"
+        restart_policy: unless-stopped
+        memory: "{{ sparkyfitness_memory }}"
+        networks:
+          - name: "{{ sparkyfitness_network_name }}"
+        network_mode: "{{ sparkyfitness_network_name }}"
+        networks_cli_compatible: true
+
+    - name: SparkyFitness Frontend Container
+      community.docker.docker_container:
+        name: "{{ sparkyfitness_frontend_container_name }}"
+        image: "{{ sparkyfitness_frontend_image }}"
+        pull: true
+        ports:
+          - "{{ sparkyfitness_port }}:80"
+        restart_policy: unless-stopped
+        memory: "{{ sparkyfitness_memory }}"
+        networks:
+          - name: "{{ sparkyfitness_network_name }}"
+        network_mode: "{{ sparkyfitness_network_name }}"
+        networks_cli_compatible: true
+        labels:
+          traefik.enable: "{{ sparkyfitness_available_externally | string }}"
+          traefik.http.routers.sparkyfitness.rule: "Host(`{{ sparkyfitness_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.sparkyfitness.tls.certresolver: "letsencrypt"
+          traefik.http.routers.sparkyfitness.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.sparkyfitness.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.sparkyfitness.loadbalancer.server.port: "80"
+  when: sparkyfitness_enabled is true
+
+- name: Stop SparkyFitness
+  block:
+    - name: Stop SparkyFitness Frontend
+      community.docker.docker_container:
+        name: "{{ sparkyfitness_frontend_container_name }}"
+        state: absent
+
+    - name: Stop SparkyFitness Server
+      community.docker.docker_container:
+        name: "{{ sparkyfitness_server_container_name }}"
+        state: absent
+
+    - name: Stop SparkyFitness Database
+      community.docker.docker_container:
+        name: "{{ sparkyfitness_db_container_name }}"
+        state: absent
+  when: sparkyfitness_enabled is false

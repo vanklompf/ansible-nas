@@ -2,15 +2,23 @@
 name = "ansible-nas"
 version = "0.1.0"
 description = "Build a full-featured home server or NAS replacement with an Ubuntu box and this playbook."
-authors = [
-    { name = "Anarion Dunedain", email = "anarion80@gmail.com" }
-]
-dependencies = [
-    "ansible>=11.1.0",
-    "jmespath>=1.0.1",
-]
+authors = [{ name = "Anarion Dunedain", email = "anarion80@gmail.com" }]
+dependencies = ["ansible>=11.1.0", "jmespath>=1.0.1"]
+
 readme = "README.md"
-requires-python = ">= 3.8"
+requires-python = ">= 3.13"
+
+[dependency-groups]
+dev = [
+  "pre-commit>=4.0.1",
+  "molecule>=25.9.0",
+  "pytest>=8.3.4",
+  "pytest-molecule>=2.0.0",
+  "molecule-plugins[docker]>=25.8.12",
+  "yamllint>=1.35.1",
+  "ansible-lint>=25.8.1",
+  "pymarkdownlnt>=0.9.25",
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -19,14 +27,14 @@ build-backend = "hatchling.build"
 [tool.rye]
 managed = true
 dev-dependencies = [
-    "pre-commit>=4.0.1",
-    "molecule>=24.9.0",
-    "pytest>=8.3.4",
-    "pytest-molecule>=2.0.0",
-    "molecule-plugins[docker]>=23.5.3",
-    "yamllint>=1.35.1",
-    "ansible-lint>=24.10.0",
-    "pymarkdownlnt>=0.9.25",
+  "pre-commit>=4.0.1",
+  "molecule>=25.9.0",
+  "pytest>=8.3.4",
+  "pytest-molecule>=2.0.0",
+  "molecule-plugins[docker]>=25.8.12",
+  "yamllint>=1.35.1",
+  "ansible-lint>=25.8.1",
+  "pymarkdownlnt>=0.9.25",
 ]
 
 [tool.hatch.metadata]

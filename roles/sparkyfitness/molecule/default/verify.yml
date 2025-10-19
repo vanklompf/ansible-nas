@@ -1,0 +1,33 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+
+    - name: Get frontend container state
+      community.docker.docker_container_info:
+        name: "{{ sparkyfitness_frontend_container_name }}"
+      register: frontend_result
+
+    - name: Get server container state
+      community.docker.docker_container_info:
+        name: "{{ sparkyfitness_server_container_name }}"
+      register: server_result
+
+    - name: Get database container state
+      community.docker.docker_container_info:
+        name: "{{ sparkyfitness_db_container_name }}"
+      register: db_result
+
+    - name: Check SparkyFitness containers are running
+      ansible.builtin.assert:
+        that:
+          - frontend_result.container['State']['Status'] == "running"
+          - frontend_result.container['State']['Restarting'] == false
+          - server_result.container['State']['Status'] == "running"
+          - server_result.container['State']['Restarting'] == false
+          - db_result.container['State']['Status'] == "running"
+          - db_result.container['State']['Restarting'] == false

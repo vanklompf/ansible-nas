@@ -6,18 +6,14 @@
     - name: Include vars
       ansible.builtin.include_vars:
         file: ../../defaults/main.yml
-
     - name: Get container state
       community.docker.docker_container_info:
-        name: "{{ drone_ci_container_name }}"
+        name: '{{ drone_ci_container_name }}'
       register: result
-
-    - name: Get container state
+    - name: Get runner container state
       community.docker.docker_container_info:
-        name: "{{ drone_ci_runner_container_name }}"
+        name: '{{ drone_ci_runner_container_name }}'
       register: result_runner
-
-
     - name: Check Drone CI is running
       ansible.builtin.assert:
         that:

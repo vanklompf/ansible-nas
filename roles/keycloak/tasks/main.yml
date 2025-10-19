@@ -3,113 +3,106 @@
   block:
     - name: Create Keycloak Directories
       ansible.builtin.file:
-        path: "{{ item }}"
+        path: '{{ item }}'
         state: directory
         owner: 1000
         group: 1000
       with_items:
-        - "{{ keycloak_data_directory }}"
-        - "{{ keycloak_data_directory }}/content"
-
+        - '{{ keycloak_data_directory }}'
+        - '{{ keycloak_data_directory }}/content'
     - name: Create Keycloak Network
       community.docker.docker_network:
-        name: "{{ keycloak_network_name }}"
-
+        name: '{{ keycloak_network_name }}'
     - name: Generate a self-signed private key
       community.crypto.openssl_privatekey:
-        path: "{{ keycloak_data_directory }}/content/keycloak.pem"
+        path: '{{ keycloak_data_directory }}/content/keycloak.pem'
         size: 2048
         mode: 0600
         owner: 1000
         group: 1000
         type: RSA
         state: present
-
     - name: Create certificate signing request (CSR) for self-signed certificate
       community.crypto.openssl_csr_pipe:
-        privatekey_path: "{{ keycloak_data_directory }}/content/keycloak.pem"
-        common_name: "{{ ansible_nas_domain }}"
-        organization_name: "{{ samba_server_string }}"
-      register: csr
+        privatekey_path: '{{ keycloak_data_directory }}/content/keycloak.pem'
+        common_name: '{{ ansible_nas_domain }}'
+        organization_name: '{{ samba_server_string }}'
+      register: keycloak_csr
       tags: molecule-idempotence-notest
-
     - name: Generate a self-signed SSL/TLS certificate (valid for 10 years)
       community.crypto.x509_certificate:
-        path: "{{ keycloak_data_directory }}/content/keycloak.crt"
-        privatekey_path: "{{ keycloak_data_directory }}/content/keycloak.pem"
-        csr_content: "{{ csr.csr }}"
+        path: '{{ keycloak_data_directory }}/content/keycloak.crt'
+        privatekey_path: '{{ keycloak_data_directory }}/content/keycloak.pem'
+        csr_content: '{{ keycloak_csr.csr }}'
         provider: selfsigned
-        selfsigned_not_after: "+3650d"
+        selfsigned_not_after: +3650d
         mode: 0644
         owner: 1000
         group: 1000
       tags: molecule-idempotence-notest
-
     - name: Create Keycloak Database Container
       community.docker.docker_container:
         container_default_behavior: no_defaults
-        name: "{{ keycloak_db_container_name }}"
-        image: "{{ keycloak_db_image_name }}:{{ keycloak_db_image_version }}"
+        name: '{{ keycloak_db_container_name }}'
+        image: '{{ keycloak_db_image_name }}:{{ keycloak_db_image_version }}'
         pull: true
         networks:
-          - name: "{{ keycloak_network_name }}"
+          - name: '{{ keycloak_network_name }}'
         volumes:
-          - "{{ keycloak_data_directory }}/postgres:/var/lib/postgresql/data:rw"
+          - '{{ keycloak_data_directory }}/postgres:/var/lib/postgresql/data:rw'
         env:
-          POSTGRES_USER: "{{ keycloak_db_user }}"
-          POSTGRES_PASSWORD: "{{ keycloak_db_password }}"
-          POSTGRES_DB: "{{ keycloak_db_name }}"
+          POSTGRES_USER: '{{ keycloak_db_user }}'
+          POSTGRES_PASSWORD: '{{ keycloak_db_password }}'
+          POSTGRES_DB: '{{ keycloak_db_name }}'
           PGDATA: /var/lib/postgresql/data/pgdata
         labels:
-          traefik.enable: "false"
+          traefik.enable: 'false'
         restart_policy: unless-stopped
-        memory: "{{ keycloak_db_memory }}"
-
+        memory: '{{ keycloak_db_memory }}'
     - name: Create Keycloak Docker Container
       community.docker.docker_container:
         container_default_behavior: no_defaults
-        name: "{{ keycloak_container_name }}"
-        image: "{{ keycloak_image_name }}:{{ keycloak_image_version }}"
+        name: '{{ keycloak_container_name }}'
+        image: '{{ keycloak_image_name }}:{{ keycloak_image_version }}'
         pull: true
         volumes:
-          - "{{ keycloak_data_directory }}/content:/var/lib/keycloak/content:rw"
+          - '{{ keycloak_data_directory }}/content:/var/lib/keycloak/content:rw'
         ports:
-          - "{{ keycloak_http_port }}:8080"
-          - "{{ keycloak_https_port }}:8443"
-          - "{{ keycloak_maintenance_port }}:9000"
+          - '{{ keycloak_http_port }}:8080'
+          - '{{ keycloak_https_port }}:8443'
+          - '{{ keycloak_maintenance_port }}:9000'
         networks:
-          - name: "{{ keycloak_network_name }}"
+          - name: '{{ keycloak_network_name }}'
         env:
-          KC_DB: "{{ keycloak_kc_db }}"
-          KC_DB_URL_HOST: "{{ keycloak_kc_db_url_host }}"
-          KC_DB_URL_DATABASE: "{{ keycloak_kc_db_url_database }}"
-          KC_DB_PASSWORD: "{{ keycloak_kc_db_password }}"
-          KC_DB_USERNAME: "{{ keycloak_kc_db_username }}"
-          KC_DB_SCHEMA: "{{ keycloak_kc_db_schema }}"
-          KEYCLOAK_ADMIN: "{{ keycloak_admin }}"
-          KEYCLOAK_ADMIN_PASSWORD: "{{ keycloak_admin_password }}"
-          PROXY_ADDRESS_FORWARDING: "{{ keycloak_proxy_address_forwarding }}"
+          KC_DB: '{{ keycloak_kc_db }}'
+          KC_DB_URL_HOST: '{{ keycloak_kc_db_url_host }}'
+          KC_DB_URL_DATABASE: '{{ keycloak_kc_db_url_database }}'
+          KC_DB_PASSWORD: '{{ keycloak_kc_db_password }}'
+          KC_DB_USERNAME: '{{ keycloak_kc_db_username }}'
+          KC_DB_SCHEMA: '{{ keycloak_kc_db_schema }}'
+          KEYCLOAK_ADMIN: '{{ keycloak_admin }}'
+          KEYCLOAK_ADMIN_PASSWORD: '{{ keycloak_admin_password }}'
+          PROXY_ADDRESS_FORWARDING: '{{ keycloak_proxy_address_forwarding }}'
         restart_policy: unless-stopped
-        memory: "{{ keycloak_memory }}"
+        memory: '{{ keycloak_memory }}'
         labels:
-          traefik.enable: "{{ keycloak_available_externally | string }}"
-          traefik.http.routers.keycloak.rule: "Host(`{{ keycloak_hostname }}.{{ ansible_nas_domain }}`)"
-          traefik.http.routers.keycloak.tls.certresolver: "letsencrypt"
-          traefik.http.routers.keycloak.tls.domains[0].main: "{{ ansible_nas_domain }}"
-          traefik.http.routers.keycloak.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
-          traefik.http.services.keycloak.loadbalancer.server.port: "8080"
-        command: "{{ keycloak_command }}"
+          traefik.enable: '{{ keycloak_available_externally | string }}'
+          traefik.http.routers.keycloak.rule: Host(`{{ keycloak_hostname }}.{{ ansible_nas_domain
+            }}`)
+          traefik.http.routers.keycloak.tls.certresolver: letsencrypt
+          traefik.http.routers.keycloak.tls.domains[0].main: '{{ ansible_nas_domain }}'
+          traefik.http.routers.keycloak.tls.domains[0].sans: '*.{{ ansible_nas_domain }}'
+          traefik.http.services.keycloak.loadbalancer.server.port: '8080'
+        command: '{{ keycloak_command }}'
   when: keycloak_enabled is true
-
 - name: Stop Keycloak
   block:
     - name: Stop Keycloak Database
       community.docker.docker_container:
-        name: "{{ keycloak_db_container_name }}"
+        name: '{{ keycloak_db_container_name }}'
         state: absent
-
     - name: Stop Keycloak
       community.docker.docker_container:
-        name: "{{ keycloak_container_name }}"
+        name: '{{ keycloak_container_name }}'
         state: absent
   when: keycloak_enabled is false
