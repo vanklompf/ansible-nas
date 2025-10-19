@@ -45,44 +45,44 @@
     ###
     ### Applications
     ###
-    - role: activepieces
-      tags: [activepieces]
-    - role: actual
-      tags: [actual]
-    - role: admidio
-      tags: [admidio]
+#    - role: activepieces
+#      tags: [activepieces]
+#    - role: actual
+#      tags: [actual]
+#    - role: admidio
+#      tags: [admidio]
     - role: adventure_log
       tags: [adventure_log]
-    - role: affine
-      tags: [affine]
-    - role: airsonic
-      tags: [airsonic]
-    - role: apcupsd
-      tags: [apcupsd]
-    - role: appsmith
-      tags: [appsmith]
-    - role: arcane
-      tags: [arcane]
-    - role: aria2
-      tags: [aria2]
-    - role: authelia
-      tags: [authelia]
-    - role: authentik
-      tags: [authentik]
-    - role: bambustudio
-      tags: [bambustudio]
-    - role: barcodebuddy
-      tags: [barcodebuddy]
-    - role: baserow
-      tags: [baserow]
-    - role: bazarr
-      tags: [bazarr]
-    - role: beets
-      tags: [beets]
-    - role: blaze
-      tags: [blaze]
-    - role: blocky
-      tags: [blocky]
+#    - role: affine
+#      tags: [affine]
+#    - role: airsonic
+#      tags: [airsonic]
+#    - role: apcupsd
+#      tags: [apcupsd]
+#    - role: appsmith
+#      tags: [appsmith]
+#    - role: arcane
+#      tags: [arcane]
+#    - role: aria2
+#      tags: [aria2]
+#    - role: authelia
+#      tags: [authelia]
+#    - role: authentik
+#      tags: [authentik]
+#    - role: bambustudio
+#      tags: [bambustudio]
+#    - role: barcodebuddy
+#      tags: [barcodebuddy]
+#    - role: baserow
+#      tags: [baserow]
+#    - role: bazarr
+#      tags: [bazarr]
+#    - role: beets
+#      tags: [beets]
+#    - role: blaze
+#      tags: [blaze]
+#    - role: blocky
+#      tags: [blocky]
     - role: booklore
       tags: [booklore]
     - role: budibase
@@ -110,17 +110,11 @@
     - role: couchdb
       tags: [couchdb]
     - role: code-server
-      tags:
-        - code-server
-
+      tags: [code-server]
     - role: commafeed
-      tags:
-        - commafeed
-
+      tags: [commafeed]
     - role: couchpotato
-      tags:
-        - couchpotato
-
+      tags: [couchpotato]
     - role: dashy
       tags: [dashy]
     - role: dbgate
@@ -488,13 +482,9 @@
     - role: stats
       tags: [stats]
     - role: stirlingpdf
-      tags:
-        - stirlingpdf
-
+      tags: [stirlingpdf]
     - role: suitecrm
-      tags:
-        - suitecrm
-
+      tags: [suitecrm]
     - role: syncthing
       tags: [syncthing]
     - role: tautulli
@@ -529,8 +519,8 @@
       tags: [uppy]
     - role: utorrent
       tags: [utorrent]
-    - role: valheim
-      tags: [valheim]
+#    - role: valheim
+#      tags: [valheim]
     - role: vaultwarden
       tags: [vaultwarden]
     - role: virtual_desktop
@@ -551,13 +541,13 @@
       tags: [whatsupdocker]
     - role: whoogle
       tags: [whoogle]
-    - role: wireshark
-      tags: [wireshark]
-    - role: wishthis
-      tags: [wishthis]
-    - role: woodpecker-ci
-      tags: [woodpecker_ci]
+#    - role: wireshark
+#      tags: [wireshark]
+#    - role: wishthis
+#      tags: [wishthis]
+#    - role: woodpecker-ci
+#      tags: [woodpecker_ci]
     - role: youtubedlmaterial
       tags: [youtubedlmaterial]
-    - role: znc
-      tags: [znc]
+#    - role: znc
+#      tags: [znc]
