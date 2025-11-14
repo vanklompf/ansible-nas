@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: 3.x
       - name: Install test dependencies
-        run: pip3 install ansible yamllint==1.37.1 ansible-lint==25.8.2
+        run: pip3 install ansible yamllint==1.37.1 ansible-lint==25.11.0
       - name: Ansible-lint
         run: ansible-lint nas.yml
       - name: Lint yaml files
