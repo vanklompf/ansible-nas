@@ -194,6 +194,8 @@
       tags: [grocy]
     - role: guacamole
       tags: [guacamole]
+    - role: habitica
+      tags: [habitica]
     - role: hafusion
       tags: [hafusion]
     - role: healthchecks.io

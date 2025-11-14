@@ -1,0 +1,35 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+    - name: Get habitica client container state
+      community.docker.docker_container:
+        name: '{{ habitica_client_container_name }}'
+      register: client_result
+    - name: Get habitica server container state
+      community.docker.docker_container:
+        name: '{{ habitica_server_container_name }}'
+      register: server_result
+    - name: Get habitica mongo container state
+      community.docker.docker_container:
+        name: '{{ habitica_mongo_container_name }}'
+      register: mongo_result
+    - name: Check if habitica client container is running
+      ansible.builtin.assert:
+        that:
+          - client_result.container['State']['Status'] == "running"
+          - client_result.container['State']['Restarting'] == false
+    - name: Check if habitica server container is running
+      ansible.builtin.assert:
+        that:
+          - server_result.container['State']['Status'] == "running"
+          - server_result.container['State']['Restarting'] == false
+    - name: Check if habitica mongo container is running
+      ansible.builtin.assert:
+        that:
+          - mongo_result.container['State']['Status'] == "running"
+          - mongo_result.container['State']['Restarting'] == false
