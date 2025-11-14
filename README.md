@@ -94,6 +94,7 @@ If you have a spare domain name you can configure applications to be accessible 
 - [Grist](https://github.com/gristlabs/grist-core) - Grist is the evolution of spreadsheets.
 - [Grocy](https://grocy.info/) - web-based self-hosted groceries & household management solution for your home
 - [Guacamole](https://guacamole.apache.org/) - Web based remote desktop gateway, supports VNC, RDP and SSH
+- [Habitica](https://habitica.com/) - Habit building and productivity app that treats your life like a game
 - [HA Fusion](https://github.com/matt8707/ha-fusion) - A modern, easy-to-use and performant custom Home Assistant dashboard
 - [healthchecks.io](https://healthchecks.io/) - Ensure your NAS is online and get notified otherwise
 - [Heimdall](https://heimdall.site/) - Home server dashboard

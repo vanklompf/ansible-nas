@@ -1,0 +1,29 @@
+---
+- name: Verify Stopped
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+    - name: Get habitica client container state
+      community.docker.docker_container:
+        name: '{{ habitica_client_container_name }}'
+      register: client_result
+      ignore_errors: true
+    - name: Get habitica server container state
+      community.docker.docker_container:
+        name: '{{ habitica_server_container_name }}'
+      register: server_result
+      ignore_errors: true
+    - name: Get habitica mongo container state
+      community.docker.docker_container:
+        name: '{{ habitica_mongo_container_name }}'
+      register: mongo_result
+      ignore_errors: true
+    - name: Check if graylog is stopped
+      ansible.builtin.assert:
+        that:
+          - not client_result.changed
+          - not server_result.changed
+          - not mongo_result.changed

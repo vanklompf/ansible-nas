@@ -1,0 +1,49 @@
+---
+habitica_enabled: false
+habitica_available_externally: false
+
+# directories
+habitica_data_directory: '{{ docker_home }}/habitica'
+
+# network
+habitica_client_port: '8186'
+habitica_server_port: '8184'
+habitica_mongo_port: '8187'
+habitica_hostname: habitica
+
+# specs
+habitica_memory: 1g
+
+# docker
+habitica_client_container_name: habitica-client
+habitica_server_container_name: habitica-server
+habitica_mongo_container_name: habitica-mongo
+habitica_mongo_image_name: docker.io/mongo  # Example - replace with actual image
+habitica_mongo_image_version: latest
+habitica_server_image_name: docker.io/awinterstein/habitica-server  # Example - replace with actual image
+habitica_server_image_version: latest
+habitica_client_image_name: docker.io/awinterstein/habitica-client  # Example - replace with actual image
+habitica_client_image_version: latest
+habitica_user_id: '1000'
+habitica_group_id: '1000'
+
+# networks
+habitica_network_name: habitica
+# env
+habitica_node_db_url: mongodb://{{ habitica_mongo_container_name }}/habitica
+habitica_base_url: https://{{ habitica_hostname }}.{{ ansible_nas_domain }}
+habitica_invite_only: 'false'  # change to `true` after registration of initial users, to restrict further registrations
+habitica_email_server_url: mail.example.com
+habitica_email_server_port: '587'
+habitica_email_server_auth_user: mail_user
+habitica_email_server_auth_password: mail_password
+habitica_admin_email: mail@example.com  # the sender address to send out emails
+habitica_env:
+  NODE_DB_URI: '{{ habitica_node_db_url }}'
+  BASE_URL: '{{ habitica_base_url }}'
+  INVITE_ONLY: '{{ habitica_invite_only }}'
+  EMAIL_SERVER_URL: '{{ habitica_email_server_url }}'
+  EMAIL_SERVER_PORT: '{{ habitica_email_server_port }}'
+  EMAIL_SERVER_AUTH_USER: '{{ habitica_email_server_auth_user }}'
+  EMAIL_SERVER_AUTH_PASSWORD: '{{ habitica_email_server_auth_password }}'
+  ADMIN_EMAIL: '{{ habitica_admin_email }}'
