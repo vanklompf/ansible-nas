@@ -11,7 +11,7 @@ requires-python = ">= 3.13"
 [dependency-groups]
 dev = [
   "pre-commit>=4.0.1",
-  "molecule>=25.9.0",
+  "molecule>=25.11.0",
   "pytest>=8.3.4",
   "pytest-molecule>=2.0.0",
   "molecule-plugins[docker]>=25.8.12",
@@ -28,7 +28,7 @@ build-backend = "hatchling.build"
 managed = true
 dev-dependencies = [
   "pre-commit>=4.0.1",
-  "molecule>=25.9.0",
+  "molecule>=25.11.0",
   "pytest>=8.3.4",
   "pytest-molecule>=2.0.0",
   "molecule-plugins[docker]>=25.8.12",
