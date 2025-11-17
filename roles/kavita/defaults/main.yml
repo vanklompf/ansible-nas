@@ -15,7 +15,7 @@ kavita_memory: 4g
 
 # docker
 kavita_container_name: kavita
-kavita_image_name: "kizaing/kavita"
+kavita_image_name: "jvmilazz0/kavita"
 kavita_image_version: latest
 kavita_user_id: "1000"
 kavita_group_id: "1000"
