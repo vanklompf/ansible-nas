@@ -17,6 +17,7 @@
         volumes:
           - "{{ kavita_data_directory }}/config:/kavita/config:rw"
           - "{{ kavita_comics_directory }}:/comics:ro"
+          - "{{ kavita_books_directory }}:/books:ro"
         ports:
           - "{{ kavita_port }}:5000"
         env:

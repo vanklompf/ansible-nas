@@ -5,6 +5,7 @@ kavita_available_externally: false
 # directories
 kavita_data_directory: "{{ docker_home }}/kavita"
 kavita_comics_directory: "{{ comics_root }}"
+kavita_books_directory: "{{ books_root }}"
 
 # network
 kavita_port: "5001"
