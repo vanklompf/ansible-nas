@@ -1,0 +1,36 @@
+---
+superproductivity_enabled: false
+superproductivity_available_externally: false
+
+# directories
+superproductivity_data_directory: '{{ docker_home }}/superproductivity'
+superproductivity_webdav_directory: '{{ docker_home }}/superproductivity/webdav'
+
+# network
+superproductivity_app_port: '8188'
+superproductivity_webdav_port: '8189'
+superproductivity_hostname: superproductivity
+superproductivity_webdav_hostname: superproductivity-webdav
+superproductivity_network_name: superproductivity_network
+
+# specs
+superproductivity_app_memory: 1g
+superproductivity_webdav_memory: 1g
+
+# docker
+superproductivity_app_container_name: superproductivity_app
+superproductivity_webdav_container_name: superproductivity_webdav
+superproductivity_app_image_name: johannesjo/super-productivity
+superproductivity_app_image_tag: latest
+superproductivity_webdav_image_name: hacdias/webdav
+superproductivity_webdav_image_tag: latest
+
+# environment variables
+superproductivity_sync_interval: '15'
+superproductivity_is_compression_enabled: 'true'
+superproductivity_is_encryption_enabled: 'false'
+superproductivity_webdav_base_url: https://{{ superproductivity_webdav_hostname }}.{{
+  ansible_nas_domain }}
+superproductivity_webdav_username: admin
+superproductivity_webdav_password: admin
+superproductivity_webdav_sync_folder_path: /

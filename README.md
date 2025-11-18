@@ -239,6 +239,7 @@ If you have a spare domain name you can configure applications to be accessible 
 - [Standard Notes](https://standardnotes.com/) - An end-to-end encrypted notes app
 - [Stirling-PDF](https://github.com/Frooodle/Stirling-PDF) - locally hosted web application that allows you to perform various operations on PDF files
 - [SuiteCRM](https://github.com/salesagility/SuiteCRM) - Open source CRM for the world
+- [Super Productivity](https://github.com/johannesjo/super-productivity) - A free and open source to-do list and time tracker
 - [Syncthing](https://syncthing.net/) - sync directories with another device
 - [Tautulli](http://tautulli.com/) - Monitor Your Plex Media Server
 - [The Lounge](https://thelounge.chat) - Web based always-on IRC client
