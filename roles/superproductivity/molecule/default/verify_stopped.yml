@@ -1,0 +1,23 @@
+---
+- name: Verify Stopped
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+    - name: Get superproductivity app container state
+      community.docker.docker_container:
+        name: '{{ superproductivity_app_container_name }}'
+        state: absent
+      register: app_result
+      ignore_errors: true
+    - name: Get superproductivity webdav container state
+      community.docker.docker_container:
+        name: '{{ superproductivity_webdav_container_name }}'
+        state: absent
+      register: webdav_result
+      ignore_errors: true
+    - name: Check if superproductivity is stopped
+      ansible.builtin.assert:
+        that: [not app_result.changed, not webdav_result.changed]

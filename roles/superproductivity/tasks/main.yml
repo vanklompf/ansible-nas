@@ -1,0 +1,126 @@
+---
+- name: Start Super Productivity
+  block:
+    - name: Create Super Productivity Directories
+      ansible.builtin.file:
+        path: '{{ item }}'
+        state: directory
+      with_items:
+        - '{{ superproductivity_data_directory }}'
+        - '{{ superproductivity_webdav_directory }}'
+    - name: Create Super Productivity WebDAV Config
+      ansible.builtin.copy:
+        content: |
+          address: 0.0.0.0
+          port: 2345
+          prefix: /
+          permissions: CRUD
+                          # CORS configuration to allow all origins
+          cors:
+            enabled: true
+            credentials: true
+            allowed_headers:
+              - '*'
+            allowed_hosts:
+              - '*'
+            allowed_methods:
+              - GET
+              - HEAD
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PROPFIND
+              - PROPPATCH
+              - MKCOL
+              - COPY
+              - MOVE
+              - LOCK
+              - UNLOCK
+          users:
+            - username: "{{ superproductivity_webdav_username }}"
+              password: "{{ superproductivity_webdav_password }}"
+              directory: /data
+        dest: '{{ superproductivity_data_directory }}/webdav.yaml'
+        mode: '0644'
+    - name: Create Super Productivity Network
+      community.docker.docker_network:
+        name: '{{ superproductivity_network_name }}'
+        driver: bridge
+    - name: Super Productivity WebDAV Container
+      community.docker.docker_container:
+        name: '{{ superproductivity_webdav_container_name }}'
+        image: '{{ superproductivity_webdav_image_name }}:{{ superproductivity_webdav_image_tag
+          }}'
+        restart_policy: unless-stopped
+        networks:
+          - name: '{{ superproductivity_network_name }}'
+        volumes:
+          - '{{ superproductivity_data_directory }}/webdav.yaml:/config.yml:ro'
+          - '{{ superproductivity_webdav_directory }}:/data:rw'
+        ports: ['{{ superproductivity_webdav_port }}:2345']
+        healthcheck:
+          test:
+            - CMD
+            - wget
+            - --quiet
+            - --tries=1
+            - --spider
+            - http://localhost:2345/
+          interval: 10s
+          timeout: 5s
+          retries: 3
+          start_period: 10s
+        memory: '{{ superproductivity_webdav_memory }}'
+        labels:
+          traefik.enable: '{{ superproductivity_available_externally | string }}'
+          traefik.http.routers.superproductivity.rule: Host(`{{ superproductivity_webdav_hostname }}.{{
+            ansible_nas_domain }}`)
+          traefik.http.routers.superproductivity.tls.certresolver: letsencrypt
+          traefik.http.routers.superproductivity.tls.domains[0].main: '{{ ansible_nas_domain }}'
+          traefik.http.routers.superproductivity.tls.domains[0].sans: '*.{{ ansible_nas_domain }}'
+          traefik.http.services.superproductivity.loadbalancer.server.port: '2345'
+    - name: Super Productivity App Container
+      community.docker.docker_container:
+        name: '{{ superproductivity_app_container_name }}'
+        image: '{{ superproductivity_app_image_name }}:{{ superproductivity_app_image_tag
+          }}'
+        pull: true
+        restart_policy: unless-stopped
+        networks:
+          - name: '{{ superproductivity_network_name }}'
+        # volumes: ['{{ superproductivity_data_directory }}:/usr/share/nginx/html:rw']
+        ports: ['{{ superproductivity_app_port }}:80']
+        env:
+          WEBDAV_BASE_URL: '{{ superproductivity_webdav_base_url }}'
+          WEBDAV_USERNAME: '{{ superproductivity_webdav_username }}'
+          WEBDAV_PASSWORD: '{{ superproductivity_webdav_password }}'
+          WEBDAV_SYNC_FOLDER_PATH: '{{ superproductivity_webdav_sync_folder_path }}'
+          SYNC_INTERVAL: '{{ superproductivity_sync_interval }}'
+          IS_COMPRESSION_ENABLED: '{{ superproductivity_is_compression_enabled }}'
+          IS_ENCRYPTION_ENABLED: '{{ superproductivity_is_encryption_enabled }}'
+        memory: '{{ superproductivity_app_memory }}'
+        labels:
+          traefik.enable: '{{ superproductivity_available_externally | string }}'
+          traefik.http.routers.superproductivity.rule: Host(`{{ superproductivity_hostname }}.{{
+            ansible_nas_domain }}`)
+          traefik.http.routers.superproductivity.tls.certresolver: letsencrypt
+          traefik.http.routers.superproductivity.tls.domains[0].main: '{{ ansible_nas_domain }}'
+          traefik.http.routers.superproductivity.tls.domains[0].sans: '*.{{ ansible_nas_domain }}'
+          traefik.http.services.superproductivity.loadbalancer.server.port: '80'
+  when: superproductivity_enabled is true
+- name: Stop Super Productivity
+  block:
+    - name: Stop Super Productivity App
+      community.docker.docker_container:
+        name: '{{ superproductivity_app_container_name }}'
+        state: absent
+    - name: Stop Super Productivity WebDAV
+      community.docker.docker_container:
+        name: '{{ superproductivity_webdav_container_name }}'
+        state: absent
+    - name: Remove Super Productivity Network
+      community.docker.docker_network:
+        name: '{{ superproductivity_network_name }}'
+        state: absent
+  when: superproductivity_enabled is false

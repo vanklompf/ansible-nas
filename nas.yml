@@ -482,6 +482,8 @@
       tags: [stirlingpdf]
     - role: suitecrm
       tags: [suitecrm]
+    - role: superproductivity
+      tags: [superproductivity]
     - role: syncthing
       tags: [syncthing]
     - role: tautulli
