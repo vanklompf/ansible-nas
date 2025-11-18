@@ -23,7 +23,6 @@
         volumes:
           - '{{ habitica_data_directory }}/mongo-data:/data/db:rw'
           - '{{ habitica_data_directory }}/dbconf:/data/configdb'
-        ports: ['{{ habitica_mongo_port }}:27017']
         networks:
           - name: '{{ habitica_network_name }}'
         restart_policy: unless-stopped
@@ -37,6 +36,9 @@
           start_period: 0s
           start_interval: 1s
           retries: 30
+    - name: Pause for 40 seconds to wait for DB to get up
+      ansible.builtin.pause:
+        seconds: 40
     - name: Create Habitica Server Container
       community.docker.docker_container:
         container_default_behavior: no_defaults
