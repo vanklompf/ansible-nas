@@ -76,6 +76,7 @@ If you have a spare domain name you can configure applications to be accessible 
 - [Flatnotes](https://flatnotes.io/) - Self-hosted, database-less note taking web app
 - [Formbricks](https://github.com/formbricks/formbricks) - An Open Source Survey Platform
 - [FormIO](https://github.com/formio/formio) - SA Form and Data Management Platform for Progressive Web Applications
+- [FoundryVTT](https://foundryvtt.com/) - Virtual tabletop (VTT) for innovative online role-playing experience directly through a web browser
 - [Fresh RSS](https://freshrss.org/) - Self-hosted RSS feed aggregator like Leed or Kriss Feed
 - [Frigate](https://frigate.video/) - Frigate is an open source NVR built around real-time AI object detection
 - [Fusion](https://github.com/0x2E/fusion) - A lightweight, self-hosted friendly RSS aggregator and reader

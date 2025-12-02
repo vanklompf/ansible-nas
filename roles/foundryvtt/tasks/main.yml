@@ -1,0 +1,113 @@
+---
+- name: Start FoundryVTT
+  block:
+    - name: Create FoundryVTT Data Directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ foundryvtt_data_directory }}/data"
+        - "{{ foundryvtt_data_directory }}/config"
+      register: foundryvtt_dirs
+
+    - name: Create FoundryVTT Credentials File
+      ansible.builtin.copy:
+        dest: "{{ [foundryvtt_data_directory, 'config', 'credentials.json'] | ansible.builtin.path_join }}"
+        content: "{{
+          credentials |
+          dict2items |
+          rejectattr('value', 'none') |
+          items2dict |
+          to_nice_json
+        }}"
+        mode: 0600
+      vars:
+        credentials:
+          foundry_admin_key: "{{ foundryvtt_admin_key | default(None) }}"
+          foundry_license_key: "{{ foundryvtt_license_key | default(None) }}"
+          foundry_password: "{{ foundryvtt_password | default(None) }}"
+          foundry_password_salt: "{{ foundryvtt_password_salt | default(None) }}"
+          foundry_username: "{{ foundryvtt_username | default(None) }}"
+      no_log: false
+
+    - name: Create FoundryVTT AWS Configuration File
+      block:
+        - name: Create FoundryVTT AWS Configuration File
+          ansible.builtin.copy:
+            dest: "{{ foundryvtt_data_directory }}/config/aws.json"
+            content: "{{
+              options |
+              combine(core, recursive=True) |
+              to_nice_json
+            }}"
+            mode: 0600
+          vars:
+            options: "{{ foundryvtt_aws_options | default({}) }}"
+            core:
+              buckets: "{{ foundryvtt_aws_buckets }}"
+              region: "{{ foundryvtt_aws_region }}"
+              credentials:
+                accessKeyId: "{{ foundryvtt_aws_key_id }}"
+                secretAccessKey: "{{ foundryvtt_aws_secret_key }}"
+          no_log: false
+      when: foundryvtt_aws_key_id is defined
+
+    - name: FoundryVTT Docker Container
+      community.docker.docker_container:
+        name: "{{ foundryvtt_container_name }}"
+        image: "{{ foundryvtt_image_name }}:{{ foundryvtt_image_version }}"
+        pull: true
+        init: true
+        volumes:
+          - "{{ foundryvtt_data_directory }}/data:/data:rw"
+          - "{{ foundryvtt_data_directory }}/config/credentials.json:/run/secrets/config.json:ro"
+          - "{{ foundryvtt_data_directory }}/config/aws.json:/config/aws.json:ro"
+        ports:
+          - "{{ foundryvtt_port }}:30000"
+        user: "{{ uid }}:{{ gid }}"
+        env:
+          TZ: "{{ ansible_nas_timezone }}"
+          FOUNDRY_HOSTNAME: "{{ foundryvtt_hostname }}.{{ ansible_nas_domain }}"
+          FOUNDRY_PROXY_PORT: "443"
+          FOUNDRY_PROXY_SSL: "true"
+          FOUNDRY_WORLD: "{{ foundryvtt_world | default(omit) }}"
+          FOUNDRY_RELEASE_URL: "{{ foundryvtt_release_url | default(omit) }}"
+          CONTAINER_CACHE: "{{ foundryvtt_container_cache | default(omit) }}"
+          CONTAINER_CACHE_SIZE: "{{ foundryvtt_container_cache_size | default(omit) }}"
+          CONTAINER_PATCHES: "{{ foundryvtt_container_patches | default(omit) }}"
+          CONTAINER_PATCH_URLS: "{{ foundryvtt_container_patch_urls | default(omit) }}"
+          CONTAINER_PRESERVE_CONFIG: "{{ foundryvtt_container_preserve_config | string | lower | default(omit) }}"
+          CONTAINER_URL_FETCH_RETRY: "{{ foundryvtt_container_url_fetch_retry | default(omit) }}"
+          CONTAINER_VERBOSE: "{{ foundryvtt_container_verbose | string | lower }}"
+          FOUNDRY_AWS_CONFIG: "{{ foundryvtt_aws_key_id is defined | ternary('/config/aws.json', omit) }}"
+          FOUNDRY_COMPRESS_WEBSOCKET: "{{ foundryvtt_compress_websocket | string | lower }}"
+          FOUNDRY_CSS_THEME: "{{ foundryvtt_css_theme | default(omit) }}"
+          # FOUNDRY_DEMO_CONFIG: "{{ foundryvtt_demo_config | default(omit) }}"
+          FOUNDRY_HOT_RELOAD: "{{ foundryvtt_hot_reload | string | lower | default(omit) }}"
+          FOUNDRY_IP_DISCOVERY: "{{ foundryvtt_ip_discovery | string | lower | default(omit) }}"
+          FOUNDRY_LANGUAGE: "{{ foundryvtt_language | default(omit) }}"
+          FOUNDRY_MINIFY_STATIC_FILES: "{{ foundryvtt_minify_files | string | lower }}"
+          FOUNDRY_TELEMETRY: "{{ foundryvtt_telemetry | string | lower | default(omit) }}"
+          NODE_DEBUG: "{{ foundryvtt_node_debug | default(omit) }}"
+          NODE_OPTIONS: "{{ foundryvtt_node_options | default(omit) }}"
+        restart_policy: unless-stopped
+        memory: "{{ foundryvtt_memory }}"
+        labels:
+          traefik.enable: "{{ foundryvtt_available_externally | string }}"
+          traefik.http.routers.foundryvtt.rule: "Host(`{{ foundryvtt_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.foundryvtt.tls.certresolver: "letsencrypt"
+          traefik.http.routers.foundryvtt.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.foundryvtt.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.foundryvtt.loadbalancer.server.port: "30000"
+      vars:
+        uid: "{{ foundryvtt_dirs.results[0].uid }}"
+        gid: "{{ foundryvtt_dirs.results[0].gid }}"
+  when: foundryvtt_enabled is true
+
+- name: Stop FoundryVTT
+  block:
+    - name: Stop FoundryVTT
+      community.docker.docker_container:
+        name: "{{ foundryvtt_container_name }}"
+        state: absent
+  when: foundryvtt_enabled is false

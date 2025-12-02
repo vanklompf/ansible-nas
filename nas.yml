@@ -160,6 +160,8 @@
       tags: [formbricks]
     - role: formio
       tags: [formio]
+    - role: foundryvtt
+      tags: [foundryvtt]
     - role: freshrss
       tags: [freshrss]
     - role: frigate

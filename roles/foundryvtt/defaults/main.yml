@@ -1,0 +1,56 @@
+---
+foundryvtt_enabled: false
+foundryvtt_available_externally: false
+
+# Directories
+foundryvtt_data_directory: "{{ docker_home }}/foundryvtt"
+
+# Configuration
+foundryvtt_image_name: "felddy/foundryvtt"
+foundryvtt_image_version: "release"
+foundryvtt_minify_files: true
+foundryvtt_compress_websocket: true
+# foundryvtt_release_url:
+# foundryvtt_world:
+# foundryvtt_version:
+# foundryvtt_css_theme:
+# foundryvtt_language:
+# foundryvtt_demo_config:
+# foundryvtt_hot_reload:
+# foundryvtt_ip_discovery:
+# foundryvtt_telemetry:
+# foundryvtt_node_debug:
+# foundryvtt_node_options:
+
+# Credentials
+# foundryvtt_username:
+# foundryvtt_password:
+# foundryvtt_admin_key:
+# foundryvtt_license_key:
+# foundryvtt_password_salt:
+
+# Container cache
+# foundryvtt_container_cache:
+# foundryvtt_container_cache_size:
+# foundryvtt_container_patches:
+# foundryvtt_container_patch_urls:
+# foundryvtt_container_preserve_config:
+# foundryvtt_container_url_fetch_retry:
+foundryvtt_container_verbose: false
+
+# AWS
+# foundryvtt_aws_key_id:
+# foundryvtt_aws_secret_key:
+# foundryvtt_aws_region:
+# foundryvtt_aws_buckets:
+# foundryvtt_aws_options:
+
+# Network
+foundryvtt_port: "30000"
+foundryvtt_hostname: "foundryvtt"
+
+# Specs
+foundryvtt_memory: 1g
+
+# Docker
+foundryvtt_container_name: foundryvtt
