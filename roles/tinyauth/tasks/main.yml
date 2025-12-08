@@ -1,0 +1,36 @@
+---
+- name: Start TinyAuth
+  block:
+    - name: Create TinyAuth Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ tinyauth_data_directory }}"
+
+    - name: TinyAuth Container
+      community.docker.docker_container:
+        name: "{{ tinyauth_container_name }}"
+        image: "{{ tinyauth_image_name }}:{{ tinyauth_image_version }}"
+        pull: true
+        env: "{{ tinyauth_env }}"
+        volumes:
+          - "{{ tinyauth_data_directory }}:/data:rw"
+        restart_policy: unless-stopped
+        memory: "{{ tinyauth_memory }}"
+        labels:
+          traefik.enable: "{{ tinyauth_available_externally | string }}"
+          traefik.http.routers.tinyauth.rule: "Host(`{{ tinyauth_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.tinyauth.middlewares: tinyauth
+          traefik.http.middlewares.tinyauth.forwardauth.address: "http://{{ tinyauth_container_name }}:3000/api/auth/traefik"
+
+  when: tinyauth_enabled is true
+
+- name: Stop TinyAuth
+  block:
+    - name: Stop TinyAuth Containers
+      community.docker.docker_container:
+        name: "{{ tinyauth_container_name }}"
+        state: absent
+
+  when: tinyauth_enabled is false
