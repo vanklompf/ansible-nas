@@ -17,6 +17,7 @@ The project allows users to configure and deploy over 200 different applications
 ## Key Components
 
 ### Core Functionality
+
 - User management (ansible-nas-users role)
 - Samba server configuration
 - NFS sharing
@@ -25,9 +26,11 @@ The project allows users to configure and deploy over 200 different applications
 - Docker-specific NAS configuration (ansible-nas-docker role)
 
 ### Application Stacks
+
 - Preconfigured application stacks for common use cases (e.g., logging stack with Grafana Loki)
 
 ### External Dependencies
+
 - Uses several external Ansible Galaxy roles:
   - geerlingguy.docker
   - geerlingguy.nfs
@@ -37,12 +40,14 @@ The project allows users to configure and deploy over 200 different applications
 ## Development Environment
 
 ### Prerequisites
+
 - Python 3 environment
 - Docker (for running tests)
 - Ansible (managed via pyproject.toml dependencies)
 - pre-commit hooks
 
 ### Dependencies Management
+
 - Python dependencies via `pyproject.toml`
 - Ansible roles and collections via `requirements.yml`
 - Development dependencies include molecule for testing, ansible-lint, yamllint, etc.
@@ -50,12 +55,14 @@ The project allows users to configure and deploy over 200 different applications
 ## Building and Running
 
 ### Setup
+
 1. Install Python dependencies: `pip install -r requirements-dev.txt` or use the pyproject.toml
 2. Install Ansible Galaxy roles: `ansible-galaxy install -r requirements.yml`
 3. Configure your inventory file with target host information
 4. Customize variables in group_vars or host_vars as needed
 
 ### Execution
+
 ```bash
 # Run the full NAS setup
 ansible-playbook nas.yml
@@ -68,6 +75,7 @@ ansible-playbook nas.yml -i inventory_file
 ```
 
 ### Testing
+
 - Uses Molecule for role testing
 - Individual roles have molecule/default configuration
 - GitHub Actions for CI/CD integration
@@ -75,6 +83,7 @@ ansible-playbook nas.yml -i inventory_file
 ## Development Conventions
 
 ### Adding New Applications
+
 - Follow the `hello_world` example as a template
 - Each application has its own role in the `/roles` directory
 - Include default variables, main tasks, documentation, and testing
@@ -82,7 +91,9 @@ ansible-playbook nas.yml -i inventory_file
 - Each role should have enable/disable functionality with boolean variables
 
 ### Role Structure
+
 Each application role typically includes:
+
 - `defaults/main.yml` - Default configuration variables
 - `tasks/main.yml` - Main tasks to deploy the application
 - `docs/` - Documentation files
@@ -90,10 +101,12 @@ Each application role typically includes:
 - Requirements for Docker containers and network configuration
 
 ### Variable Naming Convention
+
 - Variables follow the pattern: `{app_name}_{setting}` (e.g., `hello_world_enabled`)
 - Common variables include `{app}_enabled`, `{app}_port`, `{app}_hostname`, etc.
 
 ### Tagging System
+
 - Each role has associated tags for selective execution (e.g., `--tags nextcloud`)
 - Core NAS functionality has dedicated tags (`ansible-nas-users`, `docker`, etc.)
 
@@ -108,8 +121,8 @@ Each application role typically includes:
 
 ## Documentation and Support
 
-- Official documentation: https://ansible-nas.io
-- GitHub repository: https://github.com/davestephens/ansible-nas
+- Official documentation: <https://ansible-nas.io>
+- GitHub repository: <https://github.com/davestephens/ansible-nas>
 - Community chat: Gitter
 - Requirements: Targeted at Ubuntu 22.04 LTS with recommended hardware specifications
 
