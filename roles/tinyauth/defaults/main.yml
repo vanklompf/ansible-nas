@@ -20,12 +20,93 @@ tinyauth_container_name: tinyauth
 tinyauth_image_name: ghcr.io/steveiliop56/tinyauth
 tinyauth_image_version: v3
 
-# environment variables
+# GENERAL configuration environment variables
+tinyauth_address: "0.0.0.0"
+tinyauth_app_title: "Tinyauth"
 tinyauth_app_url: "https://{{ tinyauth_hostname }}.{{ ansible_nas_domain }}"
+tinyauth_background_image: "/background.jpg"
+tinyauth_database_path: "/data/tinyauth.db"
+tinyauth_disable_analytics: "false"
+tinyauth_disable_resources: "false"
+tinyauth_disable_ui_warnings: "false"
+tinyauth_forgot_password_message: ""
+tinyauth_log_json: "false"
+tinyauth_log_level: "1"
+tinyauth_login_max_retries: "5"
+tinyauth_login_timeout: "300"
+tinyauth_oauth_auto_redirect: ""
+tinyauth_oauth_whitelist: ""
+# Note: PORT is handled by tinyauth_port variable above
+tinyauth_resources_dir: "/data/resources"
+tinyauth_secure_cookie: "false"
+tinyauth_session_expiry: "86400"
+tinyauth_socket_path: ""
+tinyauth_trusted_proxies: ""
 tinyauth_users: "user:$$2a$$10$$UdLYoJ5lgPsC0RKqYH/jMua7zIn0g9kPqWmhYayJYLaZQ/FTmH2/u" # user:password
+tinyauth_users_file: ""
+
+# SECRET configuration variable (likely needed for security functions)
 tinyauth_secret: KNLIhksGkTFc1UWxa3SH1txGwyQWf7Su # openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 32 && echo
 
+# LDAP configuration environment variables
+tinyauth_ldap_address: ""
+tinyauth_ldap_base_dn: ""
+tinyauth_ldap_bind_dn: ""
+tinyauth_ldap_bind_password: ""
+tinyauth_ldap_insecure: "false"
+tinyauth_ldap_search_filter: "(uid=%s)"
+
+# OAuth configuration environment variables (example with google provider)
+# Note: Replace 'google' with actual provider ID as needed
+tinyauth_providers_google_auth_url: ""
+tinyauth_providers_google_client_id: ""
+tinyauth_providers_google_client_secret: ""
+tinyauth_providers_google_client_secret_file: ""
+tinyauth_providers_google_insecure_skip_verify: ""
+tinyauth_providers_google_name: ""
+tinyauth_providers_google_redirect_url: ""
+tinyauth_providers_google_scopes: ""
+tinyauth_providers_google_token_url: ""
+tinyauth_providers_google_user_info_url: ""
+
+# environment variables mapping
 tinyauth_env:
+  ADDRESS: "{{ tinyauth_address }}"
+  APP_TITLE: "{{ tinyauth_app_title }}"
   APP_URL: "{{ tinyauth_app_url }}"
+  BACKGROUND_IMAGE: "{{ tinyauth_background_image }}"
+  DATABASE_PATH: "{{ tinyauth_database_path }}"
+  DISABLE_ANALYTICS: "{{ tinyauth_disable_analytics | string }}"
+  DISABLE_RESOURCES: "{{ tinyauth_disable_resources | string }}"
+  DISABLE_UI_WARNINGS: "{{ tinyauth_disable_ui_warnings | string }}"
+  FORGOT_PASSWORD_MESSAGE: "{{ tinyauth_forgot_password_message }}"
+  LOG_JSON: "{{ tinyauth_log_json | string }}"
+  LOG_LEVEL: "{{ tinyauth_log_level }}"
+  LOGIN_MAX_RETRIES: "{{ tinyauth_login_max_retries | string }}"
+  LOGIN_TIMEOUT: "{{ tinyauth_login_timeout | string }}"
+  OAUTH_AUTO_REDIRECT: "{{ tinyauth_oauth_auto_redirect }}"
+  OAUTH_WHITELIST: "{{ tinyauth_oauth_whitelist }}"
+  RESOURCES_DIR: "{{ tinyauth_resources_dir }}"
+  SECURE_COOKIE: "{{ tinyauth_secure_cookie | string }}"
+  SESSION_EXPIRY: "{{ tinyauth_session_expiry | string }}"
+  SOCKET_PATH: "{{ tinyauth_socket_path }}"
+  TRUSTED_PROXIES: "{{ tinyauth_trusted_proxies }}"
   USERS: "{{ tinyauth_users }}"
+  USERS_FILE: "{{ tinyauth_users_file }}"
   SECRET: "{{ tinyauth_secret }}"
+  LDAP_ADDRESS: "{{ tinyauth_ldap_address }}"
+  LDAP_BASE_DN: "{{ tinyauth_ldap_base_dn }}"
+  LDAP_BIND_DN: "{{ tinyauth_ldap_bind_dn }}"
+  LDAP_BIND_PASSWORD: "{{ tinyauth_ldap_bind_password }}"
+  LDAP_INSECURE: "{{ tinyauth_ldap_insecure | string }}"
+  LDAP_SEARCH_FILTER: "{{ tinyauth_ldap_search_filter }}"
+  PROVIDERS_GOOGLE_AUTH_URL: "{{ tinyauth_providers_google_auth_url }}"
+  PROVIDERS_GOOGLE_CLIENT_ID: "{{ tinyauth_providers_google_client_id }}"
+  PROVIDERS_GOOGLE_CLIENT_SECRET: "{{ tinyauth_providers_google_client_secret }}"
+  PROVIDERS_GOOGLE_CLIENT_SECRET_FILE: "{{ tinyauth_providers_google_client_secret_file }}"
+  PROVIDERS_GOOGLE_INSECURE_SKIP_VERIFY: "{{ tinyauth_providers_google_insecure_skip_verify | string }}"
+  PROVIDERS_GOOGLE_NAME: "{{ tinyauth_providers_google_name }}"
+  PROVIDERS_GOOGLE_REDIRECT_URL: "{{ tinyauth_providers_google_redirect_url }}"
+  PROVIDERS_GOOGLE_SCOPES: "{{ tinyauth_providers_google_scopes }}"
+  PROVIDERS_GOOGLE_TOKEN_URL: "{{ tinyauth_providers_google_token_url }}"
+  PROVIDERS_GOOGLE_USER_INFO_URL: "{{ tinyauth_providers_google_user_info_url }}"
