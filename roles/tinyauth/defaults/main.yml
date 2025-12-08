@@ -1,0 +1,31 @@
+---
+tinyauth_enabled: false
+tinyauth_available_externally: false
+
+# directories
+tinyauth_data_directory: "{{ docker_home }}/tinyauth"
+
+# network
+tinyauth_port: "9004"
+tinyauth_hostname: "tinyauth"
+
+# specs
+tinyauth_memory: 512m
+
+# tinyauth network
+tinyauth_network_name: tinyauth
+
+# docker
+tinyauth_container_name: tinyauth
+tinyauth_image_name: ghcr.io/steveiliop56/tinyauth
+tinyauth_image_version: v3
+
+# environment variables
+tinyauth_app_url: "https://{{ tinyauth_hostname }}.{{ ansible_nas_domain }}"
+tinyauth_users: "user:$$2a$$10$$UdLYoJ5lgPsC0RKqYH/jMua7zIn0g9kPqWmhYayJYLaZQ/FTmH2/u" # user:password
+tinyauth_secret: KNLIhksGkTFc1UWxa3SH1txGwyQWf7Su # openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 32 && echo
+
+tinyauth_env:
+  APP_URL: "{{ tinyauth_app_url }}"
+  USERS: "{{ tinyauth_users }}"
+  SECRET: "{{ tinyauth_secret }}"

@@ -498,6 +498,8 @@
       tags: [tiddlywiki]
     - role: timemachine
       tags: [timemachine]
+    - role: tinyauth
+      tags: [tinyauth]
     - role: tooljet
       tags: [tooljet]
     - role: traefik
