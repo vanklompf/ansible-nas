@@ -1,0 +1,194 @@
+---
+- name: Start Pocket ID
+  block:
+    - name: Create Pocket ID directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+        owner: 1000
+        group: 1000
+      loop:
+        - "{{ pocket_id_data_directory }}/postgres.etc"
+        - "{{ pocket_id_data_directory }}/postgres.backup"
+        - "{{ pocket_id_data_directory }}/pocket-id.var"
+        - "{{ pocket_id_data_directory }}/uploads"
+        - "{{ pocket_id_data_directory }}/keys"
+
+    - name: Create Pocket ID network
+      community.docker.docker_network:
+        name: "{{ pocket_id_network_name }}"
+        driver: bridge
+
+    - name: Create Pocket ID PostgreSQL container
+      community.docker.docker_container:
+        name: "{{ pocket_id_postgres_container_name }}"
+        image: "{{ pocket_id_postgres_image }}:{{ pocket_id_postgres_image_version }}"
+        pull: true
+        restart_policy: unless-stopped
+        env:
+          TZ: "{{ pocket_id_timezone }}"
+          POSTGRES_PASSWORD: "{{ pocket_id_postgres_password }}"
+          POSTGRES_BACKUP_SCHEDULE: "{{ pocket_id_postgres_backup_schedule }}"
+        volumes:
+          - "{{ pocket_id_data_directory }}/postgres.etc:/var/lib/postgresql/data:Z"
+          - "{{ pocket_id_data_directory }}/postgres.backup:/postgres/backup:Z"
+        tmpfs:
+          - "/postgres/run:uid=1000,gid=1000"
+          - "/postgres/log:uid=1000,gid=1000"
+        networks:
+          - name: "{{ pocket_id_network_name }}"
+        security_opts:
+          - "no-new-privileges=true"
+        read_only: true
+        healthcheck:
+          test: ["CMD-SHELL", "pg_isready -U postgres"]
+          interval: 30s
+          timeout: 10s
+          retries: 3
+          start_period: 60s
+
+    - name: Wait for PostgreSQL to be healthy before starting Pocket ID
+      community.docker.docker_container_info:
+        name: "{{ pocket_id_postgres_container_name }}"
+      register: pocket_id_postgres_container
+      until:
+        - pocket_id_postgres_container.container is defined
+        - pocket_id_postgres_container.container.State is defined
+        - pocket_id_postgres_container.container.State.Status == "running"
+        - pocket_id_postgres_container.container.State.Health is defined
+        - pocket_id_postgres_container.container.State.Health.Status == "healthy"
+      retries: 30
+      delay: 10
+      when: pocket_id_enabled | bool
+
+    - name: Create Pocket ID container
+      community.docker.docker_container:
+        name: "{{ pocket_id_container_name }}"
+        image: "{{ pocket_id_image }}:{{ pocket_id_image_version }}"
+        pull: true
+        restart_policy: unless-stopped
+        env:
+          TZ: "{{ pocket_id_timezone }}"
+          APP_URL: "{{ pocket_id_app_url }}"
+          TRUST_PROXY: "{{ pocket_id_trust_proxy }}"
+          ENCRYPTION_KEY: "{{ pocket_id_encryption_key | default(omit) }}"
+          ENCRYPTION_KEY_FILE: "{{ pocket_id_encryption_key_file | default(omit) }}"
+          MAXMIND_LICENSE_KEY: "{{ pocket_id_maxmind_license_key | default(omit) }}"
+          MAXMIND_LICENSE_KEY_FILE: "{{ pocket_id_maxmind_license_key_file | default(omit) }}"
+          PUID: "{{ pocket_id_puid }}"
+          PGID: "{{ pocket_id_pgid }}"
+          DB_PROVIDER: "{{ pocket_id_db_provider }}"
+          DB_CONNECTION_STRING: "{{ pocket_id_db_connection_string }}"
+          DB_CONNECTION_STRING_FILE: "{{ pocket_id_db_connection_string_file | default(omit) }}"
+          FILE_BACKEND: "{{ pocket_id_file_backend }}"
+          UPLOAD_PATH: "{{ pocket_id_upload_path }}"
+          S3_BUCKET: "{{ pocket_id_s3_bucket | default(omit) }}"
+          S3_REGION: "{{ pocket_id_s3_region | default(omit) }}"
+          S3_ENDPOINT: "{{ pocket_id_s3_endpoint | default(omit) }}"
+          S3_ACCESS_KEY_ID: "{{ pocket_id_s3_access_key_id | default(omit) }}"
+          S3_SECRET_ACCESS_KEY: "{{ pocket_id_s3_secret_access_key | default(omit) }}"
+          S3_FORCE_PATH_STYLE: "{{ pocket_id_s3_force_path_style | string }}"
+          S3_DISABLE_DEFAULT_INTEGRITY_CHECKS: "{{ pocket_id_s3_disable_default_integrity_checks | string }}"
+          LOG_LEVEL: "{{ pocket_id_log_level }}"
+          LOG_JSON: "{{ pocket_id_log_json | string }}"
+          KEYS_STORAGE: "{{ pocket_id_keys_storage }}"
+          KEYS_PATH: "{{ pocket_id_keys_path }}"
+          GEOLITE_DB_PATH: "{{ pocket_id_geolite_db_path }}"
+          GEOLITE_DB_URL: "{{ pocket_id_geolite_db_url }}"
+          PORT: "{{ pocket_id_server_port }}"
+          HOST: "{{ pocket_id_server_host }}"
+          UNIX_SOCKET: "{{ pocket_id_unix_socket | default(omit) }}"
+          UNIX_SOCKET_MODE: "{{ pocket_id_unix_socket_mode | default(omit) }}"
+          LOCAL_IPV6_RANGES: "{{ pocket_id_local_ipv6_ranges | join(',') }}"
+          UI_CONFIG_DISABLED: "{{ pocket_id_ui_config_disabled | string }}"
+          APP_NAME: "{{ pocket_id_app_name }}"
+          SESSION_DURATION: "{{ pocket_id_session_duration }}"
+          EMAILS_VERIFIED: "{{ pocket_id_emails_verified | string }}"
+          ALLOW_OWN_ACCOUNT_EDIT: "{{ pocket_id_allow_own_account_edit | string }}"
+          ALLOW_USER_SIGNUPS: "{{ pocket_id_allow_user_signups }}"
+          SIGNUP_DEFAULT_CUSTOM_CLAIMS: "{{ pocket_id_signup_default_custom_claims | join(',') }}"
+          SIGNUP_DEFAULT_USER_GROUP_IDS: "{{ pocket_id_signup_default_user_group_ids | join(',') }}"
+          DISABLE_ANIMATIONS: "{{ pocket_id_disable_animations | string }}"
+          ACCENT_COLOR: "{{ pocket_id_accent_color }}"
+          SMTP_HOST: "{{ pocket_id_smtp_host | default(omit) }}"
+          SMTP_PORT: "{{ pocket_id_smtp_port | default(omit) }}"
+          SMTP_FROM: "{{ pocket_id_smtp_from | default(omit) }}"
+          SMTP_USER: "{{ pocket_id_smtp_user | default(omit) }}"
+          SMTP_PASSWORD: "{{ pocket_id_smtp_password | default(omit) }}"
+          SMTP_PASSWORD_FILE: "{{ pocket_id_smtp_password_file | default(omit) }}"
+          SMTP_TLS: "{{ pocket_id_smtp_tls }}"
+          SMTP_SKIP_CERT_VERIFY: "{{ pocket_id_smtp_skip_cert_verify | string }}"
+          EMAIL_LOGIN_NOTIFICATION_ENABLED: "{{ pocket_id_email_login_notification_enabled | string }}"
+          EMAIL_ONE_TIME_ACCESS_AS_ADMIN_ENABLED: "{{ pocket_id_email_one_time_access_as_admin_enabled | string }}"
+          EMAIL_API_KEY_EXPIRATION_ENABLED: "{{ pocket_id_email_api_key_expiration_enabled | string }}"
+          EMAIL_ONE_TIME_ACCESS_AS_UNAUTHENTICATED_ENABLED: "{{ pocket_id_email_one_time_access_as_unauthenticated_enabled | string }}"
+          LDAP_ENABLED: "{{ pocket_id_ldap_enabled | string }}"
+          LDAP_URL: "{{ pocket_id_ldap_url | default(omit) }}"
+          LDAP_BIND_DN: "{{ pocket_id_ldap_bind_dn | default(omit) }}"
+          LDAP_BIND_PASSWORD: "{{ pocket_id_ldap_bind_password | default(omit) }}"
+          LDAP_BIND_PASSWORD_FILE: "{{ pocket_id_ldap_bind_password_file | default(omit) }}"
+          LDAP_BASE: "{{ pocket_id_ldap_base | default(omit) }}"
+          LDAP_USER_SEARCH_FILTER: "{{ pocket_id_ldap_user_search_filter }}"
+          LDAP_USER_GROUP_SEARCH_FILTER: "{{ pocket_id_ldap_user_group_search_filter }}"
+          LDAP_SKIP_CERT_VERIFY: "{{ pocket_id_ldap_skip_cert_verify | string }}"
+          LDAP_SOFT_DELETE_USERS: "{{ pocket_id_ldap_soft_delete_users | string }}"
+          LDAP_ATTRIBUTE_USER_UNIQUE_IDENTIFIER: "{{ pocket_id_ldap_attribute_user_unique_identifier | default(omit) }}"
+          LDAP_ATTRIBUTE_USER_USERNAME: "{{ pocket_id_ldap_attribute_user_username | default(omit) }}"
+          LDAP_ATTRIBUTE_USER_EMAIL: "{{ pocket_id_ldap_attribute_user_email | default(omit) }}"
+          LDAP_ATTRIBUTE_USER_FIRST_NAME: "{{ pocket_id_ldap_attribute_user_first_name | default(omit) }}"
+          LDAP_ATTRIBUTE_USER_LAST_NAME: "{{ pocket_id_ldap_attribute_user_last_name | default(omit) }}"
+          LDAP_ATTRIBUTE_USER_PROFILE_PICTURE: "{{ pocket_id_ldap_attribute_user_profile_picture | default(omit) }}"
+          LDAP_ATTRIBUTE_GROUP_MEMBER: "{{ pocket_id_ldap_attribute_group_member }}"
+          LDAP_ATTRIBUTE_GROUP_UNIQUE_IDENTIFIER: "{{ pocket_id_ldap_attribute_group_unique_identifier | default(omit) }}"
+          LDAP_ATTRIBUTE_GROUP_NAME: "{{ pocket_id_ldap_attribute_group_name | default(omit) }}"
+          LDAP_ATTRIBUTE_ADMIN_GROUP: "{{ pocket_id_ldap_attribute_admin_group | default(omit) }}"
+          ANALYTICS_DISABLED: "{{ pocket_id_analytics_disabled | string }}"
+          INTERNAL_APP_URL: "{{ pocket_id_internal_app_url | default(omit) }}"
+          TRACING_ENABLED: "{{ pocket_id_tracing_enabled | string }}"
+          METRICS_ENABLED: "{{ pocket_id_metrics_enabled | string }}"
+          OTEL_METRICS_EXPORTER: "{{ pocket_id_otel_metrics_exporter | default(omit) }}"
+          OTEL_EXPORTER_PROMETHEUS_HOST: "{{ pocket_id_otel_exporter_prometheus_host }}"
+          OTEL_EXPORTER_PROMETHEUS_PORT: "{{ pocket_id_otel_exporter_prometheus_port }}"
+          DEBUG: "{{ pocket_id_debug | default(omit) }}"
+        volumes:
+          - "{{ pocket_id_data_directory }}/pocket-id.var:/pocket-id/var:Z"
+          - "{{ pocket_id_data_directory }}/uploads:/uploads:Z"
+          - "{{ pocket_id_data_directory }}/keys:/keys:Z"
+        ports:
+          - "{{ pocket_id_port }}:{{ pocket_id_container_port }}"
+        networks:
+          - name: "{{ pocket_id_network_name }}"
+        security_opts:
+          - "no-new-privileges=true"
+        read_only: true
+        healthcheck:
+          test: ["CMD", "pocket-id", "healthcheck"]
+        labels:
+          traefik.enable: "{{ pocket_id_available_externally | string }}"
+          traefik.http.routers.pocket_id.rule: "Host(`{{ pocket_id_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.pocket_id.tls.certresolver: "letsencrypt"
+          traefik.http.routers.pocket_id.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.pocket_id.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.pocket_id.loadbalancer.server.port: "{{ pocket_id_container_port }}"
+
+  when: pocket_id_enabled is true
+
+- name: Stop Pocket ID
+  block:
+    - name: Stop and remove Pocket ID containers
+      community.docker.docker_container:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ pocket_id_container_name }}"
+        - "{{ pocket_id_postgres_container_name }}"
+
+    - name: Remove Pocket ID networks
+      community.docker.docker_network:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ pocket_id_network_name }}"
+
+  when: pocket_id_enabled is false

@@ -404,6 +404,8 @@
       tags: [piwigo]
     - role: plex
       tags: [plex]
+    - role: pocket_id
+      tags: [pocket_id]
     - role: pocketid
       tags: [pocketid]
     - role: portainer
