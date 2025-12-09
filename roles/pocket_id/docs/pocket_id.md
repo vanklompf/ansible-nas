@@ -19,20 +19,25 @@ Pocket ID is a simple OIDC (OpenID Connect) provider that allows users to authen
 The following variables can be configured in your inventory file:
 
 ### Basic Settings
+
 - `pocket_id_enabled`: Enable/disable the service (default: `false`)
 - `pocket_id_available_externally`: Make the service available from outside your network (default: `false`)
 
 ### Port Configuration
+
 - `pocket_id_port`: External port for the service (default: `"8175"`)
 - `pocket_id_container_port`: Internal container port (default: `"1411"`)
 
 ### Hostname
+
 - `pocket_id_hostname`: Hostname for the service (default: `"pocket-id"`)
 
 ### Database Configuration
+
 - `pocket_id_postgres_password`: Password for PostgreSQL (default: `"change_me_please"`)
 
 ### Other Settings
+
 - `pocket_id_timezone`: Timezone for the service (default: `"UTC"`)
 - `pocket_id_app_url`: Full URL for the application (default: `"https://{{ pocket_id_hostname }}.{{ ansible_nas_domain }}"`)
 
