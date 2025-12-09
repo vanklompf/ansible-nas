@@ -1,0 +1,26 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+
+    - name: Try and stop and remove pocketid postgres
+      community.docker.docker_container:
+        name: "{{ pocket_id_postgres_container_name }}"
+        state: absent
+      register: result_postgres
+
+    - name: Try and stop and remove pocketid
+      community.docker.docker_container:
+        name: "{{ pocket_id_container_name }}"
+        state: absent
+      register: result
+
+    - name: Check if pocketid is stopped
+      ansible.builtin.assert:
+        that:
+          - not result.changed
+          - not result_postgres.changed

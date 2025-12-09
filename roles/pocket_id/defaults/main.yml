@@ -1,0 +1,38 @@
+---
+# Enable/Disable the service
+pocket_id_enabled: false
+pocket_id_available_externally: false
+
+# Directories
+pocket_id_data_directory: "{{ docker_home }}/pocket_id"
+
+# Networks
+pocket_id_network_name: "pocket_id_network"
+
+# Ports
+pocket_id_port: "8180" # Using a different port than the existing pocketid role (originally 3000 in compose)
+pocket_id_container_port: "1411"
+
+# Hostname
+pocket_id_hostname: "pocket-id"
+
+# Image settings
+pocket_id_image: "11notes/pocket-id"
+pocket_id_image_version: "1.16.0"
+pocket_id_postgres_image: "11notes/postgres"
+pocket_id_postgres_image_version: "16"
+
+# Container names
+pocket_id_container_name: "pocket_id_main"
+pocket_id_postgres_container_name: "pocket_id_postgres"
+
+# Configuration
+pocket_id_timezone: "Europe/Zurich" # Changed to match the compose file default
+pocket_id_app_url: "https://{{ pocket_id_hostname }}.{{ ansible_nas_domain }}"
+pocket_id_trust_proxy: "true"
+pocket_id_db_provider: "postgres"
+pocket_id_db_connection_string: "postgres://postgres:{{ pocket_id_postgres_password }}@{{ pocket_id_postgres_container_name }}:5432/postgres"
+pocket_id_postgres_password: "password" # Should be changed by user
+pocket_id_postgres_backup_schedule: "0 3 * * *"
+# Optional settings
+# pocket_id_debug: ""  # Uncomment to enable debug mode

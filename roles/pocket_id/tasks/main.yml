@@ -1,0 +1,124 @@
+---
+- name: Start Pocket ID
+  block:
+    - name: Create Pocket ID directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+        owner: 1000
+        group: 1000
+      loop:
+        - "{{ pocket_id_data_directory }}/postgres.etc"
+        - "{{ pocket_id_data_directory }}/postgres.var"
+        - "{{ pocket_id_data_directory }}/postgres.backup"
+        - "{{ pocket_id_data_directory }}/pocket-id.var"
+
+    - name: Create Pocket ID network
+      community.docker.docker_network:
+        name: "{{ pocket_id_network_name }}"
+        driver: bridge
+
+    - name: Create Pocket ID PostgreSQL container
+      community.docker.docker_container:
+        name: "{{ pocket_id_postgres_container_name }}"
+        image: "{{ pocket_id_postgres_image }}:{{ pocket_id_postgres_image_version }}"
+        pull: true
+        restart_policy: unless-stopped
+        env:
+          TZ: "{{ pocket_id_timezone }}"
+          POSTGRES_PASSWORD: "{{ pocket_id_postgres_password }}"
+          POSTGRES_BACKUP_SCHEDULE: "{{ pocket_id_postgres_backup_schedule }}"
+        volumes:
+          # - "{{ pocket_id_data_directory }}/postgres.etc:/postgres/etc:Z"
+          # - "{{ pocket_id_data_directory }}/postgres.var:/postgres/var:Z"
+          - "{{ pocket_id_data_directory }}/postgres.backup:/postgres/backup:Z"
+        tmpfs:
+          - "/postgres/run:uid=1000,gid=1000"
+          - "/postgres/log:uid=1000,gid=1000"
+        networks:
+          - name: "{{ pocket_id_network_name }}"
+        security_opts:
+          - "no-new-privileges=true"
+        read_only: true
+        healthcheck:
+          test: ["CMD-SHELL", "pg_isready -U postgres"]
+          interval: 30s
+          timeout: 10s
+          retries: 3
+          start_period: 60s
+
+    - name: Wait for PostgreSQL to be healthy before starting Pocket ID
+      community.docker.docker_container_info:
+        name: "{{ pocket_id_postgres_container_name }}"
+      register: pocket_id_postgres_container
+      until:
+        - pocket_id_postgres_container.container is defined
+        - pocket_id_postgres_container.container.State is defined
+        - pocket_id_postgres_container.container.State.Status == "running"
+        - pocket_id_postgres_container.container.State.Health is defined
+        - pocket_id_postgres_container.container.State.Health.Status == "healthy"
+      retries: 30
+      delay: 10
+      when: pocket_id_enabled | bool
+
+    - name: Create Pocket ID container
+      community.docker.docker_container:
+        name: "{{ pocket_id_container_name }}"
+        image: "{{ pocket_id_image }}:{{ pocket_id_image_version }}"
+        pull: true
+        restart_policy: unless-stopped
+        env:
+          TZ: "{{ pocket_id_timezone }}"
+          APP_URL: "{{ pocket_id_app_url }}"
+          TRUST_PROXY: "{{ pocket_id_trust_proxy }}"
+          DB_PROVIDER: "{{ pocket_id_db_provider }}"
+          DB_CONNECTION_STRING: "{{ pocket_id_db_connection_string }}"
+          DEBUG: "{{ pocket_id_debug | default(omit) }}"
+        volumes:
+          - "{{ pocket_id_data_directory }}/pocket-id.var:/pocket-id/var:Z"
+        ports:
+          - "{{ pocket_id_port }}:{{ pocket_id_container_port }}"
+        networks:
+          - name: "{{ pocket_id_network_name }}"
+        security_opts:
+          - "no-new-privileges=true"
+        read_only: true
+        healthcheck:
+          test:
+            [
+              "CMD-SHELL",
+              "wget --no-verbose --tries=1 --spider http://localhost:{{ pocket_id_container_port }}/health || exit 1",
+            ]
+          interval: 30s
+          timeout: 10s
+          retries: 3
+          start_period: 60s
+        labels:
+          traefik.enable: "{{ pocket_id_available_externally | string }}"
+          traefik.http.routers.pocket_id.rule: "Host(`{{ pocket_id_hostname }}.{{ ansible_nas_domain }}`)"
+          # traefik.http.routers.pocket_id.tls.certresolver: "letsencrypt"
+          # traefik.http.routers.pocket_id.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          # traefik.http.routers.pocket_id.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.pocket_id.loadbalancer.server.port: "{{ pocket_id_container_port }}"
+
+  when: pocket_id_enabled is true
+
+- name: Stop Pocket ID
+  block:
+    - name: Stop and remove Pocket ID containers
+      community.docker.docker_container:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ pocket_id_container_name }}"
+        - "{{ pocket_id_postgres_container_name }}"
+
+    - name: Remove Pocket ID networks
+      community.docker.docker_network:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ pocket_id_network_name }}"
+
+  when: pocket_id_enabled is false
