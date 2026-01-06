@@ -13,7 +13,6 @@
         - "{{ pocket_id_data_directory }}/postgres.backup"
         - "{{ pocket_id_data_directory }}/pocket-id.var"
         - "{{ pocket_id_data_directory }}/uploads"
-        - "{{ pocket_id_data_directory }}/keys"
 
     - name: Create Pocket ID network
       community.docker.docker_network:
@@ -78,7 +77,6 @@
           MAXMIND_LICENSE_KEY_FILE: "{{ pocket_id_maxmind_license_key_file | default(omit) }}"
           PUID: "{{ pocket_id_puid }}"
           PGID: "{{ pocket_id_pgid }}"
-          DB_PROVIDER: "{{ pocket_id_db_provider }}"
           DB_CONNECTION_STRING: "{{ pocket_id_db_connection_string }}"
           DB_CONNECTION_STRING_FILE: "{{ pocket_id_db_connection_string_file | default(omit) }}"
           FILE_BACKEND: "{{ pocket_id_file_backend }}"
@@ -92,8 +90,6 @@
           S3_DISABLE_DEFAULT_INTEGRITY_CHECKS: "{{ pocket_id_s3_disable_default_integrity_checks | string }}"
           LOG_LEVEL: "{{ pocket_id_log_level }}"
           LOG_JSON: "{{ pocket_id_log_json | string }}"
-          KEYS_STORAGE: "{{ pocket_id_keys_storage }}"
-          KEYS_PATH: "{{ pocket_id_keys_path }}"
           GEOLITE_DB_PATH: "{{ pocket_id_geolite_db_path }}"
           GEOLITE_DB_URL: "{{ pocket_id_geolite_db_url }}"
           PORT: "{{ pocket_id_server_port }}"
@@ -142,7 +138,7 @@
           LDAP_ATTRIBUTE_GROUP_MEMBER: "{{ pocket_id_ldap_attribute_group_member }}"
           LDAP_ATTRIBUTE_GROUP_UNIQUE_IDENTIFIER: "{{ pocket_id_ldap_attribute_group_unique_identifier | default(omit) }}"
           LDAP_ATTRIBUTE_GROUP_NAME: "{{ pocket_id_ldap_attribute_group_name | default(omit) }}"
-          LDAP_ATTRIBUTE_ADMIN_GROUP: "{{ pocket_id_ldap_attribute_admin_group | default(omit) }}"
+          LDAP_ADMIN_GROUP_NAME: "{{ pocket_id_ldap_admin_group_name | default(omit) }}"
           ANALYTICS_DISABLED: "{{ pocket_id_analytics_disabled | string }}"
           INTERNAL_APP_URL: "{{ pocket_id_internal_app_url | default(omit) }}"
           TRACING_ENABLED: "{{ pocket_id_tracing_enabled | string }}"
@@ -154,7 +150,6 @@
         volumes:
           - "{{ pocket_id_data_directory }}/pocket-id.var:/pocket-id/var:Z"
           - "{{ pocket_id_data_directory }}/uploads:/uploads:Z"
-          - "{{ pocket_id_data_directory }}/keys:/keys:Z"
         ports:
           - "{{ pocket_id_port }}:{{ pocket_id_container_port }}"
         networks:

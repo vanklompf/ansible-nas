@@ -15,7 +15,7 @@ pocketid_memory: 1g
 # docker
 pocketid_container_name: pocketid
 pocketid_image_name: "ghcr.io/pocket-id/pocket-id"
-pocketid_image_version: v1
+pocketid_image_version: v2
 pocketid_user_id: "1000"
 pocketid_group_id: "1000"
 

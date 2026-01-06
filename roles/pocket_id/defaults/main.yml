@@ -18,7 +18,7 @@ pocket_id_hostname: "pocket-id"
 
 # Image settings
 pocket_id_image: "11notes/pocket-id"
-pocket_id_image_version: "1.16.0"
+pocket_id_image_version: "2.1.0"
 pocket_id_postgres_image: "11notes/postgres"
 pocket_id_postgres_image_version: "16"
 
@@ -30,7 +30,7 @@ pocket_id_postgres_container_name: "pocket_id_postgres"
 pocket_id_timezone: "Europe/Zurich" # Changed to match the compose file default
 pocket_id_app_url: "https://{{ pocket_id_hostname }}.{{ ansible_nas_domain }}"
 pocket_id_trust_proxy: "true"
-pocket_id_encryption_key: "" # Key used to encrypt data, including the private keys
+pocket_id_encryption_key: "zdc6/IZh4a15VKfxzjhdeoxU6ZPzDys/+FaRSzI96Xc=" # Key used to encrypt data, including the private keys
 pocket_id_encryption_key_file: "" # Path to file containing encryption key
 pocket_id_maxmind_license_key: "" # License Key for the GeoLite2 Database
 pocket_id_maxmind_license_key_file: "" # Path to file containing the MaxMind license key
@@ -38,7 +38,6 @@ pocket_id_puid: "1000" # The user ID of the user who should run Pocket ID inside
 pocket_id_pgid: "1000" # The group ID of the user who should run Pocket ID inside the Docker container
 
 # Database Configuration
-pocket_id_db_provider: "postgres"
 pocket_id_db_connection_string: "postgres://postgres:{{ pocket_id_postgres_password }}@{{ pocket_id_postgres_container_name }}:5432/postgres"
 pocket_id_db_connection_string_file: "" # Path to file containing the database connection string
 pocket_id_postgres_password: "password" # Should be changed by user
@@ -58,10 +57,6 @@ pocket_id_s3_disable_default_integrity_checks: "false" # Disable default integri
 # Logging Configuration
 pocket_id_log_level: "info" # Valid values: debug, info, warn, error
 pocket_id_log_json: "false" # Emit logs formatted as JSON (true/false)
-
-# Key Storage Configuration
-pocket_id_keys_storage: "file" # Location where to store the private keys, valid values: file, database
-pocket_id_keys_path: "/keys" # Path where private keys are stored when KEYS_STORAGE is file
 
 # Geolocation Configuration
 pocket_id_geolite_db_path: "{{ pocket_id_data_directory }}/GeoLite2-City.mmdb" # Path where the GeoLite2 database should be stored
@@ -124,7 +119,7 @@ pocket_id_ldap_attribute_user_profile_picture: "" # LDAP attribute for the profi
 pocket_id_ldap_attribute_group_member: "member" # LDAP attribute to use for querying members of a group
 pocket_id_ldap_attribute_group_unique_identifier: "" # LDAP attribute for group unique identifier
 pocket_id_ldap_attribute_group_name: "" # LDAP attribute for group name
-pocket_id_ldap_attribute_admin_group: "" # Name of the admin group
+pocket_id_ldap_admin_group_name: "" # Name of the admin group
 
 # Analytics Configuration
 pocket_id_analytics_disabled: "false" # Disable heartbeat that gets sent every 24 hours (true/false)
