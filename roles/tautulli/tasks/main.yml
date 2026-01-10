@@ -5,7 +5,7 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-        # mode: 0755
+        mode: "0755"
       with_items:
         - "{{ tautulli_config_directory }}"
         - "{{ plex_logs }}"
@@ -15,6 +15,7 @@
         name: "{{ tautulli_container_name }}"
         image: "{{ tautulli_image_name }}:{{ tautulli_image_version }}"
         pull: true
+        container_default_behavior: no_defaults
         volumes:
           - "{{ tautulli_config_directory }}:/config:rw"
           - "{{ plex_logs }}:/logs:ro"
@@ -36,7 +37,7 @@
           homepage.group: Media
           homepage.name: Tautulli
           homepage.icon: tautulli
-          homepage.href: "http://{{ ansible_nas_hostname }}:{{ tautulli_port }}"
+          homepage.href: "https://{{ tautulli_hostname }}.{{ ansible_nas_domain }}"
   when: tautulli_enabled is true
 
 - name: Stop Tautulli

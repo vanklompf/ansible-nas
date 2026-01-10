@@ -7,8 +7,8 @@ tautulli_api_key: "keykeykeykey"
 tautulli_config_directory: "{{ docker_home }}/tautulli/config"
 
 # uid / gid
-tautulli_user_id: "0"
-tautulli_group_id: "0"
+tautulli_user_id: "1001"
+tautulli_group_id: "1001"
 
 # network
 tautulli_hostname: "tautulli"
