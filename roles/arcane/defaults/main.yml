@@ -19,6 +19,8 @@ arcane_image_version: latest
 arcane_user_id: '1000'
 arcane_group_id: '1000'
 
-# arcane
+#openssl rand -base64 32
 arcane_encryption_key: BfSQVy0XxFr3lyZHU1zAbCIBc25C5cJg23wLu2VSUPQ=
+
+#openssl rand -base64 48
 arcane_jwt_secret: 6FY0aTuea4NiExORg0FmWZ4SrfZpQ6h3LhPletQ/YhCPhd1BtT/MHny27/82mziB

@@ -6,7 +6,7 @@
         path: '{{ item }}'
         state: directory
         mode: '0755'
-      with_items:
+      loop:
         - '{{ arcane_data_directory }}'
         - '{{ arcane_data_directory }}/data'
         - '{{ arcane_data_directory }}/projects'
@@ -30,12 +30,16 @@
         memory: '{{ arcane_memory }}'
         labels:
           traefik.enable: '{{ arcane_available_externally | string }}'
-          traefik.http.routers.arcane.rule: Host(`{{ arcane_hostname }}.{{ ansible_nas_domain
-            }}`)
-          # traefik.http.routers.arcane.tls.certresolver: letsencrypt
-          # traefik.http.routers.arcane.tls.domains[0].main: '{{ ansible_nas_domain }}'
-          # traefik.http.routers.arcane.tls.domains[0].sans: '*.{{ ansible_nas_domain }}'
+          traefik.http.routers.arcane.rule: Host(`{{ arcane_hostname }}.{{ ansible_nas_domain}}`)
+          traefik.http.routers.arcane.tls.certresolver: letsencrypt
+          traefik.http.routers.arcane.tls.domains[0].main: '{{ ansible_nas_domain }}'
+          traefik.http.routers.arcane.tls.domains[0].sans: '*.{{ ansible_nas_domain }}'
           traefik.http.services.arcane.loadbalancer.server.port: '3552'
+          homepage.group: System
+          homepage.name: Arcane
+          homepage.icon: arcane
+          homepage.href: "https://{{ arcane_hostname }}.{{ ansible_nas_domain }}"
+          homepage.description: Docker monitoring
         healthcheck:
           test:
             - CMD-SHELL
