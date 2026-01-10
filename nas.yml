@@ -45,8 +45,26 @@
     ###
     ### Applications
     ###
-#    - role: activepieces
-#      tags: [activepieces]
+    - role: scrutiny
+      tags: [scrutiny]
+    - role: adguard
+      tags: [adguard]
+    - role: traefik
+      tags: [traefik]
+    - role: searxng
+      tags: [searxng]
+    - role: homepage
+      tags: [homepage]
+    - role: activepieces
+      tags: [activepieces]
+    - role: dawarich
+      tags: [dawarich]
+    - role: beszel
+      tags: [beszel]
+    - role: atmoz
+      tags: [atmoz]
+    - role: ftp_server
+      tags: [ftp_server]
 #    - role: actual
 #      tags: [actual]
 #    - role: admidio
@@ -61,8 +79,8 @@
 #      tags: [apcupsd]
 #    - role: appsmith
 #      tags: [appsmith]
-#    - role: arcane
-#      tags: [arcane]
+    - role: arcane
+      tags: [arcane]
 #    - role: aria2
 #      tags: [aria2]
 #    - role: authelia
@@ -85,54 +103,54 @@
 #      tags: [blocky]
     - role: booklore
       tags: [booklore]
-    - role: budibase
-      tags: [budibase]
+#    - role: budibase
+#      tags: [budibase]
     - role: calibre
       tags: [calibre]
     - role: calibreweb
       tags: [calibreweb]
-    - role: cwa
-      tags: [cwa]
-    - role: casdoor
-      tags: [casdoor]
-    - role: changedetection
-      tags: [changedetection]
-    - role: chatpad
-      tags: [chatpad]
-    - role: chatwoot
-      tags: [chatwoot]
-    - role: claper
-      tags: [claper]
-    - role: cloudcmd
-      tags: [cloudcmd]
-    - role: cloudflare_ddns
-      tags: [cloudflare_ddns]
-    - role: couchdb
-      tags: [couchdb]
+#    - role: cwa
+#      tags: [cwa]
+#    - role: casdoor
+#      tags: [casdoor]
+#    - role: changedetection
+#      tags: [changedetection]
+#    - role: chatpad
+#      tags: [chatpad]
+#    - role: chatwoot
+#      tags: [chatwoot]
+#    - role: claper
+#      tags: [claper]
+#    - role: cloudcmd
+#      tags: [cloudcmd]
+#    - role: cloudflare_ddns
+#      tags: [cloudflare_ddns]
+#    - role: couchdb
+#      tags: [couchdb]
     - role: code-server
       tags: [code-server]
-    - role: commafeed
-      tags: [commafeed]
-    - role: couchpotato
-      tags: [couchpotato]
-    - role: dashy
-      tags: [dashy]
-    - role: dbgate
-      tags: [dbgate]
+#    - role: commafeed
+#      tags: [commafeed]
+#    - role: couchpotato
+#      tags: [couchpotato]
+#    - role: dashy
+#      tags: [dashy]
+#    - role: dbgate
+#      tags: [dbgate]
     - role: ddns_updater
       tags: [ddns_updater]
-    - role: deluge
-      tags: [deluge]
-    - role: directus
-      tags: [directus]
-    - role: dockge
-      tags: [dockge]
-    - role: dokuwiki
-      tags: [dokuwiki]
-    - role: domain_watchdog
-      tags: [domain_watchdog]
-    - role: dozzle
-      tags: [dozzle]
+#    - role: deluge
+#      tags: [deluge]
+#    - role: directus
+#      tags: [directus]
+#    - role: dockge
+#      tags: [dockge]
+#    - role: dokuwiki
+#      tags: [dokuwiki]
+#    - role: domain_watchdog
+#      tags: [domain_watchdog]
+#    - role: dozzle
+#      tags: [dozzle]
     - role: drone-ci
       tags: [drone_ci]
     - role: duplicacy
@@ -221,8 +239,6 @@
       tags: [homeassistant]
     - role: homebridge
       tags: [homebridge]
-    - role: homepage
-      tags: [homepage]
     - role: hoppscotch
       tags: [hoppscotch]
     - role: huginn
@@ -447,8 +463,6 @@
       tags: [sabnzbd]
     - role: seafile
       tags: [seafile]
-    - role: searxng
-      tags: [searxng]
     - role: scribblers
       tags: [scribblers]
     - role: shaarli
@@ -499,8 +513,6 @@
       tags: [timemachine]
     - role: tooljet
       tags: [tooljet]
-    - role: traefik
-      tags: [traefik]
     - role: transmission
       tags: [transmission]
     - role: transmission-with-openvpn
