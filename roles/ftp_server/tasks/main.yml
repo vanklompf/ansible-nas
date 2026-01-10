@@ -1,0 +1,42 @@
+---
+- name: Start FTP Server
+  block:
+    - name: Create FTP Server Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0777"
+      with_items:
+        - "{{ ftp_server_data_directory }}"
+
+    - name: Create FTP Server Docker Container
+      community.docker.docker_container:
+        name: "{{ ftp_server_container_name }}"
+        image: "{{ ftp_server_image_name }}:{{ ftp_server_image_version }}"
+        pull: true
+        volumes:
+          - "{{ ftp_server_data_directory }}:/home/{{ ftp_server_user }}"
+        ports:
+          - "{{ ftp_server_port }}:21"
+          - "{{ ftp_server_passive_ports }}:{{ ftp_server_passive_ports }}"
+        env:
+          FTP_USER: "{{ ftp_server_user }}"
+          FTP_PASS: "{{ ftp_server_pass }}"
+          PUBLIC_IP: "{{ ftp_server_public_ip }}"
+        restart_policy: unless-stopped
+        memory: "{{ ftp_server_memory }}"
+        labels:
+          homepage.group: System
+          homepage.name: FTP Server
+          homepage.icon: ftp
+          homepage.href: "ftp://{{ ftp_server_hostname }}.{{ ansible_nas_domain }}:{{ ftp_server_port }}"
+          homepage.description: FTP Server
+  when: ftp_server_enabled is true
+
+- name: Stop FTP Server
+  block:
+    - name: Stop FTP Server
+      community.docker.docker_container:
+        name: "{{ ftp_server_container_name }}"
+        state: absent
+  when: ftp_server_enabled is false

@@ -1,0 +1,23 @@
+---
+ftp_server_enabled: false
+
+# directories
+ftp_server_data_directory: "{{ docker_home }}/ftp_server"
+
+# credentials
+ftp_server_user: ftpuser
+ftp_server_pass: changeme
+ftp_server_public_ip: "{{ ansible_nas_ip }}"
+
+# network
+ftp_server_port: 21
+ftp_server_passive_ports: "40000-40009"
+ftp_server_hostname: ftp
+
+# specs
+ftp_server_memory: 512m
+
+# docker
+ftp_server_container_name: ftp-server
+ftp_server_image_name: garethflowers/ftp-server
+ftp_server_image_version: latest
