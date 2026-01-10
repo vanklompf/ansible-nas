@@ -1,0 +1,40 @@
+---
+- name: Start Atmoz
+  block:
+    - name: Create Atmoz Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      with_items:
+        - "{{ atmoz_data_directory }}"
+        - "{{ atmoz_data_directory }}/upload"
+
+    - name: Create atmoz Docker Container
+      community.docker.docker_container:
+        name: "{{ atmoz_container_name }}"
+        image: "{{ atmoz_image_name }}:{{ atmoz_image_version }}"
+        pull: true
+        volumes:
+          - "{{ atmoz_data_directory }}:/home/{{ atmoz_user }}/"
+        ports:
+          - "{{ atmoz_port }}:22"
+        env:
+          TZ: "{{ ansible_nas_timezone }}"
+        command: "{{ atmoz_credentials }}"
+        restart_policy: unless-stopped
+        memory: "{{ atmoz_memory }}"
+        labels:
+          homepage.group: System
+          homepage.name: atmoz
+          homepage.icon: atmoz
+          homepage.description: Sftp Server
+  when: atmoz_enabled is true
+
+- name: Stop Atmoz
+  block:
+    - name: Stop Atmoz
+      community.docker.docker_container:
+        name: "{{ atmoz_container_name }}"
+        state: absent
+  when: atmoz_enabled is false

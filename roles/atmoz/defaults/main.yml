@@ -1,0 +1,21 @@
+---
+atmoz_enabled: false
+
+# directories
+atmoz_data_directory: '{{ docker_home }}/atmoz'
+
+#credential
+atmoz_user: sftpuser  
+atmoz_pass: changeme
+atmoz_credentials: "{{ atmoz_user }}:{{ atmoz_pass }}:1001"
+
+# network
+atmoz_port: 3892
+
+# specs
+atmoz_memory: 1g
+
+# docker
+atmoz_container_name: atmoz-sftp
+atmoz_image_name: atmoz/sftp
+atmoz_image_version: alpine
