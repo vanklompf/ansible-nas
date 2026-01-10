@@ -2,7 +2,9 @@
 scrutiny_collector_enabled: false
 
 # network
-scrutiny_hostname: "scrutiny_collector"
+scrutiny_collector_hostname: "scrutiny-collector"
+scrutiny_collector_api_endpoint: "{{ scrutiny_container_name }}"
+scrutiny_collector_api_port: 8080
 
 # specs
 scrutiny_collector_memory: 1g
@@ -11,5 +13,3 @@ scrutiny_collector_memory: 1g
 scrutiny_collector_container_name: "scrutiny_collector"
 scrutiny_collector_image_name: "ghcr.io/analogj/scrutiny"
 scrutiny_collector_image_version: "master-collector"
-
-scrutiny_collector_api_endpoint: 127.0.0.1

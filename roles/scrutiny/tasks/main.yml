@@ -20,7 +20,7 @@
         volumes:
           - "/run/udev:/run/udev:ro"
           - "{{ scrutiny_config_directory }}:/opt/scrutiny/config"
-          - "{{ scrutiny_influxdb_directory}}:/opt/scrutiny/influxdb"
+          - "{{ scrutiny_influxdb_directory }}:/opt/scrutiny/influxdb"
         ports:
           - "{{ scrutiny_port }}:8080" # webapp
           - "{{ scrutiny_influx_port }}:8086" # influxDB admin
@@ -28,12 +28,18 @@
         privileged: true
         memory: "{{ scrutiny_memory }}"
         labels:
+          traefik.enable: "{{ scrutiny_available_externally | string }}"
+          traefik.http.routers.scrutiny.rule: "Host(`{{ scrutiny_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.scrutiny.tls.certresolver: "letsencrypt"
+          traefik.http.routers.scrutiny.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.scrutiny.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.scrutiny.loadbalancer.server.port: "8080"
           homepage.group: System
           homepage.name: Scrutiny
           homepage.icon: scrutiny.png
           homepage.href: "http://{{ ansible_nas_hostname }}:{{ scrutiny_port }}"
           homepage.widget.type: scrutiny
-          homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ scrutiny_port }}"
+          homepage.widget.url: "https://{{ scrutiny_hostname }}.{{ ansible_nas_domain }}"
   when: scrutiny_enabled is true
 
 - name: Stop Scrutiny

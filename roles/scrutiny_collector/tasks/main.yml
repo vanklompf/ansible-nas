@@ -14,7 +14,7 @@
         restart_policy: unless-stopped
         privileged: true
         env:
-          COLLECTOR_API_ENDPOINT: "http://{{ scrutiny_collector_api_endpoint }}:8080"
+          COLLECTOR_API_ENDPOINT: "http://{{ scrutiny_collector_api_endpoint }}:{{ scrutiny_collector_api_port }}"
         memory: "{{ scrutiny_collector_memory }}"
   when: scrutiny_collector_enabled is true
 
