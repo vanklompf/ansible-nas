@@ -1,13 +1,6 @@
 ---
 - name: Start excalidraw
   block:
-    - name: Create excalidraw Directories
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-      with_items:
-        - "{{ excalidraw_data_directory }}"
-
     - name: Create excalidraw Docker Container
       community.docker.docker_container:
         container_default_behavior: no_defaults
@@ -27,6 +20,11 @@
           traefik.http.routers.excalidraw.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.excalidraw.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.excalidraw.loadbalancer.server.port: "80"
+          homepage.group: Applications
+          homepage.name: Excalidraw
+          homepage.icon: excalidraw.png
+          homepage.href: "https://{{ excalidraw_hostname }}.{{ ansible_nas_domain }}"
+          homepage.description: Drawing board
   when: excalidraw_enabled is true
 
 - name: Stop excalidraw
