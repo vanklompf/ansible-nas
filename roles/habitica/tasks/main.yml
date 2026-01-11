@@ -1,0 +1,82 @@
+---
+- name: Start Habitica
+  block:
+    - name: Create Habitica Directories
+      ansible.builtin.file:
+        path: '{{ item }}'
+        state: directory
+      with_items:
+        - '{{ habitica_data_directory }}'
+        - '{{ habitica_data_directory }}/mongo-data'
+        - '{{ habitica_data_directory }}/dbconf'
+    - name: Create Habitica Network
+      community.docker.docker_network:
+        name: '{{ habitica_network_name }}'
+        driver: bridge
+    - name: Create Habitica MongoDB Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: '{{ habitica_mongo_container_name }}'
+        image: '{{ habitica_mongo_image_name }}:{{ habitica_mongo_image_version
+          }}'
+        pull: true
+        volumes:
+          - '{{ habitica_data_directory }}/mongo-data:/data/db:rw'
+          - '{{ habitica_data_directory }}/dbconf:/data/configdb'
+        networks:
+          - name: '{{ habitica_network_name }}'
+        restart_policy: unless-stopped
+        memory: '{{ habitica_memory }}'
+        command: [--replSet, rs, --bind_ip_all, --port, '27017']
+        healthcheck:
+          test: echo "try { rs.status() } catch (err) { rs.initiate() }" | mongosh
+            --port 27017 --quiet
+          interval: 10s
+          timeout: 30s
+          start_period: 0s
+          start_interval: 1s
+          retries: 30
+    - name: Pause for 40 seconds to wait for DB to get up
+      ansible.builtin.pause:
+        seconds: 40
+    - name: Create Habitica Server Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: '{{ habitica_server_container_name }}'
+        image: '{{ habitica_server_image_name }}:{{ habitica_server_image_version
+          }}'
+        pull: true
+        ports: ['{{ habitica_server_port }}:3000']
+        env: '{{ habitica_optional_env | default({}) | combine(habitica_env) }}'
+        networks:
+          - name: '{{ habitica_network_name }}'
+        restart_policy: unless-stopped
+        memory: '{{ habitica_memory }}'
+        labels:
+          traefik.enable: '{{ habitica_available_externally | string }}'
+          traefik.http.routers.habitica.rule: Host(`{{ habitica_hostname }}.{{ ansible_nas_domain
+            }}`)
+          traefik.http.routers.habitica.tls.certresolver: letsencrypt
+          traefik.http.routers.habitica.tls.domains[0].main: '{{ ansible_nas_domain }}'
+          traefik.http.routers.habitica.tls.domains[0].sans: '*.{{ ansible_nas_domain }}'
+          traefik.http.services.habitica.loadbalancer.server.port: '3000'
+      when: habitica_enabled is true
+- name: Stop Habitica
+  block:
+    - name: Stop Habitica Client Container
+      community.docker.docker_container:
+        name: '{{ habitica_client_container_name }}'
+        state: absent
+    - name: Stop Habitica Server Container
+      community.docker.docker_container:
+        name: '{{ habitica_server_container_name }}'
+        state: absent
+    - name: Stop Habitica MongoDB Container
+      community.docker.docker_container:
+        name: '{{ habitica_mongo_container_name }}'
+        state: absent
+    - name: Remove Habitica Network
+      community.docker.docker_network:
+        name: '{{ habitica_network_name }}'
+        state: absent
+  when: habitica_enabled is false

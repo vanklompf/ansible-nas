@@ -1,0 +1,7 @@
+---
+provisioner:
+  inventory:
+    group_vars:
+      all:
+        tinyauth_enabled: true
+        tinyauth_available_externally: false

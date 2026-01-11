@@ -76,6 +76,7 @@ If you have a spare domain name you can configure applications to be accessible 
 - [Flatnotes](https://flatnotes.io/) - Self-hosted, database-less note taking web app
 - [Formbricks](https://github.com/formbricks/formbricks) - An Open Source Survey Platform
 - [FormIO](https://github.com/formio/formio) - SA Form and Data Management Platform for Progressive Web Applications
+- [FoundryVTT](https://foundryvtt.com/) - Virtual tabletop (VTT) for innovative online role-playing experience directly through a web browser
 - [Fresh RSS](https://freshrss.org/) - Self-hosted RSS feed aggregator like Leed or Kriss Feed
 - [Frigate](https://frigate.video/) - Frigate is an open source NVR built around real-time AI object detection
 - [Fusion](https://github.com/0x2E/fusion) - A lightweight, self-hosted friendly RSS aggregator and reader
@@ -94,6 +95,7 @@ If you have a spare domain name you can configure applications to be accessible 
 - [Grist](https://github.com/gristlabs/grist-core) - Grist is the evolution of spreadsheets.
 - [Grocy](https://grocy.info/) - web-based self-hosted groceries & household management solution for your home
 - [Guacamole](https://guacamole.apache.org/) - Web based remote desktop gateway, supports VNC, RDP and SSH
+- [Habitica](https://habitica.com/) - Habit building and productivity app that treats your life like a game
 - [HA Fusion](https://github.com/matt8707/ha-fusion) - A modern, easy-to-use and performant custom Home Assistant dashboard
 - [healthchecks.io](https://healthchecks.io/) - Ensure your NAS is online and get notified otherwise
 - [Heimdall](https://heimdall.site/) - Home server dashboard
@@ -198,6 +200,7 @@ If you have a spare domain name you can configure applications to be accessible 
 - [Plex](https://www.plex.tv/) - Plex Media Server
   - [Plex Autoscan](https://github.com/Cloudbox/autoscan) - automatic Plex library updates
   - [Plex Meta Manager](https://metamanager.wiki) - Python script to update metadata information for items in plex
+- [Pocket ID (11notes)](https://github.com/11notes/docker-pocket-id) - A simple OIDC provider with passkey support
 - [Pocket-ID](https://github.com/stonith404/pocket-id) - A simple OIDC provider
 - [Portainer](https://portainer.io/) - for managing Docker and running custom images
 - [Pretix](https://pretix.eu/about/en/) - Ticketing software that cares about your event—all the way.
@@ -238,12 +241,14 @@ If you have a spare domain name you can configure applications to be accessible 
 - [Standard Notes](https://standardnotes.com/) - An end-to-end encrypted notes app
 - [Stirling-PDF](https://github.com/Frooodle/Stirling-PDF) - locally hosted web application that allows you to perform various operations on PDF files
 - [SuiteCRM](https://github.com/salesagility/SuiteCRM) - Open source CRM for the world
+- [Super Productivity](https://github.com/johannesjo/super-productivity) - A free and open source to-do list and time tracker
 - [Syncthing](https://syncthing.net/) - sync directories with another device
 - [Tautulli](http://tautulli.com/) - Monitor Your Plex Media Server
 - [The Lounge](https://thelounge.chat) - Web based always-on IRC client
 - [Threadfin](https://github.com/Threadfin/Threadfin) - M3U Proxy for Plex DVR and Emby/Jellyfin Live TV. Based on xTeVe.
 - [TiddlyWiki](https://tiddlywiki.com) - A unique non-linear notebook/wiki for capturing, organizing, and sharing complex information
 - [TimeMachine](https://github.com/awlx/samba-timemachine) - Samba-based mac backup server
+- [TinyAuth](https://github.com/steveiliop56/tinyauth) - A lightweight authentication service that works with Traefik to provide authentication for your containers
 - [ToolJet](https://github.com/ToolJet/ToolJet) - Low-code platform for building business applications
 - [Traefik](https://traefik.io/) - Web proxy and SSL certificate manager
 - [Transmission](https://transmissionbt.com/) - BitTorrent client (with OpenVPN if you have a supported VPN provider)

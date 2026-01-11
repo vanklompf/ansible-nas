@@ -185,6 +185,8 @@
       tags: [formbricks]
     - role: formio
       tags: [formio]
+    - role: foundryvtt
+      tags: [foundryvtt]
     - role: freshrss
       tags: [freshrss]
     - role: frigate
@@ -219,6 +221,8 @@
       tags: [grocy]
     - role: guacamole
       tags: [guacamole]
+    - role: habitica
+      tags: [habitica]
     - role: hafusion
       tags: [hafusion]
     - role: healthchecks.io
@@ -421,6 +425,8 @@
       tags: [piwigo]
     - role: plex
       tags: [plex]
+    - role: pocket_id
+      tags: [pocket_id]
     - role: pocketid
       tags: [pocketid]
     - role: portainer
@@ -499,6 +505,8 @@
       tags: [stirlingpdf]
     - role: suitecrm
       tags: [suitecrm]
+    - role: superproductivity
+      tags: [superproductivity]
     - role: syncthing
       tags: [syncthing]
     - role: tautulli
@@ -511,6 +519,8 @@
       tags: [tiddlywiki]
     - role: timemachine
       tags: [timemachine]
+    - role: tinyauth
+      tags: [tinyauth]
     - role: tooljet
       tags: [tooljet]
     - role: transmission

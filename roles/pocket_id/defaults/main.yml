@@ -1,0 +1,138 @@
+---
+# Enable/Disable the service
+pocket_id_enabled: false
+pocket_id_available_externally: false
+
+# Directories
+pocket_id_data_directory: "{{ docker_home }}/pocket_id"
+
+# Networks
+pocket_id_network_name: "pocket_id_network"
+
+# Ports
+pocket_id_port: "8180" # Using a different port than the existing pocketid role (originally 3000 in compose)
+pocket_id_container_port: "1411"
+
+# Hostname
+pocket_id_hostname: "pocket-id"
+
+# Image settings
+pocket_id_image: "11notes/pocket-id"
+pocket_id_image_version: "2.1.0"
+pocket_id_postgres_image: "11notes/postgres"
+pocket_id_postgres_image_version: "16"
+
+# Container names
+pocket_id_container_name: "pocket_id_main"
+pocket_id_postgres_container_name: "pocket_id_postgres"
+
+# Core Configuration
+pocket_id_timezone: "Europe/Zurich" # Changed to match the compose file default
+pocket_id_app_url: "https://{{ pocket_id_hostname }}.{{ ansible_nas_domain }}"
+pocket_id_trust_proxy: "true"
+pocket_id_encryption_key: "zdc6/IZh4a15VKfxzjhdeoxU6ZPzDys/+FaRSzI96Xc=" # Key used to encrypt data, including the private keys
+pocket_id_encryption_key_file: "" # Path to file containing encryption key
+pocket_id_maxmind_license_key: "" # License Key for the GeoLite2 Database
+pocket_id_maxmind_license_key_file: "" # Path to file containing the MaxMind license key
+pocket_id_puid: "1000" # The user ID of the user who should run Pocket ID inside the Docker container
+pocket_id_pgid: "1000" # The group ID of the user who should run Pocket ID inside the Docker container
+
+# Database Configuration
+pocket_id_db_connection_string: "postgres://postgres:{{ pocket_id_postgres_password }}@{{ pocket_id_postgres_container_name }}:5432/postgres"
+pocket_id_db_connection_string_file: "" # Path to file containing the database connection string
+pocket_id_postgres_password: "password" # Should be changed by user
+pocket_id_postgres_backup_schedule: "0 3 * * *"
+
+# File Storage Configuration
+pocket_id_file_backend: "filesystem" # Valid values: filesystem, s3, database
+pocket_id_upload_path: "/uploads" # Path where uploaded files are stored
+pocket_id_s3_bucket: "" # S3 bucket name (required if FILE_BACKEND is s3)
+pocket_id_s3_region: "" # S3 region (required if FILE_BACKEND is s3)
+pocket_id_s3_endpoint: "" # S3 endpoint URL (required if FILE_BACKEND is s3)
+pocket_id_s3_access_key_id: "" # S3 access key ID (required if FILE_BACKEND is s3)
+pocket_id_s3_secret_access_key: "" # S3 secret access key (required if FILE_BACKEND is s3)
+pocket_id_s3_force_path_style: "false" # Force path style for S3 (true/false)
+pocket_id_s3_disable_default_integrity_checks: "false" # Disable default integrity checks for S3 (true/false)
+
+# Logging Configuration
+pocket_id_log_level: "info" # Valid values: debug, info, warn, error
+pocket_id_log_json: "false" # Emit logs formatted as JSON (true/false)
+
+# Geolocation Configuration
+pocket_id_geolite_db_path: "{{ pocket_id_data_directory }}/GeoLite2-City.mmdb" # Path where the GeoLite2 database should be stored
+pocket_id_geolite_db_url: "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=%s&suffix=tar.gz" # Custom download URL for the Geolite DB
+
+# Server Configuration
+pocket_id_server_port: "1411" # The port on which Pocket ID should listen
+pocket_id_server_host: "0.0.0.0" # The address on which Pocket ID should listen
+pocket_id_unix_socket: "" # The Unix socket path on which Pocket ID should listen
+pocket_id_unix_socket_mode: "" # The Unix socket mode
+
+# Network Configuration
+pocket_id_local_ipv6_ranges: [] # User configured local IPv6 ranges for the audit log
+
+# UI Configuration
+pocket_id_ui_config_disabled: "false" # See Overriding the UI configuration (true/false)
+pocket_id_app_name: "Pocket ID" # The name of the app
+pocket_id_session_duration: "60" # Duration of a session in minutes before user has to sign in again
+pocket_id_emails_verified: "false" # Whether user's email is marked as verified for OIDC clients (true/false)
+pocket_id_allow_own_account_edit: "true" # Whether users can edit their own account details (true/false)
+pocket_id_allow_user_signups: "disabled" # User signup functionality, valid values: disabled, withToken, open
+pocket_id_signup_default_custom_claims: [] # Custom claims assigned automatically to new users upon signup
+pocket_id_signup_default_user_group_ids: [] # Groups assigned automatically to new users upon signup
+pocket_id_disable_animations: "false" # Turn off all animations throughout the Admin UI (true/false)
+pocket_id_accent_color: "default" # A custom accent color for the UI
+
+# SMTP Configuration
+pocket_id_smtp_host: "" # SMTP server hostname
+pocket_id_smtp_port: "" # SMTP server port
+pocket_id_smtp_from: "" # Sender email address for outgoing emails
+pocket_id_smtp_user: "" # SMTP username for authentication
+pocket_id_smtp_password: "" # SMTP password for authentication
+pocket_id_smtp_password_file: "" # Path to file containing the SMTP password
+pocket_id_smtp_tls: "none" # TLS Option, valid values: none, starttls, tls
+pocket_id_smtp_skip_cert_verify: "false" # Skip SMTP certificate verification (true/false)
+
+# Email Notification Configuration
+pocket_id_email_login_notification_enabled: "false" # Send email to user when they login from new device (true/false)
+pocket_id_email_one_time_access_as_admin_enabled: "false" # Allow admin to send login code to user via email (true/false)
+pocket_id_email_api_key_expiration_enabled: "false" # Send email to user when API key is about to expire (true/false)
+pocket_id_email_one_time_access_as_unauthenticated_enabled: "false" # Allow users to bypass passkeys by requesting login code via email (true/false)
+
+# LDAP Configuration
+pocket_id_ldap_enabled: "false" # Whether LDAP authentication is enabled (true/false)
+pocket_id_ldap_url: "" # LDAP server URL
+pocket_id_ldap_bind_dn: "" # LDAP bind distinguished name (DN)
+pocket_id_ldap_bind_password: "" # LDAP bind password
+pocket_id_ldap_bind_password_file: "" # Path to file containing the LDAP bind password
+pocket_id_ldap_base: "" # LDAP search base DN
+pocket_id_ldap_user_search_filter: "(objectClass=person)" # LDAP user search filter
+pocket_id_ldap_user_group_search_filter: "(objectClass=groupOfNames)" # Search filter for groups
+pocket_id_ldap_skip_cert_verify: "false" # Skip LDAP certificate verification (true/false)
+pocket_id_ldap_soft_delete_users: "false" # When enabled, users removed from LDAP will be disabled rather than deleted (true/false)
+pocket_id_ldap_attribute_user_unique_identifier: "" # LDAP attribute for user unique identifier
+pocket_id_ldap_attribute_user_username: "" # LDAP attribute for user username
+pocket_id_ldap_attribute_user_email: "" # LDAP attribute for user email
+pocket_id_ldap_attribute_user_first_name: "" # LDAP attribute for user first name
+pocket_id_ldap_attribute_user_last_name: "" # LDAP attribute for user last name
+pocket_id_ldap_attribute_user_profile_picture: "" # LDAP attribute for the profile picture of a user
+pocket_id_ldap_attribute_group_member: "member" # LDAP attribute to use for querying members of a group
+pocket_id_ldap_attribute_group_unique_identifier: "" # LDAP attribute for group unique identifier
+pocket_id_ldap_attribute_group_name: "" # LDAP attribute for group name
+pocket_id_ldap_admin_group_name: "" # Name of the admin group
+
+# Analytics Configuration
+pocket_id_analytics_disabled: "false" # Disable heartbeat that gets sent every 24 hours (true/false)
+pocket_id_internal_app_url: "" # Sets the base URL of all URLs accessible from other clients
+
+# Observability Configuration
+pocket_id_tracing_enabled: "false" # Enables tracing support (true/false)
+pocket_id_metrics_enabled: "false" # Enables metrics support (true/false)
+
+# Prometheus Configuration
+pocket_id_otel_metrics_exporter: "" # Set to 'prometheus' to enable the /metrics endpoint
+pocket_id_otel_exporter_prometheus_host: "localhost" # Host for the Prometheus metrics endpoint
+pocket_id_otel_exporter_prometheus_port: "9464" # Port for the Prometheus metrics endpoint
+
+# Optional settings (existing)
+# pocket_id_debug: ""  # Uncomment to enable debug mode

@@ -1,0 +1,7 @@
+---
+provisioner:
+  inventory:
+    group_vars:
+      all:
+        foundryvtt_enabled: true
+        foundryvtt_container_verbose: true
