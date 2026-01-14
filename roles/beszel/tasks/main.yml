@@ -1,7 +1,7 @@
 ---
 - name: Start Beszel Local
   block:
-    - name: Beszel Hub Docker Container
+    - name: Create Beszel Hub Docker Container
       community.docker.docker_container:
         name: "{{ beszel_container_name }}"
         image: "{{ beszel_image_name }}:{{ beszel_image_version }}"
@@ -28,12 +28,12 @@
           homepage.href: "https://{{ beszel_hostname }}.{{ ansible_nas_domain }}"
           homepage.widget.type: beszel
           homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ beszel_port }}"
-          homepage.widget.username: "{{beszel_username}}"
-          homepage.widget.password: "{{beszel_password}}"
+          homepage.widget.username: "{{ beszel_username }}"
+          homepage.widget.password: "{{ beszel_password }}"
           homepage.widget.version: "2"
 
 
-    - name: Beszel Local Agent Docker Container
+    - name: Create Beszel Local Agent Docker Container
       community.docker.docker_container:
         name: "{{ beszel_agent_container_name }}"
         image: "{{ beszel_agent_image_name }}:{{ beszel_image_version }}"
@@ -53,7 +53,7 @@
 
 - name: Start Beszel Agent
   block:
-    - name: Beszel Agent Docker Container
+    - name: Create Beszel Agent Docker Container
       community.docker.docker_container:
         name: "{{ beszel_agent_container_name }}"
         image: "{{ beszel_agent_image_name }}:{{ beszel_image_version }}"
@@ -71,7 +71,7 @@
 
 - name: Stop Beszel
   block:
-    - name: Stop Beszel
+    - name: Remove Beszel Docker Container
       community.docker.docker_container:
         name: "{{ beszel_container_name }}"
         state: absent
