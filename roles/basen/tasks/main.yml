@@ -1,0 +1,47 @@
+---
+- name: Start Basen
+  block:
+    - name: Create Basen Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0775
+      with_items:
+        - "{{ basen_data_directory }}"
+
+    - name: Create Basen container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ basen_container_name }}"
+        image: "{{ basen_docker_image }}"
+        pull: true
+        volumes:
+          - "{{ basen_data_directory }}:/data:rw"
+        env:
+          TZ: "{{ ansible_nas_timezone }}"
+          PUID: "{{ basen_user_id }}"
+          PGID: "{{ basen_group_id }}"
+        ports:
+          - "{{ basen_port }}:5000"
+        restart_policy: unless-stopped
+        memory: "{{ basen_memory }}"
+        labels:
+          traefik.enable: "{{ basen_available_externally | string }}"
+          traefik.http.routers.basen.rule: "Host(`{{ basen_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.basen.tls.certresolver: "letsencrypt"
+          traefik.http.routers.basen.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.basen.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.basen.loadbalancer.server.port: "5000"
+          homepage.group: Applications
+          homepage.name: Basen
+          homepage.icon: mdi-pool
+          homepage.href: "https://{{ basen_hostname }}.{{ ansible_nas_domain }}"
+  when: basen_enabled is true
+
+- name: Stop Basen
+  block:
+    - name: Stop Basen
+      community.docker.docker_container:
+        name: "{{ basen_container_name }}"
+        state: absent
+  when: basen_enabled is false

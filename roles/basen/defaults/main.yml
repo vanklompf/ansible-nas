@@ -1,0 +1,20 @@
+---
+basen_enabled: false
+basen_available_externally: false
+
+# directories
+basen_docker_image: ghcr.io/vanklompf/basen:latest
+basen_data_directory: "{{ docker_home }}/basen"
+
+# network
+basen_port: 3894
+basen_hostname: basen
+
+# uid / gid
+basen_user_id: "1001"
+basen_group_id: "1001"
+
+# specs
+basen_memory: 512m
+
+basen_container_name: basen
