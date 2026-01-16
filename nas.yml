@@ -45,6 +45,10 @@
     ###
     ### Applications
     ###
+    - role: handbrake
+      tags: [handbrake]
+    - role: reitti
+      tags: [reitti]
     - role: scrutiny
       tags: [scrutiny]
     - role: adguard
@@ -91,6 +95,8 @@
 #      tags: [bambustudio]
 #    - role: barcodebuddy
 #      tags: [barcodebuddy]
+    - role: basen
+      tags: [basen]
 #    - role: baserow
 #      tags: [baserow]
 #    - role: bazarr
@@ -157,68 +163,68 @@
       tags: [duplicacy]
     - role: duplicati
       tags: [duplicati]
-    - role: dufs
-      tags: [dufs]
-    - role: emby
-      tags: [emby]
-    - role: ebusd
-      tags: [ebusd]
-    - role: esphome
-      tags: [esphome]
-    - role: espocrm
-      tags: [espocrm]
-    - role: evershop
-      tags: [evershop]
+    # - role: dufs
+    #   tags: [dufs]
+    # - role: emby
+    #   tags: [emby]
+    # - role: ebusd
+    #   tags: [ebusd]
+    # - role: esphome
+    #   tags: [esphome]
+    # - role: espocrm
+    #   tags: [espocrm]
+    # - role: evershop
+    #   tags: [evershop]
     - role: excalidraw
       tags: [excalidraw]
     - role: firefly
       tags: [firefly]
-    - role: flame
-      tags: [flame]
-    - role: flaresolverr
-      tags: [flaresolverr]
-    - role: flarum
-      tags: [flarum]
-    - role: flatnotes
-      tags: [flatnotes]
-    - role: formbricks
-      tags: [formbricks]
-    - role: formio
-      tags: [formio]
-    - role: foundryvtt
-      tags: [foundryvtt]
-    - role: freshrss
-      tags: [freshrss]
+    # - role: flame
+    #   tags: [flame]
+    # - role: flaresolverr
+    #   tags: [flaresolverr]
+    # - role: flarum
+    #   tags: [flarum]
+    # - role: flatnotes
+    #   tags: [flatnotes]
+    # - role: formbricks
+    #   tags: [formbricks]
+    # - role: formio
+    #   tags: [formio]
+    # - role: foundryvtt
+    #   tags: [foundryvtt]
+    # - role: freshrss
+    #   tags: [freshrss]
     - role: frigate
       tags: [frigate]
-    - role: fusion
-      tags: [fusion]
-    - role: gaps
-      tags: [gaps]
-    - role: get_iplayer
-      tags: [get_iplayer]
-    - role: ghost
-      tags: [ghost]
-    - role: ghostfolio
-      tags: [ghostfolio]
-    - role: gitea
-      tags: [gitea]
-    - role: gitlab
-      tags: [gitlab]
-    - role: glance
-      tags: [glance]
-    - role: glances
-      tags: [glances]
-    - role: glpi
-      tags: [glpi]
-    - role: gotify
-      tags: [gotify]
-    - role: graylog
-      tags: [graylog]
-    - role: grist
-      tags: [grist]
-    - role: grocy
-      tags: [grocy]
+    # - role: fusion
+    #   tags: [fusion]
+    # - role: gaps
+    #   tags: [gaps]
+    # - role: get_iplayer
+    #   tags: [get_iplayer]
+    # - role: ghost
+    #   tags: [ghost]
+    # - role: ghostfolio
+    #   tags: [ghostfolio]
+    # - role: gitea
+    #   tags: [gitea]
+    # - role: gitlab
+    #   tags: [gitlab]
+    # - role: glance
+    #   tags: [glance]
+    # - role: glances
+    #   tags: [glances]
+    # - role: glpi
+    #   tags: [glpi]
+    # - role: gotify
+    #   tags: [gotify]
+    # - role: graylog
+    #   tags: [graylog]
+    # - role: grist
+    #   tags: [grist]
+    # - role: grocy
+    #   tags: [grocy]
     - role: guacamole
       tags: [guacamole]
     - role: habitica
