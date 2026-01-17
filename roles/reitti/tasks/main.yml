@@ -1,0 +1,212 @@
+---
+- name: Start Reitti
+  block:
+    - name: Create Reitti Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0777
+      with_items:
+        - "{{ reitti_data_directory }}/data"
+        - "{{ reitti_data_directory }}/postgis"
+        - "{{ reitti_data_directory }}/rabbitmq"
+        - "{{ reitti_data_directory }}/redis"
+        - "{{ reitti_data_directory }}/photon"
+        - "{{ reitti_data_directory }}/tile-cache"
+
+
+    - name: Create Reitti network
+      community.docker.docker_network:
+        name: "{{ reitti_network_name }}"
+
+    - name: Create Reitti PostGIS Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ reitti_postgis_container_name }}"
+        image: "{{ reitti_postgis_image_name }}:{{ reitti_postgis_image_version }}"
+        user: "{{ reitti_user_id }}:{{ reitti_group_id }}"
+        volumes:
+          - "{{ reitti_data_directory }}/postgis:/var/lib/postgresql/data:rw"
+        networks:
+          - name: "{{ reitti_network_name }}"
+        env:
+          POSTGRES_USER: "{{ reitti_postgis_user }}"
+          POSTGRES_PASSWORD: "{{ reitti_postgis_password }}"
+          POSTGRES_DB: "{{ reitti_postgis_db }}"
+          POSTGRES_UID: "{{ reitti_user_id }}"
+          POSTGRES_GID: "{{ reitti_group_id }}"
+          RUN_AS_ROOT: "false"
+        restart_policy: unless-stopped
+        memory: "{{ reitti_postgis_memory }}"
+        healthcheck:
+          test: ["CMD-SHELL", "pg_isready -U {{ reitti_postgis_user }} -d {{ reitti_postgis_db }}"]
+          interval: 10s
+          timeout: 5s
+          retries: 5
+
+    - name: Create Reitti Redis Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ reitti_redis_container_name }}"
+        image: "{{ reitti_redis_image_name }}:{{ reitti_redis_image_version }}"
+        user: "{{ reitti_user_id }}:{{ reitti_group_id }}"
+        volumes:
+          - "{{ reitti_data_directory }}/redis:/data:rw"
+        networks:
+          - name: "{{ reitti_network_name }}"
+        restart_policy: unless-stopped
+        memory: "{{ reitti_redis_memory }}"
+        healthcheck:
+          test: ["CMD", "redis-cli", "ping"]
+          interval: 10s
+          timeout: 5s
+          retries: 5
+
+    - name: Create Reitti RabbitMQ Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ reitti_rabbitmq_container_name }}"
+        image: "{{ reitti_rabbitmq_image_name }}:{{ reitti_rabbitmq_image_version }}"
+        user: "{{ reitti_user_id }}:{{ reitti_group_id }}"
+        volumes:
+          - "{{ reitti_data_directory }}/rabbitmq:/var/lib/rabbitmq:rw"
+        networks:
+          - name: "{{ reitti_network_name }}"
+        env:
+          RABBITMQ_DEFAULT_USER: "{{ reitti_rabbitmq_user }}"
+          RABBITMQ_DEFAULT_PASS: "{{ reitti_rabbitmq_password }}"
+          RABBITMQ_DISK_FREE_ABSOLUTE_LIMIT: "100099511627776"
+        restart_policy: unless-stopped
+        memory: "{{ reitti_rabbitmq_memory }}"
+        healthcheck:
+          test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+          interval: 30s
+          timeout: 10s
+          retries: 5
+
+    - name: Create Reitti Photon Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ reitti_photon_container_name }}"
+        image: "{{ reitti_photon_image_name }}:{{ reitti_photon_image_version }}"
+        volumes:
+          - "{{ reitti_data_directory }}/photon:/photon/data:rw"
+        networks:
+          - name: "{{ reitti_network_name }}"
+        env:
+          UPDATE_STRATEGY: "PARALLEL"
+          REGION: "{{ reitti_photon_region }}"
+          PUID: "{{ reitti_user_id }}"
+          PGID: "{{ reitti_group_id }}"
+        restart_policy: unless-stopped
+        memory: "{{ reitti_photon_memory }}"
+
+    - name: Create Reitti Tile Cache Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ reitti_tile_cache_container_name }}"
+        image: "{{ reitti_tile_cache_image_name }}:{{ reitti_tile_cache_image_version }}"
+        user: "{{ reitti_user_id }}:{{ reitti_group_id }}"
+        networks:
+          - name: "{{ reitti_network_name }}"
+        env:
+          NGINX_CACHE_SIZE: "{{ reitti_tile_cache_size }}"
+        command: |
+          sh -c "
+          mkdir -p /var/cache/nginx/tiles
+          cat > /etc/nginx/nginx.conf << 'EOF'
+          events {
+            worker_connections 1024;
+          }
+          http {
+            proxy_cache_path /var/cache/nginx/tiles levels=1:2 keys_zone=tiles:10m max_size={{ reitti_tile_cache_size }} inactive=30d use_temp_path=off;
+          
+            server {
+              listen 80;
+              location / {
+                proxy_pass https://tile.openstreetmap.org/;
+                proxy_set_header Host tile.openstreetmap.org;
+                proxy_set_header User-Agent \"Reitti/1.0 \\(+https://github.com/dedicatedcode/reitti; contact: reitti@dedicatedcode.com\\)\";
+                proxy_cache tiles;
+                proxy_cache_valid 200 30d;
+                proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+              }
+            }
+          }
+          EOF
+          nginx -g 'daemon off;'"
+        restart_policy: unless-stopped
+        memory: "{{ reitti_tile_cache_memory }}"
+        healthcheck:
+          test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/0/0/0.png"]
+          interval: 30s
+          timeout: 10s
+          retries: 3
+
+    - name: Create Reitti Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ reitti_container_name }}"
+        image: "{{ reitti_image_name }}:{{ reitti_image_version }}"
+        pull: true
+        volumes:
+          - "{{ reitti_data_directory }}:/data:rw"
+        networks:
+          - name: "{{ reitti_network_name }}"
+        ports:
+          - "{{ reitti_port }}:8080"
+        env:
+          PHOTON_BASE_URL: "{{ reitti_photon_base_url }}"
+          POSTGIS_HOST: "{{ reitti_postgis_container_name }}"
+          POSTGIS_USER: "{{ reitti_postgis_user }}"
+          POSTGIS_PASSWORD: "{{ reitti_postgis_password }}"
+          POSTGIS_DB: "{{ reitti_postgis_db }}"
+          RABBITMQ_HOST: "{{ reitti_rabbitmq_container_name }}"
+          RABBITMQ_USER: "{{ reitti_rabbitmq_user }}"
+          RABBITMQ_PASSWORD: "{{ reitti_rabbitmq_password }}"
+          REDIS_HOST: "{{ reitti_redis_container_name }}"
+          APP_UID: "{{ reitti_user_id }}"
+          APP_GID: "{{ reitti_group_id }}"
+        restart_policy: unless-stopped
+        memory: "{{ reitti_memory }}"
+        labels:
+          traefik.enable: "{{ reitti_available_externally | string }}"
+          traefik.http.routers.reitti.rule: "Host(`{{ reitti_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.reitti.tls.certresolver: "letsencrypt"
+          traefik.http.routers.reitti.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.reitti.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.reitti.loadbalancer.server.port: "8080"
+  when: reitti_enabled is true
+
+- name: Stop Reitti
+  block:
+    - name: Stop Reitti
+      community.docker.docker_container:
+        name: "{{ reitti_container_name }}"
+        state: absent
+
+    - name: Stop Reitti Tile Cache
+      community.docker.docker_container:
+        name: "{{ reitti_tile_cache_container_name }}"
+        state: absent
+
+    - name: Stop Reitti Photon
+      community.docker.docker_container:
+        name: "{{ reitti_photon_container_name }}"
+        state: absent
+
+    - name: Stop Reitti RabbitMQ
+      community.docker.docker_container:
+        name: "{{ reitti_rabbitmq_container_name }}"
+        state: absent
+
+    - name: Stop Reitti Redis
+      community.docker.docker_container:
+        name: "{{ reitti_redis_container_name }}"
+        state: absent
+
+    - name: Stop Reitti PostGIS
+      community.docker.docker_container:
+        name: "{{ reitti_postgis_container_name }}"
+        state: absent
+  when: reitti_enabled is false

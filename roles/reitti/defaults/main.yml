@@ -1,0 +1,63 @@
+---
+# enable or disable the application
+reitti_enabled: false
+reitti_available_externally: false
+
+# directories
+reitti_data_directory: "{{ docker_home }}/reitti"
+reitti_user_id: "1001"
+reitti_group_id: "1001"
+
+# network
+reitti_port: "3893"
+reitti_hostname: "reitti"
+reitti_network_name: "reitti"
+
+# specs
+reitti_memory: 1g
+reitti_postgis_memory: 1g
+reitti_rabbitmq_memory: 512m
+reitti_redis_memory: 512m
+reitti_photon_memory: 1g
+reitti_tile_cache_memory: 512m
+
+# docker
+reitti_container_name: reitti
+reitti_image_name: "dedicatedcode/reitti"
+reitti_image_version: latest
+
+reitti_postgis_container_name: reitti-postgis
+reitti_postgis_image_name: "postgis/postgis"
+reitti_postgis_image_version: "17-3.5-alpine"
+
+reitti_rabbitmq_container_name: reitti-rabbitmq
+reitti_rabbitmq_image_name: "rabbitmq"
+reitti_rabbitmq_image_version: "3-management-alpine"
+
+reitti_redis_container_name: reitti-redis
+reitti_redis_image_name: "redis"
+reitti_redis_image_version: "7-alpine"
+
+reitti_photon_container_name: reitti-photon
+reitti_photon_image_name: "rtuszik/photon-docker"
+reitti_photon_image_version: "1.3.0"
+
+reitti_tile_cache_container_name: reitti-tile-cache
+reitti_tile_cache_image_name: "nginx"
+reitti_tile_cache_image_version: "alpine"
+
+# database configuration
+reitti_postgis_user: reitti
+reitti_postgis_password: reitti
+reitti_postgis_db: reittidb
+
+# rabbitmq configuration
+reitti_rabbitmq_user: reitti
+reitti_rabbitmq_password: reitti
+
+# photon configuration
+reitti_photon_region: "de"
+reitti_photon_base_url: "http://{{ reitti_photon_container_name }}:2322"
+
+# tile cache configuration
+reitti_tile_cache_size: "1g"
