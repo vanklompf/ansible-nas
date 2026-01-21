@@ -10,7 +10,7 @@ NetAlertX (formerly known as Pi.Alert) is a network monitoring tool that scans y
 
 Set `netalertx_enabled: true` in your `inventories/<your_inventory>/group_vars/nas.yml` file.
 
-The NetAlertX web interface can be found at [http://ansible_nas_host_or_ip:20211](http://ansible_nas_host_or_ip:20211).
+The NetAlertX web interface can be found at [http://ansible_nas_host_or_ip:3895](http://ansible_nas_host_or_ip:3895).
 
 ## Specific Configuration
 
@@ -30,6 +30,6 @@ The configuration and database are stored in the data directory, which defaults 
 
 You can configure the following variables:
 
-- `netalertx_port`: The port for the web interface (default: `20211`)
+- `netalertx_port`: The port for the web interface (default: `3895`)
 - `netalertx_data_directory`: Where to store configuration and database files
 - `netalertx_timezone`: Timezone for the application (defaults to `ansible_nas_timezone`)
