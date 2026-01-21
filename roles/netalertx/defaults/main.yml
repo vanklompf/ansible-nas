@@ -1,0 +1,21 @@
+---
+netalertx_enabled: false
+netalertx_available_externally: false
+
+# directories
+netalertx_data_directory: "{{ docker_home }}/netalertx"
+
+# network
+netalertx_hostname: "netalertx"
+netalertx_port: "20211"
+
+# docker
+netalertx_container_name: "netalertx"
+netalertx_image_name: "jokobsk/netalertx"
+netalertx_image_version: "latest"
+
+# specs
+netalertx_memory: 1g
+
+# timezone
+netalertx_timezone: "{{ ansible_nas_timezone }}"

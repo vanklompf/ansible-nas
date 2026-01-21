@@ -1,0 +1,43 @@
+---
+- name: Start NetAlertX
+  block:
+    - name: Create NetAlertX Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      with_items:
+        - "{{ netalertx_data_directory }}"
+        - "{{ netalertx_data_directory }}/config"
+        - "{{ netalertx_data_directory }}/db"
+
+    - name: Create NetAlertX Docker Container
+      community.docker.docker_container:
+        name: "{{ netalertx_container_name }}"
+        image: "{{ netalertx_image_name }}:{{ netalertx_image_version }}"
+        pull: true
+        network_mode: host
+        volumes:
+          - "{{ netalertx_data_directory }}/config:/app/config"
+          - "{{ netalertx_data_directory }}/db:/app/db"
+        env:
+          TZ: "{{ netalertx_timezone }}"
+          PORT: "{{ netalertx_port }}"
+        restart_policy: unless-stopped
+        memory: "{{ netalertx_memory }}"
+        labels:
+          traefik.enable: "{{ netalertx_available_externally | string }}"
+          traefik.http.routers.netalertx.rule: "Host(`{{ netalertx_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.netalertx.tls.certresolver: "letsencrypt"
+          traefik.http.routers.netalertx.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.netalertx.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.netalertx.loadbalancer.server.port: "{{ netalertx_port }}"
+  when: netalertx_enabled is true
+
+- name: Stop NetAlertX
+  block:
+    - name: Stop NetAlertX
+      community.docker.docker_container:
+        name: "{{ netalertx_container_name }}"
+        state: absent
+  when: netalertx_enabled is false
