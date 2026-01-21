@@ -32,6 +32,11 @@
           traefik.http.routers.netalertx.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.netalertx.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.netalertx.loadbalancer.server.port: "{{ netalertx_port }}"
+          homepage.group: Monitoring
+          homepage.name: NetAlertX
+          homepage.icon: netalertx.png
+          homepage.href: "http://{{ ansible_nas_hostname }}:{{ netalertx_port }}"
+          homepage.description: Network device monitoring and alerting
   when: netalertx_enabled is true
 
 - name: Stop NetAlertX
