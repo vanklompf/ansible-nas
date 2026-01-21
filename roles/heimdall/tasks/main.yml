@@ -47,11 +47,6 @@
           traefik.http.routers.heimdall.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.heimdall.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.heimdall.loadbalancer.server.port: "80"
-          homepage.group: System
-          homepage.name: Heimdall
-          homepage.icon: heimdall
-          homepage.href: "http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ heimdall_port_http }}"
-          homepage.description: Application dashboard
   when: heimdall_enabled is true
 
 - name: Stop Heimdall

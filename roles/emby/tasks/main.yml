@@ -34,11 +34,6 @@
           traefik.http.routers.emby.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.emby.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.emby.loadbalancer.server.port: "8096"
-          homepage.group: Media
-          homepage.name: Emby
-          homepage.icon: emby
-          homepage.href: "http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ emby_port_http }}"
-          homepage.description: Media server
   when: emby_enabled is true
 
 - name: Stop Emby

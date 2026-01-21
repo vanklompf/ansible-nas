@@ -31,11 +31,6 @@
           traefik.http.routers.nzbget.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.nzbget.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.nzbget.loadbalancer.server.port: "6789"
-          homepage.group: Download Tools
-          homepage.name: NZBGet
-          homepage.icon: nzbget
-          homepage.href: "http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ nzbget_port }}"
-          homepage.description: Usenet downloader
   when: nzbget_enabled is true
 
 - name: Stop NZBget

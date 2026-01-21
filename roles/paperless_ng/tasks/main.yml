@@ -79,11 +79,6 @@
           traefik.http.routers.paperless_ng.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.paperless_ng.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.paperless_ng.loadbalancer.server.port: "8000"
-          homepage.group: Applications
-          homepage.name: Paperless-ngx
-          homepage.icon: paperless-ngx
-          homepage.href: "http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ paperless_ng_port }}"
-          homepage.description: Document management
           flame.type: "application"
           flame.name: "Paperless"
           flame.url: "https://jezyk:{{ paperless_ng_port }}/"

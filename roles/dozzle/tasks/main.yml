@@ -26,12 +26,7 @@
            'traefik.http.routers.dozzle.tls.certresolver': 'letsencrypt',
            'traefik.http.routers.dozzle.tls.domains[0].main': ansible_nas_domain,
            'traefik.http.routers.dozzle.tls.domains[0].sans': '*.' + ansible_nas_domain,
-           'traefik.http.services.dozzle.loadbalancer.server.port': '8080',
-           'homepage.group': 'Monitoring',
-           'homepage.name': 'Dozzle',
-           'homepage.icon': 'dozzle',
-           'homepage.href': 'http://' + hostvars[inventory_hostname]['ansible_default_ipv4']['address'] + ':' + (dozzle_port | string),
-           'homepage.description': 'Docker log viewer'}
+           'traefik.http.services.dozzle.loadbalancer.server.port': '8080'}
           }}"
       community.docker.docker_container:
         name: "{{ dozzle_container_name }}"
