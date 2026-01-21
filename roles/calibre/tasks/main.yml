@@ -37,6 +37,11 @@
           traefik.http.routers.calibre.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.calibre.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.calibre.loadbalancer.server.port: "8080"
+          homepage.group: Media
+          homepage.name: Calibre
+          homepage.icon: calibre
+          homepage.href: "http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ calibre_port }}"
+          homepage.description: E-book management
   when: calibre_enabled is true
 
 - name: Stop Calibre

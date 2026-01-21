@@ -32,6 +32,11 @@
           traefik.http.routers.nzbhydra2.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.nzbhydra2.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.nzbhydra2.loadbalancer.server.port: "5076"
+          homepage.group: Download Tools
+          homepage.name: NZBHydra2
+          homepage.icon: nzbhydra2
+          homepage.href: "http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ nzbhydra2_port }}"
+          homepage.description: NZB meta search
   when: nzbhydra2_enabled is true
 
 - name: Stop Nzbhydra2

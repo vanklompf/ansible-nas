@@ -78,6 +78,11 @@
           traefik.http.routers.linkding.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.linkding.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.linkding.loadbalancer.server.port: "9090"
+          homepage.group: Applications
+          homepage.name: Linkding
+          homepage.icon: linkding
+          homepage.href: "http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ linkding_port }}"
+          homepage.description: Bookmark manager
   when: linkding_enabled is true
 
 - name: Stop Linkding

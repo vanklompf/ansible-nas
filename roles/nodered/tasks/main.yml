@@ -34,6 +34,11 @@
           traefik.http.routers.nodered.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.nodered.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.nodered.loadbalancer.server.port: "1880"
+          homepage.group: Productivity
+          homepage.name: Node-RED
+          homepage.icon: node-red
+          homepage.href: "http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ nodered_port }}"
+          homepage.description: Flow-based programming
   when: nodered_enabled is true
 
 - name: Stop Nodered

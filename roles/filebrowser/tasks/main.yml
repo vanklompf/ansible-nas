@@ -34,6 +34,18 @@
           - "{{ filebrowser_port }}:80"
         restart_policy: unless-stopped
         memory: "{{ filebrowser_memory }}"
+        labels:
+          traefik.enable: "{{ filebrowser_available_externally | string }}"
+          traefik.http.routers.filebrowser.rule: "Host(`{{ filebrowser_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.filebrowser.tls.certresolver: "letsencrypt"
+          traefik.http.routers.filebrowser.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.filebrowser.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.filebrowser.loadbalancer.server.port: "80"
+          homepage.group: Applications
+          homepage.name: File Browser
+          homepage.icon: filebrowser
+          homepage.href: "http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ filebrowser_port }}"
+          homepage.description: Web file manager
   when: filebrowser_enabled is true
 
 - name: Stop Filebrowser

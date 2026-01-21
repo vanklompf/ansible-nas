@@ -83,6 +83,11 @@
           traefik.http.routers.photoprism.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.photoprism.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.photoprism.loadbalancer.server.port: "2342"
+          homepage.group: Media
+          homepage.name: PhotoPrism
+          homepage.icon: photoprism
+          homepage.href: "http://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ photoprism_http_port }}"
+          homepage.description: AI-powered photo app
   when: photoprism_enabled is true
 
 - name: Stop Photoprism
