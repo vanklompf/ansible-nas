@@ -11,11 +11,10 @@ netalertx_port: "3895"
 
 # docker
 netalertx_container_name: "netalertx"
-netalertx_image_name: "jokobsk/netalertx"
+netalertx_image_name: "ghcr.io/jokob-sk/netalertx"
 netalertx_image_version: "latest"
 
 # specs
 netalertx_memory: 1g
-
-# timezone
-netalertx_timezone: "{{ ansible_nas_timezone }}"
+netalertx_uid: "1001"
+netalertx_gid: "1001"
