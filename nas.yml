@@ -45,6 +45,8 @@
     ###
     ### Applications
     ###
+    - role: netalertx
+      tags: [netalertx]
     - role: handbrake
       tags: [handbrake]
     - role: reitti
@@ -509,66 +511,66 @@
       tags: [stats]
     - role: stirlingpdf
       tags: [stirlingpdf]
-    - role: suitecrm
-      tags: [suitecrm]
-    - role: superproductivity
-      tags: [superproductivity]
-    - role: syncthing
-      tags: [syncthing]
+    # - role: suitecrm
+    #   tags: [suitecrm]
+    # - role: superproductivity
+    #   tags: [superproductivity]
+    # - role: syncthing
+    #   tags: [syncthing]
     - role: tautulli
       tags: [tautulli]
-    - role: thelounge
-      tags: [thelounge]
-    - role: threadfin
-      tags: [threadfin]
-    - role: tiddlywiki
-      tags: [tiddlywiki]
+    # - role: thelounge
+    #   tags: [thelounge]
+    # - role: threadfin
+    #   tags: [threadfin]
+    # - role: tiddlywiki
+    #   tags: [tiddlywiki]
     - role: timemachine
       tags: [timemachine]
-    - role: tinyauth
-      tags: [tinyauth]
-    - role: tooljet
-      tags: [tooljet]
-    - role: transmission
-      tags: [transmission]
+    # - role: tinyauth
+    #   tags: [tinyauth]
+    # - role: tooljet
+    #   tags: [tooljet]
+    # - role: transmission
+    #   tags: [transmission]
     - role: transmission-with-openvpn
       tags: [transmission_with_openvpn]
-    - role: trilium
-      tags: [trilium]
-    - role: ttrss
-      tags: [ttrss]
-    - role: twenty
-      tags: [twenty]
+    # - role: trilium
+    #   tags: [trilium]
+    # - role: ttrss
+    #   tags: [ttrss]
+    # - role: twenty
+    #   tags: [twenty]
     - role: ubooquity
       tags: [ubooquity]
     - role: unifi
       tags: [unifi]
-    - role: uppy
-      tags: [uppy]
-    - role: utorrent
-      tags: [utorrent]
+    # - role: uppy
+    #   tags: [uppy]
+    # - role: utorrent
+    #   tags: [utorrent]
 #    - role: valheim
 #      tags: [valheim]
-    - role: vaultwarden
-      tags: [vaultwarden]
-    - role: virtual_desktop
-      tags: [virtual_desktop]
-    - role: wallabag
-      tags: [wallabag]
-    - role: wallos
-      tags: [wallos]
-    - role: wanderer
-      tags: [wanderer]
-    - role: watchtower
-      tags: [watchtower]
-    - role: webtrees
-      tags: [webtrees]
-    - role: wger
-      tags: [wger]
-    - role: whatsupdocker
-      tags: [whatsupdocker]
-    - role: whoogle
-      tags: [whoogle]
+    # - role: vaultwarden
+    #   tags: [vaultwarden]
+    # - role: virtual_desktop
+    #   tags: [virtual_desktop]
+    # - role: wallabag
+    #   tags: [wallabag]
+    # - role: wallos
+    #   tags: [wallos]
+    # - role: wanderer
+    #   tags: [wanderer]
+    # - role: watchtower
+    #   tags: [watchtower]
+    # - role: webtrees
+    #   tags: [webtrees]
+    # - role: wger
+    #   tags: [wger]
+    # - role: whatsupdocker
+    #   tags: [whatsupdocker]
+    # - role: whoogle
+    #   tags: [whoogle]
 #    - role: wireshark
 #      tags: [wireshark]
 #    - role: wishthis
