@@ -22,7 +22,7 @@
           traefik.http.routers.beszel.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.beszel.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.beszel.loadbalancer.server.port: "8090"
-          homepage.group: "System"
+          homepage.group: "Monitoring"
           homepage.name: "Beszel"
           homepage.icon: "beszel"
           homepage.href: "https://{{ beszel_hostname }}.{{ ansible_nas_domain }}"

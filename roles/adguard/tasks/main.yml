@@ -40,7 +40,7 @@
           traefik.http.routers.adguard.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.adguard.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.adguard.loadbalancer.server.port: "3000"
-          homepage.group: "System"
+          homepage.group: "Networking"
           homepage.name: "Adguard"
           homepage.icon: "adguard-home"
           homepage.href: "https://{{ adguard_hostname }}.{{ ansible_nas_domain }}"

@@ -34,7 +34,7 @@
           traefik.http.routers.scrutiny.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.scrutiny.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.scrutiny.loadbalancer.server.port: "8080"
-          homepage.group: System
+          homepage.group: Monitoring
           homepage.name: Scrutiny
           homepage.icon: scrutiny.png
           homepage.href: "http://{{ ansible_nas_hostname }}:{{ scrutiny_port }}"
