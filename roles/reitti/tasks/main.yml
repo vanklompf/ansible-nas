@@ -106,7 +106,6 @@
         container_default_behavior: no_defaults
         name: "{{ reitti_tile_cache_container_name }}"
         image: "{{ reitti_tile_cache_image_name }}:{{ reitti_tile_cache_image_version }}"
-        user: "{{ reitti_user_id }}:{{ reitti_group_id }}"
         networks:
           - name: "{{ reitti_network_name }}"
         env:
@@ -176,6 +175,11 @@
           traefik.http.routers.reitti.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.reitti.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.reitti.loadbalancer.server.port: "8080"
+          homepage.group: Applications
+          homepage.name: Reitti
+          homepage.icon: mdi-route
+          homepage.href: "https://{{ reitti_hostname }}.{{ ansible_nas_domain }}"
+          homepage.description: Open source routing engine
   when: reitti_enabled is true
 
 - name: Stop Reitti
