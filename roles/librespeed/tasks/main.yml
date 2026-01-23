@@ -38,7 +38,7 @@
           traefik.http.routers.librespeed.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.librespeed.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.librespeed.loadbalancer.server.port: "80"
-          homepage.group: Netowrking
+          homepage.group: Networking
           homepage.name: LibreSpeed
           homepage.icon: librespeed
           homepage.href: "http://{{ ansible_nas_hostname }}:{{ librespeed_port }}"
