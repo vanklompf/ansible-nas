@@ -29,3 +29,33 @@ http:
         stsIncludeSubdomains: true
         stsPreload: true
         forceSTSHeader: true
+
+{% if traefik_external_endpoints is defined and traefik_external_endpoints | length > 0 %}
+  routers:
+{% for endpoint in traefik_external_endpoints %}
+    {{ endpoint.name }}:
+      rule: "Host(`{{ endpoint.host }}`)"
+      service: {{ endpoint.name }}
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+{% if endpoint.middlewares is defined and endpoint.middlewares | length > 0 %}
+      middlewares:
+{% for middleware in endpoint.middlewares %}
+        - {{ middleware }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+  services:
+{% for endpoint in traefik_external_endpoints %}
+    {{ endpoint.name }}:
+      loadBalancer:
+        servers:
+          - url: "{{ endpoint.url }}"
+{% if endpoint.passHostHeader is defined %}
+        passHostHeader: {{ endpoint.passHostHeader | lower }}
+{% endif %}
+{% endfor %}
+{% endif %}
