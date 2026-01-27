@@ -28,7 +28,7 @@
         labels:
           homepage.group: Networking
           homepage.name: FTP Server
-          homepage.icon: ftp
+          homepage.icon: mdi-folder-network
           homepage.href: "ftp://{{ ftp_server_hostname }}.{{ ansible_nas_domain }}:{{ ftp_server_port }}"
           homepage.description: FTP Server
   when: ftp_server_enabled is true
