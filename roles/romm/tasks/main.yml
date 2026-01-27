@@ -77,7 +77,7 @@
           homepage.group: Media
           homepage.name: Romm
           homepage.icon: romm
-          homepage.href: "http://{{ ansible_nas_hostname }}:{{ romm_port }}"
+          homepage.href: "https://{{ romm_hostname }}.{{ ansible_nas_domain }}"
           homepage.widget.type: romm
           homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ romm_port }}"
   when: romm_enabled is true

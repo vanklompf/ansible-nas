@@ -41,7 +41,7 @@
           homepage.group: Networking
           homepage.name: LibreSpeed
           homepage.icon: librespeed
-          homepage.href: "http://{{ ansible_nas_hostname }}:{{ librespeed_port }}"
+          homepage.href: "https://{{ librespeed_hostname }}.{{ ansible_nas_domain }}"
           homepage.description : "Free and Open Source Speed Test"
   when: librespeed_enabled is true
 

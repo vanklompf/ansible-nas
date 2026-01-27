@@ -37,7 +37,7 @@
           homepage.group: Monitoring
           homepage.name: Scrutiny
           homepage.icon: scrutiny.png
-          homepage.href: "http://{{ ansible_nas_hostname }}:{{ scrutiny_port }}"
+          homepage.href: "https://{{ scrutiny_hostname }}.{{ ansible_nas_domain }}"
           homepage.widget.type: scrutiny
           homepage.widget.url: "https://{{ scrutiny_hostname }}.{{ ansible_nas_domain }}"
   when: scrutiny_enabled is true
