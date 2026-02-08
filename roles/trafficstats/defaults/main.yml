@@ -1,0 +1,25 @@
+---
+trafficstats_enabled: false
+trafficstats_available_externally: false
+
+# directories
+trafficstats_data_directory: "{{ docker_home }}/trafficstats"
+
+# network
+trafficstats_port: "3896"
+trafficstats_hostname: "trafficstats"
+
+# specs
+trafficstats_memory: 512m
+
+# docker
+trafficstats_container_name: trafficstats
+trafficstats_image_name: "ghcr.io/vanklompf/trafficstats"
+trafficstats_image_version: "latest"
+
+# Dahua camera settings
+trafficstats_dahua_host: "192.168.1.108"
+trafficstats_dahua_port: "80"
+trafficstats_dahua_user: "admin"
+trafficstats_dahua_pass: "admin"
+trafficstats_dahua_events: "CrossLineDetection"

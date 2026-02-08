@@ -1,0 +1,49 @@
+---
+- name: Start TrafficStats
+  block:
+    - name: Create TrafficStats Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ trafficstats_data_directory }}"
+
+    - name: Create TrafficStats Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ trafficstats_container_name }}"
+        image: "{{ trafficstats_image_name }}:{{ trafficstats_image_version }}"
+        pull: true
+        volumes:
+          - "{{ trafficstats_data_directory }}:/data:rw"
+        ports:
+          - "{{ trafficstats_port }}:8080"
+        env:
+          DAHUA_HOST: "{{ trafficstats_dahua_host }}"
+          DAHUA_PORT: "{{ trafficstats_dahua_port }}"
+          DAHUA_USER: "{{ trafficstats_dahua_user }}"
+          DAHUA_PASS: "{{ trafficstats_dahua_pass }}"
+          DAHUA_EVENTS: "{{ trafficstats_dahua_events }}"
+        restart_policy: unless-stopped
+        memory: "{{ trafficstats_memory }}"
+        labels:
+          traefik.enable: "{{ trafficstats_available_externally | string }}"
+          traefik.http.routers.trafficstats.rule: "Host(`{{ trafficstats_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.trafficstats.tls.certresolver: "letsencrypt"
+          traefik.http.routers.trafficstats.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.trafficstats.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.trafficstats.loadbalancer.server.port: "8080"
+          homepage.group: Home
+          homepage.name: TrafficStats
+          homepage.icon: mdi-car-multiple
+          homepage.href: "http://{{ ansible_nas_hostname }}:{{ trafficstats_port }}"
+          homepage.description: "Vehicle traffic counter via Dahua IVS"
+  when: trafficstats_enabled is true
+
+- name: Stop TrafficStats
+  block:
+    - name: Stop TrafficStats
+      community.docker.docker_container:
+        name: "{{ trafficstats_container_name }}"
+        state: absent
+  when: trafficstats_enabled is false

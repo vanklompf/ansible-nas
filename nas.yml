@@ -539,6 +539,8 @@
       tags: [tinyauth]
     - role: tooljet
       tags: [tooljet]
+    - role: trafficstats
+      tags: [trafficstats]
     - role: transmission
       tags: [transmission]
     - role: trilium
