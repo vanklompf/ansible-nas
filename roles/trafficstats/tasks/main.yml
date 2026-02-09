@@ -24,6 +24,7 @@
           DAHUA_USER: "{{ trafficstats_dahua_user }}"
           DAHUA_PASS: "{{ trafficstats_dahua_pass }}"
           DAHUA_EVENTS: "{{ trafficstats_dahua_events }}"
+          CITY: "{{ trafficstats_city }}"
         restart_policy: unless-stopped
         memory: "{{ trafficstats_memory }}"
         labels:
