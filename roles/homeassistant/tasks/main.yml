@@ -33,10 +33,17 @@
           dest: "{{ homeassistant_directory }}"
       register: homeassistant_config
 
-    - name: Copy user defined Home Assistant config
+    - name: Check if user defined climate config exists
+      ansible.builtin.stat:
+        path: "{{ inventory_dir }}/homeassistant/climate.yaml"
+      register: climate_config_src
+      ignore_errors: true
+
+    - name: Copy user defined Home Assistant config (climate.yaml)
       ansible.builtin.copy:
         src: "{{ inventory_dir }}/homeassistant/climate.yaml"
         dest: "{{ homeassistant_directory }}/"
+      when: climate_config_src is not failed and climate_config_src.stat.exists
       register: homeassistant_config_extra
 
     - name: Home Assistant Docker Container
