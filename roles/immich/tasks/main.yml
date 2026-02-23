@@ -121,6 +121,7 @@
           ENABLE_MAPBOX: "{{ immich_enable_mapbox }}"
           MAPBOX_KEY: "{{ immich_mapbox_key }}"
           PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
+          IMMICH_MACHINE_LEARNING_CLIP_IMAGE_MODEL: "{{ immich_machine_learning_clip_image_model }}"
         labels:
           traefik.enable: "false"
         restart_policy: unless-stopped

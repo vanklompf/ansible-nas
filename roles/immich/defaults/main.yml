@@ -60,6 +60,8 @@ immich_public_login_page_message: "Welcome to Immich!"
 immich_api_key: ""
 immich_metrics: "false"
 
+immich_machine_learning_clip_image_model: "nllb-clip-large-siglip__mrl"
+
 immich_env:
   TZ: "{{ ansible_nas_timezone }}"
   PUID: "{{ immich_user_id | quote }}"
