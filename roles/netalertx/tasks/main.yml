@@ -31,8 +31,7 @@
         tmpfs:
           - "/tmp:uid={{ netalertx_uid }},gid={{ netalertx_gid }},mode=1700,noexec,nosuid,nodev"
         env:
-          TZ: "{{ ansible_nas_timezone }}"
-          PORT: "{{ netalertx_port }}"
+          TIMEZONE: "{{ ansible_nas_timezone }}"
           NETALERTX_UID: "{{ netalertx_uid }}"
           NETALERTX_GID: "{{ netalertx_gid }}"
         restart_policy: unless-stopped
@@ -43,7 +42,7 @@
           traefik.http.routers.netalertx.tls.certresolver: "letsencrypt"
           traefik.http.routers.netalertx.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.netalertx.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
-          traefik.http.services.netalertx.loadbalancer.server.port: "{{ netalertx_port }}"
+          traefik.http.services.netalertx.loadbalancer.server.port: "20211"
           homepage.group: Monitoring
           homepage.name: NetAlertX
           homepage.icon: netalertx.png

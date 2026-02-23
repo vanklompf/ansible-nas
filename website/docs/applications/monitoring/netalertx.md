@@ -30,6 +30,5 @@ The configuration and database are stored in the data directory, which defaults 
 
 You can configure the following variables:
 
-- `netalertx_port`: The port for the web interface (default: `3895`)
 - `netalertx_data_directory`: Where to store configuration and database files
 - `netalertx_timezone`: Timezone for the application (defaults to `ansible_nas_timezone`)
