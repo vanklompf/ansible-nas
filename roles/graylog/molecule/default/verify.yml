@@ -12,10 +12,10 @@
         name: "{{ graylog_mongodb_container_name }}"
       register: result_mongodb
 
-    - name: Get graylog elasticsearch container state
+    - name: Get graylog datanode container state
       community.docker.docker_container:
-        name: "{{ graylog_elasticsearch_container_name }}"
-      register: result_elastic
+        name: "{{ graylog_datanode_container_name }}"
+      register: result_datanode
 
     - name: Get graylog container state
       community.docker.docker_container:
@@ -27,7 +27,7 @@
         that:
           - result_mongodb.container['State']['Status'] == "running"
           - result_mongodb.container['State']['Restarting'] == false
-          - result_elastic.container['State']['Status'] == "running"
-          - result_elastic.container['State']['Restarting'] == false
+          - result_datanode.container['State']['Status'] == "running"
+          - result_datanode.container['State']['Restarting'] == false
           - result.container['State']['Status'] == "running"
           - result.container['State']['Restarting'] == false

@@ -13,11 +13,11 @@
         state: absent
       register: result_mongodb
 
-    - name: Try and stop and remove graylog elasticsearch
+    - name: Try and stop and remove graylog datanode
       community.docker.docker_container:
-        name: "{{ graylog_elasticsearch_container_name }}"
+        name: "{{ graylog_datanode_container_name }}"
         state: absent
-      register: result_elastic
+      register: result_datanode
 
     - name: Try and stop and remove graylog
       community.docker.docker_container:
@@ -29,5 +29,5 @@
       ansible.builtin.assert:
         that:
           - not result_mongodb.changed
-          - not result_elastic.changed
+          - not result_datanode.changed
           - not result.changed
