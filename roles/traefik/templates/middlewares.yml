@@ -57,5 +57,19 @@ http:
 {% if endpoint.passHostHeader is defined %}
         passHostHeader: {{ endpoint.passHostHeader | lower }}
 {% endif %}
+{% if endpoint.webrtc is defined and endpoint.webrtc %}
+        serversTransport: {{ endpoint.name }}-transport
+{% endif %}
 {% endfor %}
+
+{% set webrtc_endpoints = traefik_external_endpoints | selectattr('webrtc', 'defined') | selectattr('webrtc') | list %}
+{% if webrtc_endpoints | length > 0 %}
+  serversTransports:
+{% for endpoint in webrtc_endpoints %}
+    {{ endpoint.name }}-transport:
+      forwardingTimeouts:
+        responseHeaderTimeout: 0s
+        idleConnTimeout: 180s
+{% endfor %}
+{% endif %}
 {% endif %}

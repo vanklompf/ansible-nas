@@ -81,6 +81,8 @@
       tags: [libretranslate, core]
     - role: netalertx
       tags: [netalertx, core]
+    - role: ollama
+      tags: [ollama, core]
     - role: paperless_ng
       tags: [paperless_ng, core]
     - role: plex
@@ -95,6 +97,8 @@
       tags: [seafile, core]
     - role: searxng
       tags: [searxng, core]
+    - role: stats
+      tags: [stats, core]
     - role: stirlingpdf
       tags: [stirlingpdf, core]
     - role: tautulli
@@ -519,8 +523,6 @@
       tags: [stalwart]
     - role: standardnotes
       tags: [standardnotes]
-    - role: stats
-      tags: [stats]
     - role: suitecrm
       tags: [suitecrm]
     - role: superproductivity

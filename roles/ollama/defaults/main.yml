@@ -9,7 +9,6 @@ ollama_data_directory: "{{ docker_home }}/ollama"
 ollama_network_name: "ollama"
 ollama_hostname: "ollama"
 ollama_webui_hostname: "ollama_webui"
-ollama_port: 11434
 ollama_webui_port: 3881
 
 # specs
@@ -20,9 +19,8 @@ ollama_webui_memory: 1g
 ollama_container_name: "ollama"
 ollama_webui_container_name: "ollama_webui"
 
-
 ollama_image_name: "ollama/ollama"
 ollama_image_version: "latest"
 
-ollama_webui_image_name: "ghcr.io/ollama-webui/ollama-webui"
+ollama_webui_image_name: "ghcr.io/open-webui/open-webui"
 ollama_webui_image_version: "main"
