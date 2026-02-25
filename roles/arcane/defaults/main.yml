@@ -14,7 +14,7 @@ arcane_memory: 1g
 
 # docker
 arcane_container_name: arcane
-arcane_image_name: ghcr.io/ofkm/arcane
+arcane_image_name: ghcr.io/getarcaneapp/arcane
 arcane_image_version: latest
 arcane_user_id: '1000'
 arcane_group_id: '1000'

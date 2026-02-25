@@ -1,6 +1,6 @@
 # Arcane
 
-Homepage: [https://github.com/ofkm/arcane](https://github.com/ofkm/arcane)
+Homepage: [https://github.com/getarcaneapp/arcane](https://github.com/getarcaneapp/arcane)
 
 Arcane is a self-hosted platform for managing and deploying applications with Docker.
 
