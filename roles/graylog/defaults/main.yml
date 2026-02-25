@@ -2,8 +2,10 @@
 graylog_enabled: false
 graylog_available_externally: false
 
-# directories
+# directories (server data dir must be writable by container user, UID/GID from graylog image)
 graylog_data_directory: "{{ docker_home }}/graylog"
+graylog_uid: "1100"
+graylog_gid: "1100"
 
 # network
 graylog_web_port: "9003"

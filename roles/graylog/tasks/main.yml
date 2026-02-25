@@ -14,6 +14,14 @@
         - "{{ graylog_data_directory }}/datanode"
         - "{{ graylog_data_directory }}/graylog"
 
+    - name: Set Graylog server data directory ownership
+      ansible.builtin.file:
+        path: "{{ graylog_data_directory }}/graylog"
+        state: directory
+        owner: "{{ graylog_uid }}"
+        group: "{{ graylog_gid }}"
+        mode: "0750"
+
     - name: Create Graylog Network
       community.docker.docker_network:
         name: "{{ graylog_network_name }}"
@@ -88,7 +96,7 @@
           GRAYLOG_TRANSPORT_EMAIL_FROM_EMAIL: "{{ graylog_email_from_email }}"
           GRAYLOG_ROOT_TIMEZONE: "{{ ansible_nas_timezone }}"
           TZ: "{{ ansible_nas_timezone }}"
-        entrypoint: "/usr/bin/tini -- /docker-entrypoint.sh"
+        entrypoint: ["/usr/bin/tini", "--", "/docker-entrypoint.sh"]
         restart_policy: unless-stopped
         memory: "{{ graylog_memory }}"
         labels:
