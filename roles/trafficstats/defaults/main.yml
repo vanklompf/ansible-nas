@@ -22,9 +22,19 @@ trafficstats_dahua_host: "192.168.1.108"
 trafficstats_dahua_port: "80"
 trafficstats_dahua_user: "admin"
 trafficstats_dahua_pass: "admin"
-trafficstats_dahua_events: "CrossLineDetection"
+trafficstats_event_types: "All"
+trafficstats_traffic_event: "CarDetection"
+
+# Intrusion detection
+# Set trafficstats_intrusion_event to "" to disable intrusion features
+trafficstats_intrusion_event: "Intrusion"
+trafficstats_camera_storage_path: "/media/kamera_front"
+trafficstats_video_cache_max_gb: "20"
 
 # Optional: city name for sunrise/sunset (lat, lon and timezone looked up automatically).
 # When set, events are only recorded between sunrise and sunset at that location.
 # Example: "Helsinki", "London, UK". Leave empty to record 24/7.
 trafficstats_city: ""
+
+trafficstats_user_id: "1001"
+trafficstats_group_id: "1001"

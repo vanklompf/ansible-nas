@@ -5,6 +5,7 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
+        mode: "0755"
       with_items:
         - "{{ ollama_data_directory }}/backend"
 
@@ -20,8 +21,6 @@
           - "{{ ollama_data_directory }}:/root/.ollama"
         networks:
           - name: "{{ ollama_network_name }}"
-        ports:
-          - "{{ ollama_port }}:11434"
         pull: true
         restart_policy: unless-stopped
         memory: "{{ ollama_memory }}"
@@ -37,11 +36,17 @@
         ports:
           - "{{ ollama_webui_port }}:8080"
         env:
-          OLLAMA_API_BASE_URL: "http://{{ ollama_container_name }}:{{ ollama_port }}/api"
+          OLLAMA_BASE_URL: "http://{{ ollama_container_name }}:11434"
         pull: true
         restart_policy: unless-stopped
         memory: "{{ ollama_webui_memory }}"
         labels:
+          traefik.enable: "{{ ollama_available_externally | string }}"
+          traefik.http.routers.ollama_webui.rule: "Host(`{{ ollama_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.ollama_webui.tls.certresolver: "letsencrypt"
+          traefik.http.routers.ollama_webui.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.ollama_webui.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.ollama_webui.loadbalancer.server.port: "8080"
           homepage.group: Applications
           homepage.name: Ollama
           homepage.icon: ollama
@@ -58,6 +63,10 @@
     - name: Stop Ollama Webui
       community.docker.docker_container:
         name: "{{ ollama_webui_container_name }}"
+        state: absent
+    - name: Remove Ollama network
+      community.docker.docker_network:
+        name: "{{ ollama_network_name }}"
         state: absent
 
   when: ollama_enabled is false

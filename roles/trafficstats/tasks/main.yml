@@ -16,6 +16,7 @@
         pull: true
         volumes:
           - "{{ trafficstats_data_directory }}:/data:rw"
+          - "{{ trafficstats_camera_storage_path }}:/media:ro"
         ports:
           - "{{ trafficstats_port }}:8080"
         env:
@@ -23,8 +24,14 @@
           DAHUA_PORT: "{{ trafficstats_dahua_port }}"
           DAHUA_USER: "{{ trafficstats_dahua_user }}"
           DAHUA_PASS: "{{ trafficstats_dahua_pass }}"
-          DAHUA_EVENTS: "{{ trafficstats_dahua_events }}"
+          DAHUA_EVENTS: "{{ trafficstats_event_types }}"
+          DAHUA_IVS_NAMES: "{{ trafficstats_traffic_event }}"
+          DAHUA_INTRUSION_IVS_NAME: "{{ trafficstats_intrusion_event }}"
+          VIDEO_CACHE_MAX_GB: "{{ trafficstats_video_cache_max_gb }}"
           CITY: "{{ trafficstats_city }}"
+          TZ: "{{ ansible_nas_timezone }}"
+          PUID: "{{ trafficstats_user_id }}"
+          PGID: "{{ trafficstats_group_id }}"
         restart_policy: unless-stopped
         memory: "{{ trafficstats_memory }}"
         labels:
