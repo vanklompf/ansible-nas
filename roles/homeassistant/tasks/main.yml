@@ -54,8 +54,6 @@
         volumes:
           - "{{ homeassistant_directory }}:/config:rw"
         network_mode: host
-        ports:
-         - "8123:8123"
         restart_policy: unless-stopped
         restart: "{{ homeassistant_config is changed or (homeassistant_config_extra is defined and homeassistant_config_extra is changed) }}"
         env:
@@ -91,7 +89,7 @@
         restart: "{{ homeassistant_config is changed }}"
         env:
           TZ: "{{ ansible_nas_timezone }}"
-        memory: "{{mosquitto_memory }}"
+        memory: "{{ mosquitto_memory }}"
 
     - name: Zigbee2Mqtt Docker Container
       community.docker.docker_container:
