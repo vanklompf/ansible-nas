@@ -19,6 +19,8 @@
         image: "{{ ollama_image_name }}:{{ ollama_image_version }}"
         volumes:
           - "{{ ollama_data_directory }}:/root/.ollama"
+        ports:
+          - "{{ ollama_port }}:11434"
         networks:
           - name: "{{ ollama_network_name }}"
         pull: true
