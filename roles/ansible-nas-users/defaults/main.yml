@@ -1,0 +1,5 @@
+---
+# Fixed UID/GID for ansible-nas system user and group so they are consistent across systems.
+# Override in group_vars if your system already uses these IDs.
+ansible_nas_system_uid: "998"
+ansible_nas_system_gid: "1001"

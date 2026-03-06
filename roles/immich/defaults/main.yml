@@ -41,8 +41,8 @@ immich_machinelearning_image: "ghcr.io/immich-app/immich-machine-learning"
 immich_machinelearning_tag: "{{ immich_version }}"
 immich_power_tools_image: "ghcr.io/varun-raj/immich-power-tools"
 immich_power_tools_tag: "latest"
-immich_user_id: "1000"
-immich_group_id: "1000"
+immich_user_id: "{{ ansible_nas_system_uid }}"
+immich_group_id: "{{ ansible_nas_system_gid }}"
 
 # database
 immich_db_password: "postgres" # $(pwgen -s 40 1)

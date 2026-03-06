@@ -2,14 +2,16 @@
 - name: Create ansible-nas group
   ansible.builtin.group:
     name: ansible-nas
+    gid: "{{ ansible_nas_system_gid }}"
     state: present
 
 - name: Create ansible-nas user
   ansible.builtin.user:
     name: ansible-nas
+    uid: "{{ ansible_nas_system_uid }}"
+    group: ansible-nas
     state: present
     system: yes
     update_password: on_create
     create_home: no
-    group: ansible-nas
     shell: /usr/sbin/nologin

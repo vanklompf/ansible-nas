@@ -8,8 +8,8 @@ transmission_download_directory: "{{ downloads_root }}"
 transmission_watch_directory: "{{ torrents_root }}"
 
 # uid / gid
-transmission_openvpn_user_id: "0"
-transmission_openvpn_group_id: "0"
+transmission_openvpn_user_id: "{{ ansible_nas_system_uid }}"
+transmission_openvpn_group_id: "{{ ansible_nas_system_gid }}"
 
 # transmission config
 transmission_openvpn_ratio_limit_enabled: true
