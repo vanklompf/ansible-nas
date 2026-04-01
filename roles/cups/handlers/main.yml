@@ -1,0 +1,29 @@
+---
+- name: Reload systemd after cups.socket drop-in change
+  ansible.builtin.systemd:
+    daemon_reload: true
+  listen: restart cups after socket override
+
+- name: Restart cups.socket for new ListenStream bindings
+  ansible.builtin.service:
+    name: cups.socket
+    state: restarted
+  listen: restart cups after socket override
+
+- name: Restart CUPS after socket change
+  ansible.builtin.service:
+    name: cups
+    state: restarted
+  listen: restart cups after socket override
+
+- name: Restart CUPS
+  ansible.builtin.service:
+    name: cups
+    state: restarted
+  listen: restart cups
+
+- name: Reload Avahi
+  ansible.builtin.service:
+    name: avahi-daemon
+    state: reloaded
+  listen: reload avahi

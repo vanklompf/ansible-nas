@@ -1,17 +1,35 @@
 ---
 cups_enabled: false
 
-# directories
-cups_directory: "{{ docker_home }}/cups"
+# Base packages (host install, not Docker)
+cups_packages:
+  - cups
+  - cups-client
+  - avahi-daemon
 
-# network
-cups_port: "631"
-cups_hostname: "print"
+# Extra drivers, e.g. [printer-driver-splix] for many Samsung lasers
+cups_extra_packages: []
 
-# specs
-cups_memory: 1g
+# Listen for IPP / web UI (default: all interfaces)
+cups_listen: "*:631"
 
-# docker
-cups_container_name: cups
-cups_image_name: "olbat/cupsd"
-cups_image_version: stable
+# Debian/Ubuntu activate CUPS via systemd socket; stock cups.socket often binds
+# 127.0.0.1:631 only, ignoring cupsd.conf for TCP. Drop-in fixes LAN access.
+cups_systemd_socket_override: true
+# ListenStream= lines after reset (include unix socket for local clients)
+cups_systemd_listen_streams:
+  - "0.0.0.0:631"
+  - "[::]:631"
+  - "/run/cups/cups.sock"
+
+# Subnet access for CUPS (see cupsd.conf Access directive)
+cups_allow_from:
+  - "@LOCAL"
+
+# Optional: create a queue automatically (requires device URI and driver model)
+cups_configure_queue: false
+cups_printer_name: "shared-printer"
+# Example: usb://Samsung/SCX-3400%20Series — run `lpinfo -v` on the host
+cups_device_uri: ""
+# PPD or driver name from `lpinfo -m`, e.g. drv:///splix/splix/scx3400.ppd or everywhere
+cups_printer_driver: "everywhere"

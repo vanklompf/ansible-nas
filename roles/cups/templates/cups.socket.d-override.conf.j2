@@ -1,0 +1,6 @@
+# Managed by Ansible (cups role) — package default is often 127.0.0.1:631 only
+[Socket]
+ListenStream=
+{% for stream in cups_systemd_listen_streams %}
+ListenStream={{ stream }}
+{% endfor %}

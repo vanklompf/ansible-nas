@@ -1,31 +1,115 @@
 ---
-- name: Start Cups
-  block:
-    - name: Create Cups Directory
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-      with_items:
-        - "{{ cups_directory }}"
 
-    - name: Cups Docker Container
-      community.docker.docker_container:
-        name: "{{ cups_container_name }}"
-        image: "{{ cups_image_name }}:{{ cups_image_version }}"
-        pull: true
-        ports:
-          - "{{ cups_port }}:631"
-        restart_policy: unless-stopped
-        memory: "{{ cups_memory }}"
-        volumes:
-          - /var/run/dbus:/var/run/dbus
-          - "{{ cups_directory }}/cupsd.conf:/etc/cups/cupsd.conf"
+- name: Install and configure CUPS on host
   when: cups_enabled is true
-
-- name: Stop Cups
   block:
-    - name: Stop Cups
-      community.docker.docker_container:
-        name: "{{ cups_container_name }}"
+    - name: Install CUPS packages
+      ansible.builtin.apt:
+        name: "{{ cups_packages + cups_extra_packages }}"
+        state: present
+        update_cache: true
+
+    - name: Detect systemd cups.socket (socket activation limits bind address)
+      ansible.builtin.find:
+        paths:
+          - /lib/systemd/system
+          - /usr/lib/systemd/system
+        patterns: cups.socket
+        file_type: file
+      register: cups_socket_unit
+
+    - name: Remove CUPS socket drop-in when override disabled
+      ansible.builtin.file:
+        path: /etc/systemd/system/cups.socket.d/ansible-nas.conf
         state: absent
-  when: cups_enabled is false
+      when: not (cups_systemd_socket_override | bool)
+      notify: restart cups after socket override
+
+    - name: Ensure cups.socket drop-in directory exists
+      ansible.builtin.file:
+        path: /etc/systemd/system/cups.socket.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      when:
+        - cups_systemd_socket_override | bool
+        - cups_socket_unit.matched | default(0) | int > 0
+
+    - name: Install systemd drop-in so CUPS listens on the network
+      ansible.builtin.template:
+        src: cups.socket.d-override.conf.j2
+        dest: /etc/systemd/system/cups.socket.d/ansible-nas.conf
+        owner: root
+        group: root
+        mode: "0644"
+      when:
+        - cups_systemd_socket_override | bool
+        - cups_socket_unit.matched | default(0) | int > 0
+      notify: restart cups after socket override
+
+    - name: Deploy cupsd.conf for network sharing
+      ansible.builtin.template:
+        src: cupsd.conf.j2
+        dest: /etc/cups/cupsd.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - restart cups
+
+    - name: Apply CUPS configuration before queue setup
+      ansible.builtin.meta: flush_handlers
+
+    - name: Ensure CUPS and Avahi are enabled and running
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      loop:
+        - cups
+        - avahi-daemon
+
+    - name: Check if printer queue already exists
+      ansible.builtin.command:
+        argv:
+          - lpstat
+          - -p
+          - "{{ cups_printer_name }}"
+      register: cups_lpstat_queue
+      changed_when: false
+      failed_when: false
+      when: cups_configure_queue | bool
+
+    - name: Create CUPS printer queue
+      ansible.builtin.command:
+        argv:
+          - lpadmin
+          - -p
+          - "{{ cups_printer_name }}"
+          - -E
+          - -v
+          - "{{ cups_device_uri }}"
+          - -m
+          - "{{ cups_printer_driver }}"
+      register: cups_lpadmin_create
+      when:
+        - cups_configure_queue | bool
+        - cups_device_uri | length > 0
+        - cups_printer_driver | length > 0
+        - cups_lpstat_queue.rc != 0
+      changed_when: cups_lpadmin_create.rc == 0
+      failed_when: cups_lpadmin_create.rc != 0
+
+    - name: Set as default queue
+      ansible.builtin.command:
+        argv:
+          - lpadmin
+          - -d
+          - "{{ cups_printer_name }}"
+      when:
+        - cups_configure_queue | bool
+        - cups_lpadmin_create is defined
+        - cups_lpadmin_create.rc is defined
+        - cups_lpadmin_create.rc == 0
+      changed_when: true

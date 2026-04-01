@@ -177,6 +177,8 @@
       tags: [couchdb]
     - role: couchpotato
       tags: [couchpotato]
+    - role: cups
+      tags: [cups]
     - role: cwa
       tags: [cwa]
     - role: dashy
