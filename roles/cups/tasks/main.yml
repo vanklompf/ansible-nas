@@ -61,6 +61,19 @@
     - name: Apply CUPS configuration before queue setup
       ansible.builtin.meta: flush_handlers
 
+    - name: Reset cups.socket failed state if needed
+      ansible.builtin.command:
+        cmd: systemctl reset-failed cups.socket
+      changed_when: false
+      failed_when: false
+
+    - name: Ensure cups.socket is enabled and running
+      ansible.builtin.systemd:
+        name: cups.socket
+        state: started
+        enabled: true
+        daemon_reload: true
+
     - name: Ensure CUPS and Avahi are enabled and running
       ansible.builtin.service:
         name: "{{ item }}"

@@ -4,16 +4,29 @@
     daemon_reload: true
   listen: restart cups after socket override
 
-- name: Restart cups.socket for new ListenStream bindings
+- name: Stop CUPS before socket restart
   ansible.builtin.service:
+    name: cups
+    state: stopped
+  listen: restart cups after socket override
+
+- name: Reset cups.socket failed state
+  ansible.builtin.command:
+    cmd: systemctl reset-failed cups.socket
+  changed_when: false
+  failed_when: false
+  listen: restart cups after socket override
+
+- name: Restart cups.socket for new ListenStream bindings
+  ansible.builtin.systemd:
     name: cups.socket
     state: restarted
   listen: restart cups after socket override
 
-- name: Restart CUPS after socket change
+- name: Start CUPS after socket change
   ansible.builtin.service:
     name: cups
-    state: restarted
+    state: started
   listen: restart cups after socket override
 
 - name: Restart CUPS

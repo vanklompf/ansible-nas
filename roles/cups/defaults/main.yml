@@ -19,7 +19,6 @@ cups_systemd_socket_override: true
 # ListenStream= lines after reset (include unix socket for local clients)
 cups_systemd_listen_streams:
   - "0.0.0.0:631"
-  - "[::]:631"
   - "/run/cups/cups.sock"
 
 # Subnet access for CUPS (see cupsd.conf Access directive)
