@@ -77,6 +77,7 @@
           ENABLE_MAPBOX: "{{ immich_enable_mapbox }}"
           MAPBOX_KEY: "{{ immich_mapbox_key }}"
           PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
+          IMMICH_HELMET_FILE: "true"
         labels:
           traefik.enable: "{{ immich_available_externally | string }}"
           traefik.http.routers.immich.rule: "Host(`{{ immich_hostname }}.{{ ansible_nas_domain }}`)"
