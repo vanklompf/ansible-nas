@@ -3,7 +3,8 @@ basen_enabled: false
 basen_available_externally: false
 
 # directories
-basen_docker_image: ghcr.io/vanklompf/basen:latest
+basen_docker_image: ghcr.io/vanklompf/basen
+basen_docker_tag: "latest"
 basen_data_directory: "{{ docker_home }}/basen"
 
 # network
