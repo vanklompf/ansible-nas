@@ -1,6 +1,9 @@
 ---
 - name: Start Exporters
   block:
+    - name: Create stats network
+      community.docker.docker_network:
+        name: "{{ stats_network_name }}"
     - name: Smartctl Exporter Docker Container
       community.docker.docker_container:
         name: "{{ stats_smartctl_container_name }}"
@@ -18,7 +21,7 @@
 
     - name: Hddtemp Docker Container
       community.docker.docker_container:
-        name: "{{ stats_hddtemp_docker_container_name }}"
+        name: "{{ stats_hddtemp_container_name }}"
         image: "{{ stats_hddtemp_docker_image_name }}:{{ stats_hddtemp_docker_image_tag }}"
         pull: true
         privileged: true
@@ -41,10 +44,12 @@
         network_mode: "{{ stats_network_name }}"
         container_default_behavior: no_defaults
         pull: true
-        ports:
-          "{{ stats_speedtest_exporter_port }}:9798"
+        ports: "{{ stats_speedtest_exporter_port }}:9798"
         restart_policy: unless-stopped
         memory: "{{ stats_speedtest_exporter_memory }}"
+        healthcheck:
+          test: "wget --no-verbose --tries=1 --spider http://0.0.0.0:9798/"
+          timeout: 10s
       when: stats_internet_speed_test_enabled
   when: stats_enabled is true
 
@@ -53,6 +58,10 @@
     - name: Stop Smartctl Exporter
       community.docker.docker_container:
         name: "{{ stats_smartctl_container_name }}"
+        state: absent
+    - name: Stop HDD Temp Exporter
+      community.docker.docker_container:
+        name: "{{ stats_hddtemp_container_name }}"
         state: absent
     - name: Stop Speedtest Exporter
       community.docker.docker_container:

@@ -22,6 +22,11 @@
         name: "{{ stats_influxdb_container_name }}"
       register: result_influxdb
 
+    - name: Get Influxdb Explorer container state
+      community.docker.docker_container_info:
+        name: "{{ stats_influxdb_explorer_container_name }}"
+      register: result_influxdb_explorer
+
     - name: Get Loki container state
       community.docker.docker_container_info:
         name: "{{ stats_loki_container_name }}"
@@ -47,6 +52,11 @@
         name: "{{ stats_speedtest_container_name }}"
       register: result_speedtest
 
+    - name: Get HDD Temp container state
+      community.docker.docker_container_info:
+        name: "{{ stats_hddtemp_container_name }}"
+      register: result_hddtemp
+
     - name: Check if stats docker containers are running
       ansible.builtin.assert:
         that:
@@ -56,6 +66,8 @@
           - result_prometheus.container['State']['Restarting'] == false
           - result_influxdb.container['State']['Status'] == "running"
           - result_influxdb.container['State']['Restarting'] == false
+          - result_influxdb_explorer.container['State']['Status'] == "running"
+          - result_influxdb_explorer.container['State']['Restarting'] == false
           - result_loki.container['State']['Status'] == "running"
           - result_loki.container['State']['Restarting'] == false
           - result_promtail.container['State']['Status'] == "running"
@@ -66,3 +78,5 @@
           - result_smartctl.container['State']['Restarting'] == false
           - result_speedtest.container['State']['Status'] == "running"
           - result_speedtest.container['State']['Restarting'] == false
+          - result_hddtemp.container['State']['Status'] == "running"
+          - result_hddtemp.container['State']['Restarting'] == false

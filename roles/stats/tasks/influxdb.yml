@@ -5,11 +5,60 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-        owner: "472"
+        owner: 1500
+        group: 1500
+        # mode: 0777
         recurse: yes
       with_items:
         - "{{ stats_influxdb_data_directory }}"
+        - "{{ stats_influxdb_data_directory }}/data"
+        - "{{ stats_influxdb_data_directory }}/plugins"
+        - "{{ stats_influxdb_data_directory }}/tokens"
+        - "{{ stats_influxdb_data_directory }}/explorer/db"
+        - "{{ stats_influxdb_data_directory }}/explorer/config"
       tags: molecule-idempotence-notest
+
+    - name: Create stats network
+      community.docker.docker_network:
+        name: "{{ stats_network_name }}"
+
+    - name: Check if admin token file already exists
+      ansible.builtin.stat:
+        path: "{{ stats_influxdb_data_directory }}/tokens/admin-token.json"
+      register: stats_token_stat
+      changed_when: false
+
+    - name: Generate InfluxDB admin token
+      community.docker.docker_container:
+        name: influxdb3_token_gen
+        image: influxdb:3-core
+        command: >
+          influxdb3 create token --admin
+          --name admin
+          --expiry 1y
+          --offline
+          --output-file /tokens/admin-token.json
+        volumes:
+          - "{{ stats_influxdb_data_directory }}/tokens:/tokens"
+        detach: false
+        cleanup: true
+      changed_when: false
+      when: not stats_token_stat.stat.exists
+
+    - name: Read InfluxDB admin token file
+      ansible.builtin.slurp:
+        src: "{{ stats_influxdb_data_directory }}/tokens/admin-token.json"
+      register: stats_influxdb_token_file
+
+    - name: Parse InfluxDB admin token
+      ansible.builtin.set_fact:
+        stats_influxdb_admin_token: "{{ (stats_influxdb_token_file.content | b64decode | from_json).token }}"
+
+    - name: Template Influxdb Explorer config
+      ansible.builtin.template:
+        src: influxdb-explorer-config.json.j2
+        dest: "{{ stats_influxdb_data_directory }}/explorer/config/config.json"
+      register: stats_influxdb_explorer_config
 
     - name: Influxdb Docker Container
       community.docker.docker_container:
@@ -21,34 +70,90 @@
         network_mode: "{{ stats_network_name }}"
         container_default_behavior: no_defaults
         volumes:
-          - "{{ stats_influxdb_data_directory }}:/var/lib/influxdb2:rw"
-          - "{{ stats_influxdb_config_directory }}:/etc/influxdb2:rw"
+          - "{{ stats_influxdb_data_directory }}/data:/var/lib/influxdb3/data:rw"
+          - "{{ stats_influxdb_data_directory }}/tokens:/tokens:rw"
+          # - "{{ stats_influxdb_config_directory }}:/etc/influxdb3:rw"
+          - "{{ stats_influxdb_data_directory }}/plugins:/var/lib/influxdb3/plugins:rw"
         ports:
-          - "{{ stats_influxdb_port }}:8086"
+          - "{{ stats_influxdb_port }}:8181"
         env:
-          INFLUXDB_LOGGING_LEVEL: "error"
-          DOCKER_INFLUXDB_INIT_MODE: "{{ stats_influxdb_init_mode }}"
-          DOCKER_INFLUXDB_INIT_USERNAME: "{{ stats_influxdb_init_username }}"
-          DOCKER_INFLUXDB_INIT_PASSWORD: "{{ stats_influxdb_init_password }}"
-          DOCKER_INFLUXDB_INIT_ORG: "{{ stats_influxdb_init_org }}"
-          DOCKER_INFLUXDB_INIT_BUCKET: "{{ stats_influxdb_init_bucket }}"
-          DOCKER_INFLUXDB_INIT_RETENTION: "{{ stats_influxdb_init_retention }}"
-          DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: "{{ stats_influxdb_init_admin_token }}"
+          INFLUXDB3_LOGGING_LEVEL: "error"
+          INFLUXDB3_LOG_FILTER: "info"
+          INFLUXDB3_DATA_DIR: "/var/lib/influxdb3/data"
+          INFLUXDB3_PLUGIN_DIR: "/var/lib/influxdb3/plugins"
+          INFLUXDB3_ADMIN_TOKEN_FILE: /tokens/admin-token.json
         restart_policy: unless-stopped
-        memory: 1g
+        memory: "{{ stats_influxdb_memory }}"
+        command:
+          - influxdb3
+          - serve
+          - --node-id=node0
+          - --object-store=file
+          - --data-dir=/var/lib/influxdb3/data
+          - --plugin-dir=/var/lib/influxdb3/plugins
         labels:
           traefik.enable: "{{ stats_influxdb_available_externally | string }}"
           traefik.http.routers.influxdb.rule: "Host(`{{ stats_influxdb_hostname }}.{{ ansible_nas_domain }}`)"
           traefik.http.routers.influxdb.tls.certresolver: "letsencrypt"
           traefik.http.routers.influxdb.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.influxdb.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
-          traefik.http.services.influxdb.loadbalancer.server.port: "8086"
+          traefik.http.services.influxdb.loadbalancer.server.port: "8181"
           traefik.http.middlewares.influxdb-allowlist.IPAllowList.ipstrategy.depth: "0"
           traefik.http.middlewares.influxdb-allowlist.IPAllowList.sourcerange: "127.0.0.1/32, 192.168.0.0/16"
           traefik.http.routers.influxdb.middlewares: "influxdb-allowlist,influxdb-header"
           traefik.http.middlewares.influx-redirect.redirectScheme.scheme: "https"
           traefik.http.middlewares.influxdb-header.headers.forceSTSHeader: "true"
           traefik.http.middlewares.influxdb-header.headers.accesscontrolalloworiginlist: "https://{{ stats_influxdb_hostname }}.{{ ansible_nas_domain }}"
+
+    - name: Check if session secret already exists
+      ansible.builtin.stat:
+        path: "{{ stats_influxdb_data_directory }}/session_secret"
+      register: stats_session_secret_stat
+
+    - name: Generate and save session secret key
+      ansible.builtin.shell:
+        cmd: openssl rand -hex 32 > {{ stats_influxdb_data_directory }}/session_secret
+      when: not stats_session_secret_stat.stat.exists
+      changed_when: not stats_session_secret_stat.stat.exists
+
+    - name: Read session secret key
+      ansible.builtin.slurp:
+        src: "{{ stats_influxdb_data_directory }}/session_secret"
+      register: stats_session_secret_file
+
+    - name: Influxdb Explorer Docker Container
+      community.docker.docker_container:
+        name: "{{ stats_influxdb_explorer_container_name }}"
+        image: "{{ stats_influxdb_explorer_docker_image_name }}:{{ stats_influxdb_explorer_docker_image_version }}"
+        pull: true
+        networks:
+          - name: "{{ stats_network_name }}"
+        network_mode: "{{ stats_network_name }}"
+        container_default_behavior: no_defaults
+        ports:
+          - "{{ stats_influxdb_explorer_http_port }}:8080"
+          - "{{ stats_influxdb_explorer_https_port }}:8443"
+        volumes:
+          - "{{ stats_influxdb_data_directory }}/explorer/db:/db:rw"
+          - "{{ stats_influxdb_data_directory }}/explorer/config:/app-root/config:ro"
+        env:
+          SESSION_SECRET_KEY: "{{ session_secret_file.content | b64decode | trim }}"
+        restart_policy: unless-stopped
+        memory: 1g
+        command: ["--mode=admin"]
+        labels:
+          traefik.enable: "{{ stats_influxdb_explorer_available_externally | string }}"
+          traefik.http.routers.influxdb-explorer.rule: "Host(`{{ stats_influxdb_explorer_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.influxdb-explorer.tls.certresolver: "letsencrypt"
+          traefik.http.routers.influxdb-explorer.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.influxdb-explorer.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.influxdb-explorer.loadbalancer.server.port: "8080"
+          traefik.http.middlewares.influxdb-explorer-allowlist.IPAllowList.ipstrategy.depth: "0"
+          traefik.http.middlewares.influxdb-explorer-allowlist.IPAllowList.sourcerange: "127.0.0.1/32, 192.168.0.0/16"
+          traefik.http.routers.influxdb-explorer.middlewares: "influxdb-explorer-allowlist,influxdb-explorer-header"
+          traefik.http.middlewares.influx-explorer-redirect.redirectScheme.scheme: "https"
+          traefik.http.middlewares.influxdb-explorer-header.headers.forceSTSHeader: "true"
+          traefik.http.middlewares.influxdb-explorer-header.headers.accesscontrolalloworiginlist: "https://{{ stats_influxdb_explorer_hostname }}.{{ ansible_nas_domain }}"
   when: stats_enabled is true
 
 - name: Stop Influxdb
@@ -56,5 +161,9 @@
     - name: Stop Influxdb
       community.docker.docker_container:
         name: "{{ stats_influxdb_container_name }}"
+        state: absent
+    - name: Stop Influxdb Explorer
+      community.docker.docker_container:
+        name: "{{ stats_influxdb_explorer_container_name }}"
         state: absent
   when: stats_enabled is false
