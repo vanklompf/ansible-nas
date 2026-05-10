@@ -1,0 +1,54 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+
+    - name: Get Reitti PostGIS container state
+      community.docker.docker_container_info:
+        name: "{{ reitti_postgis_container_name }}"
+      register: result_postgis
+
+    - name: Get Reitti Redis container state
+      community.docker.docker_container_info:
+        name: "{{ reitti_redis_container_name }}"
+      register: result_redis
+
+    - name: Get Reitti RabbitMQ container state
+      community.docker.docker_container_info:
+        name: "{{ reitti_rabbitmq_container_name }}"
+      register: result_rabbitmq
+
+    - name: Get Reitti Photon container state
+      community.docker.docker_container_info:
+        name: "{{ reitti_photon_container_name }}"
+      register: result_photon
+
+    - name: Get Reitti Tile Cache container state
+      community.docker.docker_container_info:
+        name: "{{ reitti_tile_cache_container_name }}"
+      register: result_tile_cache
+
+    - name: Get Reitti container state
+      community.docker.docker_container_info:
+        name: "{{ reitti_container_name }}"
+      register: result_reitti
+
+    - name: Check Reitti containers are running
+      ansible.builtin.assert:
+        that:
+          - result_postgis.container['State']['Status'] == "running"
+          - result_postgis.container['State']['Restarting'] == false
+          - result_redis.container['State']['Status'] == "running"
+          - result_redis.container['State']['Restarting'] == false
+          - result_rabbitmq.container['State']['Status'] == "running"
+          - result_rabbitmq.container['State']['Restarting'] == false
+          - result_photon.container['State']['Status'] == "running"
+          - result_photon.container['State']['Restarting'] == false
+          - result_tile_cache.container['State']['Status'] == "running"
+          - result_tile_cache.container['State']['Restarting'] == false
+          - result_reitti.container['State']['Status'] == "running"
+          - result_reitti.container['State']['Restarting'] == false
