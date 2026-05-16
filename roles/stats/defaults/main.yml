@@ -4,10 +4,14 @@ stats_internet_speed_test_enabled: false
 stats_prometheus_available_externally: false
 stats_grafana_available_externally: false
 stats_influxdb_available_externally: false
+stats_influxdb_explorer_available_externally: false
 stats_loki_available_externally: false
 stats_prometheus_enabled: true
 stats_loki_enabled: false
 stats_influxdb_enabled: false
+stats_grafana_enabled: false
+stats_telegraf_enabled: false
+stats_exporters_enabled: false
 
 # directories
 stats_telegraf_config_directory: "{{ docker_home }}/stats/telegraf/config"
@@ -15,6 +19,7 @@ stats_prometheus_data_directory: "{{ docker_home }}/stats/prometheus/data"
 stats_prometheus_config_directory: "{{ docker_home }}/stats/prometheus/config"
 stats_influxdb_data_directory: "{{ docker_home }}/stats/influxdb/data"
 stats_influxdb_config_directory: "{{ docker_home }}/stats/influxdb/config"
+stats_influxdb_plugins_directory: "{{ docker_home }}/stats/influxdb/plugins"
 stats_grafana_data_directory: "{{ docker_home }}/stats/grafana/data"
 stats_grafana_config_directory: "{{ docker_home }}/stats/grafana/config"
 stats_loki_data_directory: "{{ docker_home }}/stats/loki"
@@ -22,7 +27,9 @@ stats_loki_data_directory: "{{ docker_home }}/stats/loki"
 # network
 stats_network_name: "stats"
 stats_prometheus_port: "9090"
-stats_influxdb_port: "8086"
+stats_influxdb_port: "8203"
+stats_influxdb_explorer_http_port: "8204"
+stats_influxdb_explorer_https_port: "8205"
 stats_telegraf_port: "9273"
 stats_telegraf_influxdb_port: "8086"
 stats_prometheus_smartctl_port: "9902"
@@ -30,14 +37,11 @@ stats_speedtest_exporter_port: "9798"
 stats_hddtemp_port: "7634"
 stats_prometheus_hostname: "prometheus"
 stats_influxdb_hostname: "influxdb"
+stats_influxdb_explorer_hostname: "influxdb-explorer"
 stats_grafana_port: "3003"
 stats_grafana_hostname: "grafana"
 stats_loki_port: "3100"
 stats_loki_hostname: "loki"
-stats_hddtemp_docker_container_name: "stats-hddtemp"
-stats_hddtemp_docker_image_name: "modem7/hddtemp-docker"
-stats_hddtemp_docker_image_tag: "latest"
-
 
 # specs
 stats_telegraf_memory: 1g
@@ -48,6 +52,7 @@ stats_speedtest_exporter_memory: 256m
 stats_grafana_memory: 1g
 stats_loki_memory: 1g
 stats_promtail_memory: 1g
+stats_influxdb_memory: 1g
 
 # config
 stats_prometheus_retention_time: 365d
@@ -63,6 +68,8 @@ stats_influxdb_init_org: "ansible-nas"
 stats_influxdb_init_bucket: "ansible-nas"
 stats_influxdb_init_retention: ""
 stats_influxdb_init_admin_token: ""
+stats_influxdb_default_database: "ansible-nas"
+stats_influxdb_default_server_name: "Production InfluxDB 3"
 
 # docker
 stats_grafana_container_name: stats-grafana
@@ -75,7 +82,7 @@ stats_prometheus_docker_image_version: "latest"
 
 stats_influxdb_container_name: stats-influxdb
 stats_influxdb_docker_image_name: "influxdb"
-stats_influxdb_docker_image_version: "latest"
+stats_influxdb_docker_image_version: "3-core"
 
 stats_telegraf_container_name: stats-telegraf
 stats_telegraf_docker_image_name: "telegraf"
@@ -89,6 +96,10 @@ stats_speedtest_container_name: stats-speedtest
 stats_speedtest_docker_image_name: "miguelndecarvalho/speedtest-exporter"
 stats_speedtest_docker_image_version: "latest"
 
+stats_hddtemp_container_name: "stats-hddtemp"
+stats_hddtemp_docker_image_name: "modem7/hddtemp-docker"
+stats_hddtemp_docker_image_tag: "latest"
+
 stats_loki_container_name: stats-loki
 stats_loki_docker_image_name: "grafana/loki"
 stats_loki_docker_image_version: "latest"
@@ -96,6 +107,10 @@ stats_loki_docker_image_version: "latest"
 stats_promtail_container_name: stats-promtail
 stats_promtail_docker_image_name: "grafana/promtail"
 stats_promtail_docker_image_version: "latest"
+
+stats_influxdb_explorer_container_name: stats-influxdb-explorer
+stats_influxdb_explorer_docker_image_name: "influxdata/influxdb3-ui"
+stats_influxdb_explorer_docker_image_version: "latest"
 
 # uncomment to scrape more hosts
 # stats_prometheus_additional_hosts:

@@ -1,0 +1,33 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+
+    - name: Try and stop and remove karakeep search
+      community.docker.docker_container:
+        name: "{{ karakeep_search_container_name }}"
+        state: absent
+      register: result_search
+
+    - name: Try and stop and remove karakeep chrome
+      community.docker.docker_container:
+        name: "{{ karakeep_chrome_container_name }}"
+        state: absent
+      register: result_chrome
+
+    - name: Try and stop and remove karakeep web
+      community.docker.docker_container:
+        name: "{{ karakeep_web_container_name }}"
+        state: absent
+      register: result_web
+
+    - name: Check if karakeep is stopped
+      ansible.builtin.assert:
+        that:
+          - not result_search.changed
+          - not result_chrome.changed
+          - not result_web.changed

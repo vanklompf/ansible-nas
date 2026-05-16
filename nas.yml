@@ -193,6 +193,8 @@
       tags: [directus]
     - role: dockge
       tags: [dockge]
+    - role: docmost
+      tags: [docmost]
     - role: dokuwiki
       tags: [dokuwiki]
     - role: domain_watchdog
@@ -245,6 +247,8 @@
       tags: [ghost]
     - role: ghostfolio
       tags: [ghostfolio]
+    - role: grampsweb
+      tags: [grampsweb]
     - role: gitea
       tags: [gitea]
     - role: gitlab
@@ -279,8 +283,6 @@
       tags: [heyform]
     - role: hievents
       tags: [hievents]
-    - role: hoarder
-      tags: [hoarder]
     - role: homarr
       tags: [homarr]
     - role: homebridge
@@ -305,6 +307,8 @@
       tags: [jackett]
     - role: joomla
       tags: [joomla]
+    - role: karakeep
+      tags: [karakeep]
     - role: kavita
       tags: [kavita]
     - role: keycloak
@@ -453,6 +457,8 @@
       tags: [phpmyadmin]
     - role: pinchflat
       tags: [pinchflat]
+    - role: presenton
+      tags: [presenton]
     - role: piwigo
       tags: [piwigo]
     - role: pocket_id
@@ -543,6 +549,8 @@
       tags: [tinyauth]
     - role: tooljet
       tags: [tooljet]
+    - role: trailbase
+      tags: [trailbase]
     - role: trafficstats
       tags: [trafficstats]
     - role: transmission

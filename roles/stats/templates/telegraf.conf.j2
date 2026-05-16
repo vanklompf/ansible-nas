@@ -96,13 +96,13 @@
   urls = ["https://' + stats_influxdb_hostname + '.' + ansible_nas_domain + ':8086"]
 
   ## Token for authentication.
-  token = "influxdb-token"
+  token = "{{ stats_influxdb_admin_token }}"
 
   ## Organization is the name of the organization you wish to write to.
   organization = "ansible-nas"
 
   ## Destination bucket to write into.
-  bucket = "ansible-nas"
+  bucket = "{{ stats_influxdb_default_database }}"
 
   ## The value of this tag will be used to determine the bucket.  If this
   ## tag is not set the "bucket" option is used as the default.

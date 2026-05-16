@@ -16,20 +16,24 @@ affine_memory: 1g
 affine_db_memory: 1g
 affine_redis_memory: 1g
 affine_migration_memory: 1g
+affine_indexer_memory: 1g
 
 # docker
 affine_container_name: affine
-affine_image_name: "ghcr.io/toeverything/affine-graphql"
+affine_image_name: "ghcr.io/toeverything/affine"
 affine_image_version: stable
 affine_migration_container_name: affine_migration_job
-affine_migration_image_name: "ghcr.io/toeverything/affine-graphql"
+affine_migration_image_name: "ghcr.io/toeverything/affine"
 affine_migration_image_version: stable
 affine_db_container_name: affine-db
-affine_db_image_name: postgres
-affine_db_image_version: 16
+affine_db_image_name: pgvector/pgvector
+affine_db_image_version: pg16
 affine_redis_container_name: affine-redis
 affine_redis_image_name: redis
 affine_redis_image_version: latest
+affine_indexer_container_name: affine-indexer
+affine_indexer_image_name: manticoresearch/manticore
+affine_indexer_image_version: 10.1.0
 affine_user_id: "1000"
 affine_group_id: "1000"
 
@@ -55,3 +59,5 @@ affine_mailer_port: ""
 affine_mailer_user: ""
 affine_mailer_password: ""
 affine_mailer_sender: ""
+affine_indexer_enabled: "false"
+affine_indexer_search_endpoint: "http://{{ affine_indexer_container_name }}:9308"

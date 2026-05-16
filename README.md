@@ -56,6 +56,7 @@ If you have a spare domain name you can configure applications to be accessible 
 - [Deluge](https://dev.deluge-torrent.org/) - A lightweight, Free Software, cross-platform BitTorrent client.
 - [Directus](https://github.com/directus/directus) - An instant REST+GraphQL API and intuitive no-code data collaboration app for any SQL database.
 - [Dockge](https://github.com/louislam/dockge) - A fancy, easy-to-use and reactive self-hosted docker compose.yaml stack-oriented manager
+- [Docmost](https://github.com/docmost/docmost) - Open-source collaborative document editor and knowledge base
 - [DokuWiki](https://www.dokuwiki.org/) - A simple to use and highly versatile Open Source wiki software that doesn't require a database.
 - [Domain Watchdog](https://github.com/maelgangloff/domain-watchdog) - DNS domain monitoring tool
 - [Dozzle](https://github.com/amir20/dozzle) - Realtime log viewer for docker containers
@@ -84,6 +85,7 @@ If you have a spare domain name you can configure applications to be accessible 
 - [get_iplayer](https://github.com/get-iplayer/get_iplayer) - download programmes from BBC iplayer
 - [Ghost](https://ghost.org/) - Turn your audience into a business. Publishing, memberships, subscriptions and newsletters
 - [Ghostfolio](https://github.com/ghostfolio/ghostfolio) - Open Source Wealth Management Software
+- [Gramps Web](https://gramps-project.github.io/gramps-web/) - Web-based genealogy software for collaborative family tree research
 - [Gitea](https://gitea.io/en-us/) - Simple self-hosted GitHub clone
 - [GitLab](https://about.gitlab.com/features/) - Self-hosted GitHub clone of the highest order
 - [Glance](https://github.com/glanceapp/glance) - A self-hosted dashboard that puts all your feeds in one place
@@ -101,7 +103,6 @@ If you have a spare domain name you can configure applications to be accessible 
 - [Heimdall](https://heimdall.site/) - Home server dashboard
 - [Heyform](https://github.com/heyform/heyform) - an open-source form builder that allows anyone to create engaging conversational forms
 - [Hi.Events](https://github.com/HiEventsDev/hi.events) - Self-hosted event management and ticket selling platform
-- [Hoarder](https://github.com/hoarder-app/hoarder) - A self-hostable bookmark-everything app (links, notes and images)
 - [Homarr](https://github.com/ajnart/homarr) - Customizable browser's home page
 - [Home Assistant](https://www.home-assistant.io) - Open source home automation
 - [Homebridge](https://github.com/nfarina/homebridge) - Emulate the iOS HomeKit API
@@ -119,6 +120,7 @@ If you have a spare domain name you can configure applications to be accessible 
 - [Jackett](https://github.com/Jackett/Jackett) - API Support for your favorite torrent trackers
 - [Jellyfin](https://jellyfin.github.io) - The Free Software Media System
 - [Joomla](https://www.joomla.org/) - Open source content management system
+- [Karakeep](https://github.com/karakeep-app/karakeep) - A self-hostable bookmark-everything app (links, notes and images)
 - [Kavita](https://www.kavitareader.com/) - Kavita is a rocket fueled self-hosted digital library which supports a vast array of file formats
 - [Keycloak](https://www.keycloak.org/) - Open Source Identity and Access Management
 - [Komga](https://komga.org/) - a media server for your comics, mangas, BDs and magazines
@@ -196,6 +198,7 @@ If you have a spare domain name you can configure applications to be accessible 
 - [PhotoStructure](https://photostructure.com/) - Your new home for all your photos & videos
 - [PhpMyAdmin](https://www.phpmyadmin.net/) - a tool intended to handle the administration of MySQL over the Web
 - [Pinchflat](https://github.com/kieraneglin/pinchflat/) - Your next YouTube media manager
+- [Presenton](https://github.com/presenton/presenton) - AI-powered presentation generator
 - [Piwigo](https://piwigo.org/) - Photo Gallery Software
 - [Plex](https://www.plex.tv/) - Plex Media Server
   - [Plex Autoscan](https://github.com/Cloudbox/autoscan) - automatic Plex library updates
@@ -251,6 +254,7 @@ If you have a spare domain name you can configure applications to be accessible 
 - [TinyAuth](https://github.com/steveiliop56/tinyauth) - A lightweight authentication service that works with Traefik to provide authentication for your containers
 - [ToolJet](https://github.com/ToolJet/ToolJet) - Low-code platform for building business applications
 - [Traefik](https://traefik.io/) - Web proxy and SSL certificate manager
+- [TrailBase](https://trailbase.io/) - An open-source backend framework with integrated database, authentication, and file management
 - [Transmission](https://transmissionbt.com/) - BitTorrent client (with OpenVPN if you have a supported VPN provider)
 - [TriliumNext Notes](https://github.com/TriliumNext/Notes) - Hierarchical note taking application with focus on building large personal knowledge bases
 - [Tt-rss](https://tt-rss.org/) - free and open source web-based news feed (RSS/Atom) reader and aggregator

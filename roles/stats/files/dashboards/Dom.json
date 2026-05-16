@@ -1,0 +1,4194 @@
+{
+  "annotations": [
+    {
+      "kind": "AnnotationQuery",
+      "spec": {
+        "builtIn": true,
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "query": {
+          "datasource": {
+            "name": "-- Grafana --"
+          },
+          "group": "grafana",
+          "kind": "DataQuery",
+          "spec": {
+            "limit": 100,
+            "matchAny": false,
+            "tags": [],
+            "type": "dashboard"
+          },
+          "version": "v0"
+        }
+      }
+    }
+  ],
+  "cursorSync": "Off",
+  "editable": true,
+  "elements": {
+    "panel-10": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensor.lazienka_dol_temperatura\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\" )\r\n  |> filter(fn: (r) => r[\"domain\"] == \"sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"lazienka_dol_temperatura\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Temperatura Łazienka Dół ' AS field\nFROM \"sensor.lazienka_dol_temperatura\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'lazienka_dol_temperatura'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Temperatura"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_lazienka_dol\" )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"grzanie_lazienka_dol\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Grzanie Łazienka Dół\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Grzanie Łazienka Dół' AS field\nFROM \"binary_sensor.grzanie_lazienka_dol\"\nWHERE\n  \"domain\" = 'binary_sensor'\n  AND \"entity_id\" = 'grzanie_lazienka_dol'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Grzanie"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": [
+              {
+                "group": "prepareTimeSeries",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "format": "multi"
+                  }
+                }
+              },
+              {
+                "group": "renameByRegex",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "regex": "value(.*)",
+                    "renamePattern": "$1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": "",
+        "id": 10,
+        "links": [],
+        "title": "Temperatura Łazienka Dół",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 30,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "dashed"
+                  }
+                },
+                "decimals": 1,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 18.3
+                    },
+                    {
+                      "color": "red",
+                      "value": 18.5
+                    },
+                    {
+                      "color": "red",
+                      "value": 18.7
+                    }
+                  ]
+                },
+                "unit": "celsius"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "binary_sensor.grzanie_lazienka_dol value {domain=\"binary_sensor\", entity_id=\"grzanie_lazienka_dol\", friendly_name=\"Grzanie Łazienka Dół\", source=\"HA\"}"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.axisPlacement",
+                      "value": "right"
+                    },
+                    {
+                      "id": "unit",
+                      "value": "bool_on_off"
+                    },
+                    {
+                      "id": "displayName",
+                      "value": "Grzanie"
+                    },
+                    {
+                      "id": "custom.lineInterpolation",
+                      "value": "stepAfter"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Temperatura Łazienka Dół ",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "displayName",
+                      "value": "Temperatura"
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": ["lastNotNull"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-11": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensor.sypialnia_temperatura\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\" )\r\n  |> filter(fn: (r) => r[\"domain\"] == \"sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"sypialnia_temperatura\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Sypialnia  Temperatura\" )\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Temperatura Sypialnia' AS field\nFROM \"sensor.sypialnia_temperatura\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'sypialnia_temperatura'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Temperatura"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_sypialnia\" )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"grzanie_sypialnia\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Grzanie Sypialnia\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Grzanie Sypialnia' AS field\nFROM \"binary_sensor.grzanie_sypialnia\"\nWHERE\n  \"domain\" = 'binary_sensor'\n  AND \"entity_id\" = 'grzanie_sypialnia'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Grzanie"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": [
+              {
+                "group": "prepareTimeSeries",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "format": "multi"
+                  }
+                }
+              },
+              {
+                "group": "renameByRegex",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "regex": "value(.*)",
+                    "renamePattern": "$1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": "",
+        "id": 11,
+        "links": [],
+        "title": "Temperatura Sypialnia",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 30,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "dashed"
+                  }
+                },
+                "decimals": 1,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 19.8
+                    },
+                    {
+                      "color": "red",
+                      "value": 20
+                    },
+                    {
+                      "color": "red",
+                      "value": 20.2
+                    }
+                  ]
+                },
+                "unit": "celsius"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Grzanie Sypialnia",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.axisPlacement",
+                      "value": "right"
+                    },
+                    {
+                      "id": "unit",
+                      "value": "bool_on_off"
+                    },
+                    {
+                      "id": "displayName",
+                      "value": "Grzanie"
+                    },
+                    {
+                      "id": "custom.lineInterpolation",
+                      "value": "stepAfter"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Temperatura Sypialnia",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "displayName",
+                      "value": "Temperatura"
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": ["lastNotNull"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-12": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensor.wojtek_temperatura\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\" )\r\n  |> filter(fn: (r) => r[\"domain\"] == \"sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"wojtek_temperatura\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Wojtek  Temperatura\" )\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Temperatura Wojtek' AS field\nFROM \"sensor.wojtek_temperatura\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'wojtek_temperatura'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Temperatura"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_wojtek\" )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"grzanie_wojtek\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Grzanie Wojtek\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Grzanie Wojtek' AS field\nFROM \"binary_sensor.grzanie_wojtek\"\nWHERE\n  \"domain\" = 'binary_sensor'\n  AND \"entity_id\" = 'grzanie_wojtek'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Grzanie"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": [
+              {
+                "group": "prepareTimeSeries",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "format": "multi"
+                  }
+                }
+              },
+              {
+                "group": "renameByRegex",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "regex": "value(.*)",
+                    "renamePattern": "$1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": "",
+        "id": 12,
+        "links": [],
+        "title": "Temperatura Wojtek",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 30,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "dashed"
+                  }
+                },
+                "decimals": 1,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 19.8
+                    },
+                    {
+                      "color": "red",
+                      "value": 20
+                    },
+                    {
+                      "color": "red",
+                      "value": 20.2
+                    }
+                  ]
+                },
+                "unit": "celsius"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Grzanie Wojtek",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.axisPlacement",
+                      "value": "right"
+                    },
+                    {
+                      "id": "unit",
+                      "value": "bool_on_off"
+                    },
+                    {
+                      "id": "displayName",
+                      "value": "Grzanie"
+                    },
+                    {
+                      "id": "custom.lineInterpolation",
+                      "value": "stepAfter"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Temperatura Wojtek",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "displayName",
+                      "value": "Temperatura"
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": ["lastNotNull"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-13": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensor.hania_temperatura\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\" )\r\n  |> filter(fn: (r) => r[\"domain\"] == \"sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"hania_temperatura\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Hania  Temperatura\" )\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Temperatura Hania' AS field\nFROM \"sensor.hania_temperatura\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'hania_temperatura'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Temperatura"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_hania\" )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"grzanie_hania\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Grzanie Hania\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Grzanie Hania' AS field\nFROM \"binary_sensor.grzanie_hania\"\nWHERE\n  \"domain\" = 'binary_sensor'\n  AND \"entity_id\" = 'grzanie_hania'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Grzanie"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": [
+              {
+                "group": "prepareTimeSeries",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "format": "multi"
+                  }
+                }
+              },
+              {
+                "group": "renameByRegex",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "regex": "value(.*)",
+                    "renamePattern": "$1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": "",
+        "id": 13,
+        "links": [],
+        "title": "Temperatura Hania",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 30,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "dashed"
+                  }
+                },
+                "decimals": 1,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 19.8
+                    },
+                    {
+                      "color": "red",
+                      "value": 20
+                    },
+                    {
+                      "color": "red",
+                      "value": 20.2
+                    }
+                  ]
+                },
+                "unit": "celsius"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Grzanie Hania",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.axisPlacement",
+                      "value": "right"
+                    },
+                    {
+                      "id": "unit",
+                      "value": "bool_on_off"
+                    },
+                    {
+                      "id": "displayName",
+                      "value": "Grzanie"
+                    },
+                    {
+                      "id": "custom.lineInterpolation",
+                      "value": "stepAfter"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Temperatura Hania",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "displayName",
+                      "value": "Temperatura"
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": ["lastNotNull"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-14": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensor.wodomierz_temperatura\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\" )\r\n  |> filter(fn: (r) => r[\"domain\"] == \"sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"wodomierz_temperatura\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Wodomierz  Temperatura\" )\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> movingAverage(n: 1)\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Temperatura Wodomierz' AS field\nFROM \"sensor.wodomierz_temperatura\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'wodomierz_temperatura'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Temperatura"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_wodomierz\" )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"grzanie_wodomierz\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Grzanie Wodomierz\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Grzanie Wodomierz' AS field\nFROM \"binary_sensor.grzanie_wodomierz\"\nWHERE\n  \"domain\" = 'binary_sensor'\n  AND \"entity_id\" = 'grzanie_wodomierz'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Grzanie"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": [
+              {
+                "group": "prepareTimeSeries",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "format": "multi"
+                  }
+                }
+              },
+              {
+                "group": "renameByRegex",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "regex": "value(.*)",
+                    "renamePattern": "$1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": "",
+        "id": 14,
+        "links": [],
+        "title": "Temperatura Wodomierz",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 30,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "decimals": 1,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "celsius"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Grzanie Wodomierz",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.axisPlacement",
+                      "value": "right"
+                    },
+                    {
+                      "id": "unit",
+                      "value": "bool_on_off"
+                    },
+                    {
+                      "id": "displayName",
+                      "value": "Grzanie"
+                    },
+                    {
+                      "id": "custom.lineInterpolation",
+                      "value": "stepAfter"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "sensor.temperatura_wodomierz value {domain=\"sensor\", entity_id=\"temperatura_wodomierz\", friendly_name=\"Temperatura Wodomierz\", source=\"HA\"}"
+                  },
+                  "properties": [
+                    {
+                      "id": "displayName",
+                      "value": "Temperatura"
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": ["lastNotNull"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-15": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensor.kotlownia_temperatura\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\" )\r\n  |> filter(fn: (r) => r[\"domain\"] == \"sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"kotlownia_temperatura\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Kotłownia  Temperatura\" )\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Temperatura Kotłownia' AS field\nFROM \"sensor.kotlownia_temperatura\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'kotlownia_temperatura'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Temperatura"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_kotlownia\" )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"grzanie_kotlownia\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Grzanie Kotłownia\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Grzanie Kotłownia' AS field\nFROM \"binary_sensor.grzanie_kotlownia\"\nWHERE\n  \"domain\" = 'binary_sensor'\n  AND \"entity_id\" = 'grzanie_kotlownia'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Grzanie"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": [
+              {
+                "group": "prepareTimeSeries",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "format": "multi"
+                  }
+                }
+              },
+              {
+                "group": "renameByRegex",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "regex": "value(.*)",
+                    "renamePattern": "$1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": "",
+        "id": 15,
+        "links": [],
+        "title": "Temperatura Kotłownia",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 30,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "decimals": 1,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "celsius"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Grzanie Kotłownia",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.axisPlacement",
+                      "value": "right"
+                    },
+                    {
+                      "id": "unit",
+                      "value": "bool_on_off"
+                    },
+                    {
+                      "id": "displayName",
+                      "value": "Grzanie"
+                    },
+                    {
+                      "id": "custom.lineInterpolation",
+                      "value": "stepAfter"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "sensor.temperatura_kotlownia value {domain=\"sensor\", entity_id=\"temperatura_kotlownia\", friendly_name=\"Temperatura Kotłownia\", source=\"HA\"}"
+                  },
+                  "properties": [
+                    {
+                      "id": "displayName",
+                      "value": "Temperatura"
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": ["lastNotNull"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-16": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensor.piwnica_temperatura\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\" )\r\n  |> filter(fn: (r) => r[\"domain\"] == \"sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"piwnica_temperatura\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Piwnica  Temperatura\" )\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Temperatura Piwnica' AS field\nFROM \"sensor.piwnica_temperatura\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'piwnica_temperatura'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Temperatura"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_piwnica\" )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"grzanie_piwnica\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Grzanie Piwnica\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Grzanie Piwnica' AS field\nFROM \"binary_sensor.grzanie_piwnica\"\nWHERE\n  \"domain\" = 'binary_sensor'\n  AND \"entity_id\" = 'grzanie_piwnica'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Grzanie"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": [
+              {
+                "group": "prepareTimeSeries",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "format": "multi"
+                  }
+                }
+              },
+              {
+                "group": "renameByRegex",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "regex": "value(.*)",
+                    "renamePattern": "$1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": "",
+        "id": 16,
+        "links": [],
+        "title": "Temperatura Piwnica",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 30,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "decimals": 1,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "celsius"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Grzanie Piwnica",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.axisPlacement",
+                      "value": "right"
+                    },
+                    {
+                      "id": "unit",
+                      "value": "bool_on_off"
+                    },
+                    {
+                      "id": "displayName",
+                      "value": "Grzanie"
+                    },
+                    {
+                      "id": "custom.lineInterpolation",
+                      "value": "stepAfter"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "sensor.temperatura_piwnica value {domain=\"sensor\", entity_id=\"temperatura_piwnica\", friendly_name=\"Temperatura Piwnica\", source=\"HA\"}"
+                  },
+                  "properties": [
+                    {
+                      "id": "displayName",
+                      "value": "Temperatura"
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": ["lastNotNull"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-17": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensor.schowek_temperatura\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\" )\r\n  |> filter(fn: (r) => r[\"domain\"] == \"sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"schowek_temperatura\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Schowek  Temperatura\" )\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Temperatura Schowek' AS field\nFROM \"sensor.schowek_temperatura\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'schowek_temperatura'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Temperatura"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_schowek\" )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"grzanie_schowek\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Grzanie Schowek\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Grzanie Schowek' AS field\nFROM \"binary_sensor.grzanie_schowek\"\nWHERE\n  \"domain\" = 'binary_sensor'\n  AND \"entity_id\" = 'grzanie_schowek'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Grzanie"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": [
+              {
+                "group": "prepareTimeSeries",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "format": "multi"
+                  }
+                }
+              },
+              {
+                "group": "renameByRegex",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "regex": "value(.*)",
+                    "renamePattern": "$1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": "",
+        "id": 17,
+        "links": [],
+        "title": "Temperatura Schowek",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 30,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "decimals": 1,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "celsius"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Grzanie Schowek",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.axisPlacement",
+                      "value": "right"
+                    },
+                    {
+                      "id": "unit",
+                      "value": "bool_on_off"
+                    },
+                    {
+                      "id": "displayName",
+                      "value": "Grzanie"
+                    },
+                    {
+                      "id": "custom.lineInterpolation",
+                      "value": "stepAfter"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "sensor.temperatura_schowek value {domain=\"sensor\", entity_id=\"temperatura_schowek\", friendly_name=\"Temperatura Schowek\", source=\"HA\"}"
+                  },
+                  "properties": [
+                    {
+                      "id": "displayName",
+                      "value": "Temperatura"
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": ["lastNotNull"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-18": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensor.garaz_temperatura\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\" )\r\n  |> filter(fn: (r) => r[\"domain\"] == \"sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"garaz_temperatura\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Garaż  Temperatura\" )\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Temperatura Garaż' AS field\nFROM \"sensor.garaz_temperatura\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'garaz_temperatura'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Temperatura"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_garaz\" )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"grzanie_garaz\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Grzanie Garaż\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Grzanie Garaż' AS field\nFROM \"binary_sensor.grzanie_garaz\"\nWHERE\n  \"domain\" = 'binary_sensor'\n  AND \"entity_id\" = 'grzanie_garaz'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Grzanie"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": [
+              {
+                "group": "prepareTimeSeries",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "format": "multi"
+                  }
+                }
+              },
+              {
+                "group": "renameByRegex",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "regex": "value(.*)",
+                    "renamePattern": "$1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": "",
+        "id": 18,
+        "links": [],
+        "title": "Temperatura Garaż",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 30,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "decimals": 1,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "celsius"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Grzanie Garaż",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.axisPlacement",
+                      "value": "right"
+                    },
+                    {
+                      "id": "unit",
+                      "value": "bool_on_off"
+                    },
+                    {
+                      "id": "displayName",
+                      "value": "Grzanie"
+                    },
+                    {
+                      "id": "custom.lineInterpolation",
+                      "value": "stepAfter"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "sensor.temperatura_garaz value {domain=\"sensor\", entity_id=\"temperatura_garaz\", friendly_name=\"Temperatura Garaż\", source=\"HA\"}"
+                  },
+                  "properties": [
+                    {
+                      "id": "displayName",
+                      "value": "Temperatura"
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": ["lastNotNull"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-2": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensor.lodowka_energy_power\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"lodowka_energy_power\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Lodówka ENERGY Power\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Lodówka' AS field\nFROM \"sensor.lodowka_energy_power\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'lodowka_energy_power'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Zużycie prądu przez lodówkę",
+        "id": 2,
+        "links": [],
+        "title": "Lodówka",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 20,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "displayName": "Zużyta moc",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 100
+                    }
+                  ]
+                },
+                "unit": "watt"
+              },
+              "overrides": []
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-28": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_gabinet\" or r[\"_measurement\"] == \"binary_sensor.grzanie_garaz\" or r[\"_measurement\"] == \"binary_sensor.grzanie_hania\" or r[\"_measurement\"] == \"binary_sensor.grzanie_kotlownia\" or r[\"_measurement\"] == \"binary_sensor.grzanie_lazienka\" or r[\"_measurement\"] == \"binary_sensor.grzanie_lazienka_dol\" or r[\"_measurement\"] == \"binary_sensor.grzanie_piwnica\" or r[\"_measurement\"] == \"binary_sensor.grzanie_salon\" or r[\"_measurement\"] == \"binary_sensor.grzanie_schowek\" or r[\"_measurement\"] == \"binary_sensor.grzanie_sypialnia\" or r[\"_measurement\"] == \"binary_sensor.grzanie_wejscie\" or r[\"_measurement\"] == \"binary_sensor.grzanie_wodomierz\" or r[\"_measurement\"] == \"binary_sensor.grzanie_wojtek\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n  |> fill(usePrevious: true)",
+                      "rawQuery": true,
+                      "rawSql": "SELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_gabinet\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_garaz\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_hania\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_kotlownia\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_lazienka\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_lazienka_dol\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_piwnica\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_salon\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_schowek\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_sypialnia\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_wejscie\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_wodomierz\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_wojtek\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 28,
+        "links": [],
+        "title": "Włączanie kotła",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 99,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "stepAfter",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "decimals": 0,
+                "max": 1,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": false
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-29": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_gabinet\" or r[\"_measurement\"] == \"binary_sensor.grzanie_garaz\" or r[\"_measurement\"] == \"binary_sensor.grzanie_hania\" or r[\"_measurement\"] == \"binary_sensor.grzanie_kotlownia\" or r[\"_measurement\"] == \"binary_sensor.grzanie_lazienka\" or r[\"_measurement\"] == \"binary_sensor.grzanie_lazienka_dol\" or r[\"_measurement\"] == \"binary_sensor.grzanie_piwnica\" or r[\"_measurement\"] == \"binary_sensor.grzanie_salon\" or r[\"_measurement\"] == \"binary_sensor.grzanie_schowek\" or r[\"_measurement\"] == \"binary_sensor.grzanie_sypialnia\" or r[\"_measurement\"] == \"binary_sensor.grzanie_wejscie\" or r[\"_measurement\"] == \"binary_sensor.grzanie_wodomierz\" or r[\"_measurement\"] == \"binary_sensor.grzanie_wojtek\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Grzanie Gabinet\" or r[\"friendly_name\"] == \"Grzanie Garaż\" or r[\"friendly_name\"] == \"Grzanie Hania\" or r[\"friendly_name\"] == \"Grzanie Kotłownia\" or r[\"friendly_name\"] == \"Grzanie Piwnica\" or r[\"friendly_name\"] == \"Grzanie Salon\" or r[\"friendly_name\"] == \"Grzanie Schowek\" or r[\"friendly_name\"] == \"Grzanie Sypialnia\" or r[\"friendly_name\"] == \"Grzanie Wejście\" or r[\"friendly_name\"] == \"Grzanie Wodomierz\" or r[\"friendly_name\"] == \"Grzanie Wojtek\" or r[\"friendly_name\"] == \"Grzanie Łazienka\" or r[\"friendly_name\"] == \"Grzanie Łazienka Dół\")\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r.friendly_name}))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")\r\n",
+                      "rawQuery": true,
+                      "rawSql": "SELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_gabinet\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_garaz\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_hania\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_kotlownia\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_lazienka\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_lazienka_dol\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_piwnica\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_salon\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_schowek\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_sypialnia\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_wejscie\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_wodomierz\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nUNION ALL\nSELECT DATE_BIN($__interval, time) AS time, AVG(value) AS value, friendly_name AS field FROM \"binary_sensor.grzanie_wojtek\" WHERE \"time\" >= $__timeFrom AND \"time\" <= $__timeTo GROUP BY DATE_BIN($__interval, time), friendly_name\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": [
+              {
+                "group": "prepareTimeSeries",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "format": "multi"
+                  }
+                }
+              },
+              {
+                "group": "renameByRegex",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "regex": "value(.*)",
+                    "renamePattern": "$1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": "",
+        "id": 29,
+        "links": [],
+        "title": "Włączanie kotła",
+        "vizConfig": {
+          "group": "state-timeline",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "continuous-RdYlGr"
+                },
+                "custom": {
+                  "axisPlacement": "auto",
+                  "fillOpacity": 70,
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineWidth": 0,
+                  "spanNulls": false
+                },
+                "mappings": [
+                  {
+                    "options": {
+                      "0": {
+                        "index": 0,
+                        "text": "Wył"
+                      },
+                      "1": {
+                        "index": 1,
+                        "text": "Wł"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "options": {
+              "alignValue": "left",
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": false
+              },
+              "mergeValues": false,
+              "rowHeight": 0.9,
+              "showValue": "auto",
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-3": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "SELECT\r\n  DATE_BIN($__interval, time) AS time,\r\n  LAST_VALUE(value) AS value,\r\n  'Pralka' AS field\r\nFROM \"sensor.pralka_power\"\r\nWHERE\r\n  \"domain\" = 'sensor'\r\n  AND \"entity_id\" = 'pralka_power'\r\n  AND \"source\" = 'HA'\r\n  AND \"time\" >= $__timeFrom\r\n  AND \"time\" <= $__timeTo\r\nGROUP BY DATE_BIN($__interval, time)\r\nORDER BY time",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Pralka' AS field\nFROM \"sensor.pralka_power\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'pralka_power'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Zużycie prądu przez pralkę",
+        "id": 3,
+        "links": [],
+        "title": "Pralka",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 20,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "displayName": "Zużyta moc",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 100
+                    }
+                  ]
+                },
+                "unit": "watt"
+              },
+              "overrides": []
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-4": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "SELECT\r\n  DATE_BIN($__interval, time) AS time,\r\n  LAST_VALUE(value) AS value,\r\n  'Telewizor' AS field\r\nFROM \"sensor.tvset_power\"\r\nWHERE\r\n  \"domain\" = 'sensor'\r\n  AND \"entity_id\" = 'tvset_power'\r\n  AND \"source\" = 'HA'\r\n  AND \"time\" >= $__timeFrom\r\n  AND \"time\" <= $__timeTo\r\nGROUP BY DATE_BIN($__interval, time)\r\nORDER BY time",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Telewizor' AS field\nFROM \"sensor.tvset_power\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'tvset_power'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "Zużycie prądu przez telewizor",
+        "id": 4,
+        "links": [],
+        "title": "Telewizor",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 20,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "displayName": "Zużyta moc",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 100
+                    }
+                  ]
+                },
+                "unit": "watt"
+              },
+              "overrides": []
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-6": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensor.gabinet_temperatura\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\" )\r\n  |> filter(fn: (r) => r[\"domain\"] == \"sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"gabinet_temperatura\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Gabinet  Temperatura\" )\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Temperatura Gabinet' AS field\nFROM \"sensor.gabinet_temperatura\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'gabinet_temperatura'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Temperatura"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_gabinet\" )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"grzanie_gabinet\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Grzanie Gabinet\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Grzanie Gabinet' AS field\nFROM \"binary_sensor.grzanie_gabinet\"\nWHERE\n  \"domain\" = 'binary_sensor'\n  AND \"entity_id\" = 'grzanie_gabinet'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Grzanie"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": [
+              {
+                "group": "prepareTimeSeries",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "format": "multi"
+                  }
+                }
+              },
+              {
+                "group": "renameByRegex",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "regex": "value(.*)",
+                    "renamePattern": "$1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": "",
+        "id": 6,
+        "links": [],
+        "title": "Temperatura Gabinet",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 30,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "dashed"
+                  }
+                },
+                "decimals": 1,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 18
+                    },
+                    {
+                      "color": "red",
+                      "value": 18.2
+                    },
+                    {
+                      "color": "red",
+                      "value": 18.4
+                    }
+                  ]
+                },
+                "unit": "celsius"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Grzanie Gabinet",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.axisPlacement",
+                      "value": "right"
+                    },
+                    {
+                      "id": "unit",
+                      "value": "bool_on_off"
+                    },
+                    {
+                      "id": "displayName",
+                      "value": "Grzanie"
+                    },
+                    {
+                      "id": "custom.lineInterpolation",
+                      "value": "stepAfter"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "sensor.temperatura_gabinet value {domain=\"sensor\", entity_id=\"temperatura_gabinet\", friendly_name=\"Temperatura Gabinet\", source=\"HA\"}"
+                  },
+                  "properties": [
+                    {
+                      "id": "displayName",
+                      "value": "Temperatura"
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": ["lastNotNull"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-7": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensor.lazienka_temperatura\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\" )\r\n  |> filter(fn: (r) => r[\"domain\"] == \"sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"lazienka_temperatura\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Łazienka  Temperatura\" )\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Temperatura Łazienka' AS field\nFROM \"sensor.lazienka_temperatura\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'lazienka_temperatura'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Temperatura"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_lazienka\" )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"grzanie_lazienka\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Grzanie Łazienka\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Grzanie Łazienka' AS field\nFROM \"binary_sensor.grzanie_lazienka\"\nWHERE\n  \"domain\" = 'binary_sensor'\n  AND \"entity_id\" = 'grzanie_lazienka'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Grzanie"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": [
+              {
+                "group": "prepareTimeSeries",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "format": "multi"
+                  }
+                }
+              },
+              {
+                "group": "renameByRegex",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "regex": "value(.*)",
+                    "renamePattern": "$1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": "",
+        "id": 7,
+        "links": [],
+        "title": "Temperatura Łazienka",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 30,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "dashed"
+                  }
+                },
+                "decimals": 1,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 20.8
+                    },
+                    {
+                      "color": "red",
+                      "value": 21
+                    },
+                    {
+                      "color": "red",
+                      "value": 21.2
+                    }
+                  ]
+                },
+                "unit": "celsius"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Grzanie Łazienka",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.axisPlacement",
+                      "value": "right"
+                    },
+                    {
+                      "id": "unit",
+                      "value": "bool_on_off"
+                    },
+                    {
+                      "id": "displayName",
+                      "value": "Grzanie"
+                    },
+                    {
+                      "id": "custom.lineInterpolation",
+                      "value": "stepAfter"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Temperatura Łazienka",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "displayName",
+                      "value": "Temperatura"
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": ["lastNotNull"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-8": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensor.salon_temperatura\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\" )\r\n  |> filter(fn: (r) => r[\"domain\"] == \"sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"salon_temperatura\")\r\n\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Temperatura Salon' AS field\nFROM \"sensor.salon_temperatura\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'salon_temperatura'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Temperatura"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_salon\" )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"grzanie_salon\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Grzanie Salon\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Grzanie Salon' AS field\nFROM \"binary_sensor.grzanie_salon\"\nWHERE\n  \"domain\" = 'binary_sensor'\n  AND \"entity_id\" = 'grzanie_salon'\n  AND \"friendly_name\" = 'Grzanie Salon'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Grzanie"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": [
+              {
+                "group": "prepareTimeSeries",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "format": "multi"
+                  }
+                }
+              },
+              {
+                "group": "renameByRegex",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "regex": "value(.*)",
+                    "renamePattern": "$1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": "",
+        "id": 8,
+        "links": [],
+        "title": "Temperatura Salon",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 30,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "dashed"
+                  }
+                },
+                "decimals": 1,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 19.8
+                    },
+                    {
+                      "color": "red",
+                      "value": 20
+                    },
+                    {
+                      "color": "red",
+                      "value": 20.2
+                    }
+                  ]
+                },
+                "unit": "celsius"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": " Grzanie Salon",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.axisPlacement",
+                      "value": "right"
+                    },
+                    {
+                      "id": "unit",
+                      "value": "bool_on_off"
+                    },
+                    {
+                      "id": "displayName",
+                      "value": "Grzanie"
+                    },
+                    {
+                      "id": "custom.lineInterpolation",
+                      "value": "stepAfter"
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": ["lastNotNull"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-9": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensor.wejscie_temperatura\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\" )\r\n  |> filter(fn: (r) => r[\"domain\"] == \"sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"wejscie_temperatura\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Wejście  Temperatura\" )\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Temperatura Wejscie' AS field\nFROM \"sensor.wejscie_temperatura\"\nWHERE\n  \"domain\" = 'sensor'\n  AND \"entity_id\" = 'wejscie_temperatura'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Temperatura"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "afkg1bwvmuz9cf"
+                    },
+                    "group": "influxdb",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "dataset": "iox",
+                      "editorMode": "code",
+                      "format": "table",
+                      "query": "from(bucket: \"anarion\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"binary_sensor.grzanie_wejscie\" )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r[\"domain\"] == \"binary_sensor\")\r\n  |> filter(fn: (r) => r[\"entity_id\"] == \"grzanie_wejscie\")\r\n  |> filter(fn: (r) => r[\"friendly_name\"] == \"Grzanie Wejście\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"HA\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+                      "rawQuery": true,
+                      "rawSql": "SELECT\n  DATE_BIN($__interval, time) AS time,\n  LAST_VALUE(value) AS value,\n  'Grzanie Wejscie' AS field\nFROM \"binary_sensor.grzanie_wejscie\"\nWHERE\n  \"domain\" = 'binary_sensor'\n  AND \"entity_id\" = 'grzanie_wejscie'\n  AND \"source\" = 'HA'\n  AND \"time\" >= $__timeFrom\n  AND \"time\" <= $__timeTo\nGROUP BY DATE_BIN($__interval, time)\nORDER BY time",
+                      "sql": {
+                        "columns": [
+                          {
+                            "parameters": [],
+                            "type": "function"
+                          }
+                        ],
+                        "groupBy": [
+                          {
+                            "property": {
+                              "type": "string"
+                            },
+                            "type": "groupBy"
+                          }
+                        ]
+                      }
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "Grzanie"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": [
+              {
+                "group": "prepareTimeSeries",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "format": "multi"
+                  }
+                }
+              },
+              {
+                "group": "renameByRegex",
+                "kind": "Transformation",
+                "spec": {
+                  "options": {
+                    "regex": "value(.*)",
+                    "renamePattern": "$1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "description": "",
+        "id": 9,
+        "links": [],
+        "title": "Temperatura Wejście",
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 30,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "dashed"
+                  }
+                },
+                "decimals": 1,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 18.3
+                    },
+                    {
+                      "color": "red",
+                      "value": 18.5
+                    },
+                    {
+                      "color": "red",
+                      "value": 18.7
+                    }
+                  ]
+                },
+                "unit": "celsius"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "binary_sensor.grzanie_wejscie value {domain=\"binary_sensor\", entity_id=\"grzanie_wejscie\", friendly_name=\"Grzanie Wejście\", source=\"HA\"}"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.axisPlacement",
+                      "value": "right"
+                    },
+                    {
+                      "id": "unit",
+                      "value": "bool_on_off"
+                    },
+                    {
+                      "id": "displayName",
+                      "value": "Grzanie"
+                    },
+                    {
+                      "id": "custom.lineInterpolation",
+                      "value": "stepAfter"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "sensor.temperatura_wejscie value {domain=\"sensor\", entity_id=\"temperatura_wejscie\", friendly_name=\"Temperatura Wejście\", source=\"HA\"}"
+                  },
+                  "properties": [
+                    {
+                      "id": "displayName",
+                      "value": "Temperatura"
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": ["lastNotNull"],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    }
+  },
+  "layout": {
+    "kind": "RowsLayout",
+    "spec": {
+      "rows": [
+        {
+          "kind": "RowsLayoutRow",
+          "spec": {
+            "collapse": false,
+            "hideHeader": true,
+            "layout": {
+              "kind": "GridLayout",
+              "spec": {
+                "items": [
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-28"
+                      },
+                      "height": 8,
+                      "width": 12,
+                      "x": 0,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-29"
+                      },
+                      "height": 8,
+                      "width": 12,
+                      "x": 12,
+                      "y": 0
+                    }
+                  }
+                ]
+              }
+            },
+            "title": ""
+          }
+        },
+        {
+          "kind": "RowsLayoutRow",
+          "spec": {
+            "collapse": false,
+            "layout": {
+              "kind": "GridLayout",
+              "spec": {
+                "items": [
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-9"
+                      },
+                      "height": 7,
+                      "width": 12,
+                      "x": 0,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-8"
+                      },
+                      "height": 7,
+                      "width": 12,
+                      "x": 12,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-10"
+                      },
+                      "height": 7,
+                      "width": 12,
+                      "x": 0,
+                      "y": 7
+                    }
+                  }
+                ]
+              }
+            },
+            "title": "Parter"
+          }
+        },
+        {
+          "kind": "RowsLayoutRow",
+          "spec": {
+            "collapse": false,
+            "layout": {
+              "kind": "GridLayout",
+              "spec": {
+                "items": [
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-7"
+                      },
+                      "height": 7,
+                      "width": 12,
+                      "x": 0,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-11"
+                      },
+                      "height": 7,
+                      "width": 12,
+                      "x": 12,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-12"
+                      },
+                      "height": 7,
+                      "width": 12,
+                      "x": 0,
+                      "y": 7
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-6"
+                      },
+                      "height": 7,
+                      "width": 12,
+                      "x": 12,
+                      "y": 7
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-13"
+                      },
+                      "height": 7,
+                      "width": 12,
+                      "x": 0,
+                      "y": 14
+                    }
+                  }
+                ]
+              }
+            },
+            "title": "Piętro"
+          }
+        },
+        {
+          "kind": "RowsLayoutRow",
+          "spec": {
+            "collapse": false,
+            "layout": {
+              "kind": "GridLayout",
+              "spec": {
+                "items": [
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-14"
+                      },
+                      "height": 7,
+                      "width": 12,
+                      "x": 0,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-15"
+                      },
+                      "height": 7,
+                      "width": 12,
+                      "x": 12,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-16"
+                      },
+                      "height": 7,
+                      "width": 12,
+                      "x": 0,
+                      "y": 7
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-17"
+                      },
+                      "height": 7,
+                      "width": 12,
+                      "x": 12,
+                      "y": 7
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-18"
+                      },
+                      "height": 7,
+                      "width": 12,
+                      "x": 0,
+                      "y": 14
+                    }
+                  }
+                ]
+              }
+            },
+            "title": "Piwnica"
+          }
+        },
+        {
+          "kind": "RowsLayoutRow",
+          "spec": {
+            "collapse": false,
+            "layout": {
+              "kind": "GridLayout",
+              "spec": {
+                "items": [
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-4"
+                      },
+                      "height": 9,
+                      "width": 12,
+                      "x": 0,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-3"
+                      },
+                      "height": 9,
+                      "width": 12,
+                      "x": 0,
+                      "y": 9
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-2"
+                      },
+                      "height": 9,
+                      "width": 12,
+                      "x": 0,
+                      "y": 18
+                    }
+                  }
+                ]
+              }
+            },
+            "title": "Energia"
+          }
+        }
+      ]
+    }
+  },
+  "links": [],
+  "liveNow": false,
+  "preload": false,
+  "tags": [],
+  "timeSettings": {
+    "autoRefresh": "15m",
+    "autoRefreshIntervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "fiscalYearStartMonth": 0,
+    "from": "now-24h",
+    "hideTimepicker": false,
+    "timezone": "browser",
+    "to": "now"
+  },
+  "title": "Dom",
+  "variables": []
+}
