@@ -50,6 +50,7 @@ If you have a spare domain name you can configure applications to be accessible 
 - [Cloud Commander](https://cloudcmd.io/) - A dual panel file manager with integrated web console and text editor
 - [Cloudflare DDNS](https://hub.docker.com/r/joshuaavalon/cloudflare-ddns/) - automatically update Cloudflare with your IP address
 - [CouchPotato](https://couchpota.to/) - for downloading and managing movies
+- [Cursor Agent](https://cursor.com/docs/cloud-agent) - Self-hosted Cursor Cloud Agent worker(s) that run agent tool calls locally against your git checkouts
 - [Dashy](https://dashy.to/) - A self-hosted startpage for your server. Easy to use visual editor, status checking, widgets, themes and tons more!
 - [DbGate](https://github.com/dbgate/dbgate) - Database manager for MySQL, PostgreSQL, SQL Server, MongoDB, SQLite and others
 - [DDNS Updater](https://github.com/qdm12/ddns-updater) - dynamic dns updater for several providers

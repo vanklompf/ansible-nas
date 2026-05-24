@@ -1,0 +1,48 @@
+---
+cursor_agent_enabled: false
+cursor_agent_available_externally: false
+
+# Authentication
+# Service account API key (required for pool workers).
+# A personal/user API key can be used with non-pool (My Machines) mode.
+cursor_agent_api_key: ""
+
+# Worker mode
+# When true, register workers with `--pool` for Self-Hosted Pool routing.
+# When false, workers run in "My Machines" mode and identify themselves by name.
+cursor_agent_pool: false
+# Optional pool name when pool mode is on. Workers join `default` when empty.
+cursor_agent_pool_name: ""
+# Seconds to keep the worker connected after a session ends (0 disables).
+cursor_agent_idle_release_timeout: 0
+# Global labels applied to every worker (key/value map).
+cursor_agent_labels: {}
+
+# Worker definitions. Each entry spawns a container that serves one git repo.
+#   name:            Worker name (also used as the docker container suffix).
+#                    In My Machines mode this becomes the `--name` flag value.
+#   repo_directory:  Host path to a git checkout the agent will operate on.
+#   pool_name:       (optional) Per-worker pool name override.
+#   labels:          (optional) Per-worker labels merged with cursor_agent_labels.
+#   extra_args:      (optional) Extra CLI flags passed to `agent worker start`.
+cursor_agent_workers: []
+
+# Image / build
+cursor_agent_image_name: "ansible-nas/cursor-agent"
+cursor_agent_image_tag: "latest"
+cursor_agent_build_directory: "{{ docker_home }}/cursor_agent/build"
+cursor_agent_base_image: "ubuntu:24.04"
+# Extra apt packages baked into the worker image (build tools, language runtimes).
+cursor_agent_extra_packages: []
+# Force rebuild on every run (e.g. to pick up a newer CLI).
+cursor_agent_image_force_rebuild: false
+
+# Runtime
+cursor_agent_user_id: "{{ ansible_nas_system_uid }}"
+cursor_agent_group_id: "{{ ansible_nas_system_gid }}"
+cursor_agent_memory: "2g"
+cursor_agent_container_prefix: "cursor_agent"
+# Optional extra environment variables passed to every worker container.
+cursor_agent_extra_env: {}
+# Optional outbound HTTPS proxy (sets HTTPS_PROXY / https_proxy in the container).
+cursor_agent_https_proxy: ""

@@ -1,0 +1,13 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+
+    - name: Confirm the role is disabled by default
+      ansible.builtin.assert:
+        that:
+          - cursor_agent_enabled is false

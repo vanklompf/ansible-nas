@@ -1,0 +1,107 @@
+---
+- name: Start Cursor Agent
+  block:
+    - name: Validate Cursor Agent configuration
+      ansible.builtin.assert:
+        that:
+          - cursor_agent_api_key | length > 0
+          - cursor_agent_workers | length > 0
+        fail_msg: >-
+          cursor_agent_enabled is true but cursor_agent_api_key is empty or
+          cursor_agent_workers is unset. Set both before enabling this role.
+
+    - name: Create Cursor Agent build directory
+      ansible.builtin.file:
+        path: "{{ cursor_agent_build_directory }}"
+        state: directory
+        mode: "0755"
+
+    - name: Render Cursor Agent Dockerfile
+      ansible.builtin.template:
+        src: Dockerfile.j2
+        dest: "{{ cursor_agent_build_directory }}/Dockerfile"
+        mode: "0644"
+      register: cursor_agent_dockerfile
+
+    - name: Render Cursor Agent entrypoint
+      ansible.builtin.template:
+        src: entrypoint.sh.j2
+        dest: "{{ cursor_agent_build_directory }}/entrypoint.sh"
+        mode: "0755"
+      register: cursor_agent_entrypoint
+
+    - name: Build Cursor Agent image
+      community.docker.docker_image:
+        name: "{{ cursor_agent_image_name }}"
+        tag: "{{ cursor_agent_image_tag }}"
+        source: build
+        force_source: "{{ cursor_agent_image_force_rebuild
+                          or cursor_agent_dockerfile.changed
+                          or cursor_agent_entrypoint.changed }}"
+        build:
+          path: "{{ cursor_agent_build_directory }}"
+          pull: true
+          args:
+            PUID: "{{ cursor_agent_user_id }}"
+            PGID: "{{ cursor_agent_group_id }}"
+
+    - name: Validate worker repo directories
+      ansible.builtin.stat:
+        path: "{{ item.repo_directory }}/.git"
+      loop: "{{ cursor_agent_workers }}"
+      loop_control:
+        label: "{{ item.name }}"
+      register: cursor_agent_repo_stats
+
+    - name: Fail when a worker repo_directory is not a git checkout
+      ansible.builtin.assert:
+        that: item.stat.exists
+        fail_msg: >-
+          cursor_agent worker '{{ item.item.name }}' points at
+          '{{ item.item.repo_directory }}' but no .git directory was found there.
+      loop: "{{ cursor_agent_repo_stats.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    - name: Start Cursor Agent worker containers
+      community.docker.docker_container:
+        name: "{{ cursor_agent_container_prefix }}_{{ item.name }}"
+        image: "{{ cursor_agent_image_name }}:{{ cursor_agent_image_tag }}"
+        pull: false
+        user: "{{ cursor_agent_user_id }}:{{ cursor_agent_group_id }}"
+        volumes:
+          - "{{ item.repo_directory }}:/workspace/repo:rw"
+        env:
+          TZ: "{{ ansible_nas_timezone }}"
+          CURSOR_API_KEY: "{{ cursor_agent_api_key }}"
+          WORKER_DIR: "/workspace/repo"
+          HTTPS_PROXY: "{{ cursor_agent_https_proxy }}"
+          https_proxy: "{{ cursor_agent_https_proxy }}"
+        command: "{{ _cursor_agent_command }}"
+        restart_policy: unless-stopped
+        memory: "{{ cursor_agent_memory }}"
+        labels:
+          ansible-nas.cursor-agent.worker: "{{ item.name }}"
+      vars:
+        _cursor_agent_labels: "{{ cursor_agent_labels | combine(item.labels | default({})) }}"
+        _cursor_agent_pool_name: "{{ item.pool_name | default(cursor_agent_pool_name) }}"
+        _cursor_agent_command: >-
+          {% if cursor_agent_pool %}--pool{% if _cursor_agent_pool_name | length > 0 %} --pool-name {{ _cursor_agent_pool_name | quote }}{% endif %}{% else %}--name {{ item.name | quote }}{% endif %}
+          {% if cursor_agent_idle_release_timeout | int > 0 %}--idle-release-timeout {{ cursor_agent_idle_release_timeout }}{% endif %}
+          {% for k, v in _cursor_agent_labels.items() %}--label {{ (k ~ '=' ~ v) | quote }} {% endfor %}
+          {{ item.extra_args | default('') }}
+      loop: "{{ cursor_agent_workers }}"
+      loop_control:
+        label: "{{ item.name }}"
+  when: cursor_agent_enabled is true
+
+- name: Stop Cursor Agent
+  block:
+    - name: Stop Cursor Agent worker containers
+      community.docker.docker_container:
+        name: "{{ cursor_agent_container_prefix }}_{{ item.name }}"
+        state: absent
+      loop: "{{ cursor_agent_workers }}"
+      loop_control:
+        label: "{{ item.name }}"
+  when: cursor_agent_enabled is false

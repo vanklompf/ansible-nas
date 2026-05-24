@@ -1,0 +1,20 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+
+    - name: Confirm no Cursor Agent containers remain
+      community.docker.docker_host_info:
+        containers: true
+        containers_filters:
+          label: "ansible-nas.cursor-agent.worker"
+      register: cursor_agent_remaining
+
+    - name: Assert no Cursor Agent containers remain
+      ansible.builtin.assert:
+        that:
+          - cursor_agent_remaining.containers | length == 0

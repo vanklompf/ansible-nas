@@ -57,6 +57,8 @@
       tags: [booklore, core]
     - role: code-server
       tags: [code-server, core]
+    - role: cursor_agent
+      tags: [cursor_agent, core]
     - role: dawarich
       tags: [dawarich, core]
     - role: duplicacy

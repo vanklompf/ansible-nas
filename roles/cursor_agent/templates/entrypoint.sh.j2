@@ -1,0 +1,37 @@
+#!/bin/bash
+set -e
+
+export GIT_TERMINAL_PROMPT=0
+
+if [ -z "${CURSOR_API_KEY:-}" ]; then
+  echo "FATAL: CURSOR_API_KEY is not set." >&2
+  exit 1
+fi
+
+WORKER_DIR="${WORKER_DIR:-/workspace/repo}"
+
+if [ ! -d "${WORKER_DIR}/.git" ]; then
+  echo "FATAL: ${WORKER_DIR} is not a git repository." >&2
+  echo "Mount a git checkout into ${WORKER_DIR} (the role does this automatically for cursor_agent_workers[].repo_directory)." >&2
+  exit 1
+fi
+
+cd "${WORKER_DIR}"
+
+AGENT_BIN="$(command -v agent || true)"
+if [ -z "${AGENT_BIN}" ] && [ -x "${HOME}/.cursor/bin/agent" ]; then
+  AGENT_BIN="${HOME}/.cursor/bin/agent"
+fi
+if [ -z "${AGENT_BIN}" ] && [ -x "${HOME}/.local/bin/agent" ]; then
+  AGENT_BIN="${HOME}/.local/bin/agent"
+fi
+if [ -z "${AGENT_BIN}" ]; then
+  AGENT_BIN="$(find "${HOME}" /root -name agent -type f 2>/dev/null | head -n 1 || true)"
+fi
+if [ -z "${AGENT_BIN}" ]; then
+  echo "FATAL: Could not locate the Cursor 'agent' binary." >&2
+  exit 1
+fi
+
+echo "Starting Cursor agent worker (binary: ${AGENT_BIN}, dir: ${WORKER_DIR})"
+exec "${AGENT_BIN}" worker start "$@"
