@@ -1,0 +1,43 @@
+---
+description: Remind to check Ansible Galaxy role/collection versions in requirements.yml
+globs: requirements.yml,**/requirements.yml
+alwaysApply: false
+---
+
+# Ansible Galaxy dependency maintenance
+
+When `requirements.yml` (or related dependency work) is in context, offer or run a version check if it has not been done recently.
+
+## What to compare
+
+**Collections** (listed in `requirements.yml`; mostly unpinned):
+
+- `ansible.posix`, `community.crypto`, `community.docker`, `community.general`, `community.windows`, `vladgh.samba`, `artis3n.tailscale`
+- Installed: `ansible-galaxy collection list`
+- Latest: Ansible Galaxy API (`highest_version` per collection)
+
+**Pinned roles**:
+
+- `geerlingguy.docker` (pinned `7.4.7`) — also check GitHub tags on `geerlingguy/ansible-role-docker`
+- `geerlingguy.nfs` (pinned `2.1.0`) — GitHub tags on `geerlingguy/ansible-role-nfs`
+
+## Upgrade cautions
+
+Treat as higher risk (test before bumping pins):
+
+- `community.general` major versions (e.g. 12.x → 13.x)
+- `geerlingguy.docker` major versions (e.g. 7.x → 8.x)
+
+User-local collections live under `~/.ansible/collections/`; system packages may come from the distro `ansible` package.
+
+## Suggested cadence
+
+Roughly quarterly, or when touching `requirements.yml`, `nas.yml` requirements roles, or after Ansible/ansible-nas upgrades.
+
+## Commands
+
+```bash
+ansible-galaxy collection list
+ansible-galaxy role list
+cd /mnt/nas/media/code/ansible-nas && ansible-galaxy collection install -r requirements.yml --upgrade  # user-local only
+```
