@@ -24,6 +24,11 @@
       tags:
         - docker
         - skip_ansible_lint
+    - role: artis3n.tailscale.machine
+      when: tailscale_enabled | bool
+      tags:
+        - tailscale
+        - skip_ansible_lint
 
     ###
     ### Ansible-NAS Roles

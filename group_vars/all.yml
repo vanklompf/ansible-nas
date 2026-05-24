@@ -196,6 +196,20 @@ samba_shares:
     path: "{{ recordings_root }}"
 
 ###
+### Tailscale
+###
+# Install and join this host to a Tailscale tailnet using the
+# `artis3n.tailscale.machine` role from the artis3n.tailscale collection.
+#
+# To enable, set `tailscale_enabled: true` in your inventory and provide at
+# least `tailscale_authkey` (an auth or OAuth key from
+# https://login.tailscale.com/admin/settings/keys). Additional knobs such as
+# `tailscale_args`, `tailscale_tags`, `tailscale_up_skip`, `state`, etc. are
+# documented in the role README:
+#   https://github.com/artis3n/ansible-role-tailscale
+tailscale_enabled: false
+
+###
 ### NFS
 ###
 # Data you want published over NFS. More info on the NFS config format can be found at
