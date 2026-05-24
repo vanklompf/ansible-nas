@@ -1,0 +1,48 @@
+FROM {{ cursor_agent_base_image }}
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Tools required by the Cursor agent CLI and most build workflows.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      ca-certificates \
+      curl \
+      git \
+      openssh-client \
+      build-essential \
+      python3 \
+      python3-pip \
+      nodejs \
+      npm \
+{% for pkg in cursor_agent_extra_packages %}
+      {{ pkg }} \
+{% endfor %}
+    && rm -rf /var/lib/apt/lists/*
+
+ARG PUID=1000
+ARG PGID=1000
+
+# Create the runtime user. Reuse an existing group/user matching the uid/gid
+# if one is already present in the base image.
+RUN if ! getent group ${PGID} >/dev/null; then groupadd -g ${PGID} agent; fi && \
+    if ! id -u ${PUID} >/dev/null 2>&1; then useradd -m -u ${PUID} -g ${PGID} -s /bin/bash agent; fi
+
+ENV HOME=/home/agent
+WORKDIR /home/agent
+RUN mkdir -p /home/agent && chown ${PUID}:${PGID} /home/agent
+
+USER ${PUID}:${PGID}
+
+# Install the Cursor agent CLI for the runtime user.
+RUN curl -fsSL https://cursor.com/install | bash
+
+ENV PATH="/home/agent/.local/bin:/home/agent/.cursor/bin:/usr/local/bin:${PATH}"
+
+USER root
+COPY entrypoint.sh /usr/local/bin/cursor-agent-entrypoint
+RUN chmod +x /usr/local/bin/cursor-agent-entrypoint
+
+USER ${PUID}:${PGID}
+WORKDIR /workspace
+
+ENTRYPOINT ["/usr/local/bin/cursor-agent-entrypoint"]
