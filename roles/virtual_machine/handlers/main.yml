@@ -1,0 +1,18 @@
+---
+- name: Restart libvirtd
+  ansible.builtin.service:
+    name: libvirtd
+    state: restarted
+
+- name: Reboot virtual machine
+  community.libvirt.virt:
+    name: "{{ vm_name }}"
+    state: shutdown
+  failed_when: false
+  changed_when: false
+  notify: Start virtual machine
+
+- name: Start virtual machine
+  community.libvirt.virt:
+    name: "{{ vm_name }}"
+    state: running

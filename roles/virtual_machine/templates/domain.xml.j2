@@ -1,0 +1,88 @@
+<domain type='kvm'>
+  <name>{{ vm_name }}</name>
+  <title>ansible-nas managed VM</title>
+  <description>Managed by the ansible-nas virtual_machine role.</description>
+  <memory unit='MiB'>{{ vm_memory_mb }}</memory>
+  <currentMemory unit='MiB'>{{ vm_memory_mb }}</currentMemory>
+  <memoryBacking>
+    <source type='memfd'/>
+    <access mode='shared'/>
+  </memoryBacking>
+  <vcpu placement='static'>{{ vm_vcpus }}</vcpu>
+  <os>
+    <type arch='x86_64' machine='q35'>hvm</type>
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <vmport state='off'/>
+  </features>
+  <cpu mode='{{ vm_cpu_mode }}' check='none'/>
+  <clock offset='utc'>
+    <timer name='rtc' tickpolicy='catchup'/>
+    <timer name='pit' tickpolicy='delay'/>
+    <timer name='hpet' present='no'/>
+  </clock>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>restart</on_crash>
+  <pm>
+    <suspend-to-mem enabled='no'/>
+    <suspend-to-disk enabled='no'/>
+  </pm>
+  <devices>
+    <emulator>/usr/bin/qemu-system-x86_64</emulator>
+
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2' discard='unmap'/>
+      <source file='{{ vm_disk_path }}'/>
+      <target dev='vda' bus='virtio'/>
+    </disk>
+
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='{{ vm_seed_iso_path }}'/>
+      <target dev='sda' bus='sata'/>
+      <readonly/>
+    </disk>
+
+    <interface type='network'>
+      <source network='{{ vm_network }}'/>
+{% if vm_mac_address | length > 0 %}
+      <mac address='{{ vm_mac_address }}'/>
+{% endif %}
+      <model type='virtio'/>
+    </interface>
+
+    <serial type='pty'>
+      <target type='isa-serial' port='0'>
+        <model name='isa-serial'/>
+      </target>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
+
+    <channel type='unix'>
+      <target type='virtio' name='org.qemu.guest_agent.0'/>
+    </channel>
+
+    <rng model='virtio'>
+      <backend model='random'>/dev/urandom</backend>
+    </rng>
+
+{% for m in vm_mounts %}
+    <filesystem type='mount' accessmode='passthrough'>
+      <driver type='virtiofs' queue='1024'/>
+      <source dir='{{ m.host_path }}'/>
+      <target dir='{{ m.tag }}'/>
+    </filesystem>
+{% endfor %}
+
+    <graphics type='vnc' port='-1' autoport='yes' listen='127.0.0.1'/>
+    <video>
+      <model type='virtio' heads='1' primary='yes'/>
+    </video>
+  </devices>
+</domain>

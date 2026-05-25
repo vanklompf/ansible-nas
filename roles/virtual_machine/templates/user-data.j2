@@ -1,0 +1,47 @@
+#cloud-config
+hostname: {{ vm_hostname }}
+fqdn: {{ vm_hostname }}
+prefer_fqdn_over_hostname: false
+timezone: {{ vm_timezone }}
+
+users:
+  - name: {{ vm_user }}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: [adm, sudo]
+    shell: /bin/bash
+    lock_passwd: true
+    ssh_authorized_keys:
+{% for key in vm_ssh_authorized_keys %}
+      - {{ key }}
+{% endfor %}
+
+ssh_pwauth: false
+disable_root: true
+
+package_update: true
+package_upgrade: false
+packages:
+  - qemu-guest-agent
+  - curl
+  - ca-certificates
+{% for p in vm_extra_packages %}
+  - {{ p }}
+{% endfor %}
+
+mounts:
+{% for m in vm_mounts %}
+  - [ "{{ m.tag }}", "{{ m.guest_path }}", "virtiofs", "defaults,nofail{% if m.readonly | default(false) %},ro{% endif %}", "0", "0" ]
+{% endfor %}
+
+runcmd:
+{% for m in vm_mounts %}
+  - [ install, -d, -m, "0755", "{{ m.guest_path }}" ]
+{% endfor %}
+  - [ systemctl, enable, --now, qemu-guest-agent ]
+  - [ mount, -a ]
+{% if vm_tailscale_enabled | bool %}
+  - [ sh, -c, "curl -fsSL https://tailscale.com/install.sh | sh" ]
+  - [ sh, -c, "tailscale up --authkey={{ vm_tailscale_authkey }} --hostname={{ vm_tailscale_hostname }} --accept-dns=true {{ vm_tailscale_args }}" ]
+{% endif %}
+
+final_message: "ansible-nas virtual_machine ({{ vm_name }}) booted in $UPTIME seconds"

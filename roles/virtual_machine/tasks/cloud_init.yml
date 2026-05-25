@@ -1,0 +1,49 @@
+---
+- name: Render cloud-init user-data
+  ansible.builtin.template:
+    src: user-data.j2
+    dest: "{{ vm_cloud_init_dir }}/user-data"
+    mode: "0640"
+  register: vm_user_data
+
+- name: Render cloud-init meta-data
+  ansible.builtin.template:
+    src: meta-data.j2
+    dest: "{{ vm_cloud_init_dir }}/meta-data"
+    mode: "0640"
+  register: vm_meta_data
+
+- name: Render cloud-init network-config
+  ansible.builtin.template:
+    src: network-config.j2
+    dest: "{{ vm_cloud_init_dir }}/network-config"
+    mode: "0640"
+  register: vm_network_config
+
+- name: Stat existing seed iso
+  ansible.builtin.stat:
+    path: "{{ vm_seed_iso_path }}"
+  register: vm_seed_iso_stat
+
+- name: Build cloud-init seed iso
+  ansible.builtin.command:
+    cmd: >-
+      cloud-localds
+      --network-config={{ vm_cloud_init_dir }}/network-config
+      {{ vm_seed_iso_path }}
+      {{ vm_cloud_init_dir }}/user-data
+      {{ vm_cloud_init_dir }}/meta-data
+  when: >-
+    (not vm_seed_iso_stat.stat.exists)
+    or vm_user_data.changed
+    or vm_meta_data.changed
+    or vm_network_config.changed
+  notify: Reboot virtual machine
+
+- name: Set seed iso ownership for libvirt-qemu
+  ansible.builtin.file:
+    path: "{{ vm_seed_iso_path }}"
+    owner: libvirt-qemu
+    group: kvm
+    mode: "0660"
+  failed_when: false

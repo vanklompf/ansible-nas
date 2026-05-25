@@ -1,0 +1,61 @@
+---
+vm_enabled: false
+
+# Identity
+vm_name: "{{ ansible_nas_hostname | default('ansible-nas') }}-vm"
+vm_hostname: "{{ vm_name }}"
+
+# Spec
+vm_vcpus: 2
+vm_memory_mb: 4096
+vm_disk_gb: 40
+# host-passthrough gives best performance on a Linux NAS host. Use
+# host-model or a named CPU model if you need live migration.
+vm_cpu_mode: "host-passthrough"
+
+# Guest image (Ubuntu Server 26.04 LTS — latest LTS release channel).
+# vm_image_checksum follows the get_url checksum syntax: either
+# "sha256:<hex>" or "sha256:<url-to-SHA256SUMS>" pointing at the
+# upstream checksum file.
+vm_image_url: "https://cloud-images.ubuntu.com/releases/26.04/release/ubuntu-26.04-server-cloudimg-amd64.img"
+vm_image_checksum: "sha256:https://cloud-images.ubuntu.com/releases/26.04/release/SHA256SUMS"
+vm_image_cache_dir: "/var/lib/libvirt/images/_cache"
+vm_image_cache_filename: "{{ vm_image_url | basename }}"
+
+# Storage
+vm_storage_dir: "/var/lib/libvirt/images/{{ vm_name }}"
+vm_disk_path: "{{ vm_storage_dir }}/disk.qcow2"
+vm_seed_iso_path: "{{ vm_storage_dir }}/seed.iso"
+vm_cloud_init_dir: "{{ vm_storage_dir }}/cloud-init"
+
+# Networking
+vm_network: "default"
+# Stable, locally-administered MAC. Empty -> libvirt picks one and
+# persists it in the domain XML.
+vm_mac_address: ""
+vm_autostart: true
+
+# Guest credentials / access
+vm_user: "{{ ansible_nas_user | default('ansible') }}"
+# Public keys to install for vm_user. Required when vm_enabled is true.
+vm_ssh_authorized_keys: []
+vm_timezone: "{{ ansible_nas_timezone | default('Etc/UTC') }}"
+# Extra apt packages installed by cloud-init.
+vm_extra_packages: []
+
+# Host -> guest virtiofs mounts. Each entry: { tag, host_path, guest_path, readonly }.
+# Empty by default — no host directories are mounted unless you set this explicitly.
+vm_mounts: []
+
+# Tailscale inside the guest. Defaults reuse the host's tailscale_authkey
+# so the same control plane account is used.
+vm_tailscale_enabled: "{{ tailscale_enabled | default(false) }}"
+vm_tailscale_authkey: "{{ tailscale_authkey | default('') }}"
+vm_tailscale_hostname: "{{ vm_name }}"
+# Extra args to `tailscale up`, e.g. "--ssh" or "--advertise-routes=...".
+vm_tailscale_args: ""
+
+# Wait for the guest to become reachable after first boot. Disable for
+# offline/lab environments.
+vm_wait_for_boot: true
+vm_wait_for_boot_timeout: 600

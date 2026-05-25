@@ -17,6 +17,7 @@ collections:
   - name: community.crypto
   - name: community.docker
   - name: community.general
+  - name: community.libvirt
   - name: community.windows
   - name: vladgh.samba
   - name: artis3n.tailscale

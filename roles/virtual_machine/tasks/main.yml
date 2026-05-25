@@ -1,0 +1,45 @@
+---
+- name: Start virtual machine
+  block:
+    - name: Validate virtual machine configuration
+      ansible.builtin.assert:
+        that:
+          - vm_name | length > 0
+          - vm_vcpus | int > 0
+          - vm_memory_mb | int >= 256
+          - vm_disk_gb | int >= 4
+          - vm_ssh_authorized_keys | length > 0
+          - (not (vm_tailscale_enabled | bool)) or (vm_tailscale_authkey | length > 0)
+        fail_msg: >-
+          virtual_machine is enabled but the configuration is incomplete.
+          Set vm_ssh_authorized_keys (at least one public key) and, if
+          vm_tailscale_enabled is true, supply vm_tailscale_authkey.
+
+    - name: Install host virtualization packages
+      ansible.builtin.import_tasks: host_packages.yml
+
+    - name: Prepare per-VM storage directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      loop:
+        - "{{ vm_image_cache_dir }}"
+        - "{{ vm_storage_dir }}"
+        - "{{ vm_cloud_init_dir }}"
+
+    - name: Provision base image and disk
+      ansible.builtin.import_tasks: disk.yml
+
+    - name: Render cloud-init seed
+      ansible.builtin.import_tasks: cloud_init.yml
+
+    - name: Define and start the domain
+      ansible.builtin.import_tasks: define.yml
+  when: vm_enabled | bool
+
+- name: Stop virtual machine
+  ansible.builtin.import_tasks: stop.yml
+  when: not (vm_enabled | bool)

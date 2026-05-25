@@ -1,0 +1,47 @@
+---
+- name: Cache base cloud image
+  ansible.builtin.get_url:
+    url: "{{ vm_image_url }}"
+    dest: "{{ vm_image_cache_dir }}/{{ vm_image_cache_filename }}"
+    checksum: "{{ vm_image_checksum }}"
+    mode: "0644"
+  register: vm_base_image
+
+- name: Stat per-VM root disk
+  ansible.builtin.stat:
+    path: "{{ vm_disk_path }}"
+  register: vm_disk_stat
+
+- name: Create per-VM root disk backed by the cached cloud image
+  ansible.builtin.command:
+    cmd: >-
+      qemu-img create -f qcow2
+      -F qcow2
+      -b {{ vm_image_cache_dir }}/{{ vm_image_cache_filename }}
+      {{ vm_disk_path }}
+      {{ vm_disk_gb }}G
+  when: not vm_disk_stat.stat.exists
+  notify: Reboot virtual machine
+
+- name: Inspect per-VM root disk size
+  ansible.builtin.command:
+    cmd: "qemu-img info --output=json {{ vm_disk_path }}"
+  register: vm_disk_info
+  changed_when: false
+  when: vm_disk_stat.stat.exists
+
+- name: Resize per-VM root disk if vm_disk_gb has grown
+  ansible.builtin.command:
+    cmd: "qemu-img resize {{ vm_disk_path }} {{ vm_disk_gb }}G"
+  when:
+    - vm_disk_stat.stat.exists
+    - (vm_disk_info.stdout | from_json)['virtual-size'] | int < (vm_disk_gb | int * 1024 * 1024 * 1024)
+  notify: Reboot virtual machine
+
+- name: Set disk file ownership for libvirt-qemu
+  ansible.builtin.file:
+    path: "{{ vm_disk_path }}"
+    owner: libvirt-qemu
+    group: kvm
+    mode: "0660"
+  failed_when: false

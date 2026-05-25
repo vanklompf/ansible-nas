@@ -1,0 +1,25 @@
+---
+- name: List defined libvirt domains
+  community.libvirt.virt:
+    command: list_vms
+  register: vm_defined_domains
+  changed_when: false
+  failed_when: false
+
+- name: Stop the virtual machine
+  community.libvirt.virt:
+    name: "{{ vm_name }}"
+    state: destroyed
+  when:
+    - vm_defined_domains.list_vms is defined
+    - vm_name in (vm_defined_domains.list_vms | default([]))
+  failed_when: false
+
+- name: Undefine the virtual machine
+  community.libvirt.virt:
+    name: "{{ vm_name }}"
+    command: undefine
+  when:
+    - vm_defined_domains.list_vms is defined
+    - vm_name in (vm_defined_domains.list_vms | default([]))
+  failed_when: false

@@ -582,6 +582,8 @@
       tags: [vaultwarden]
     - role: virtual_desktop
       tags: [virtual_desktop]
+    - role: virtual_machine
+      tags: [virtual_machine]
     - role: wallabag
       tags: [wallabag]
     - role: wallos

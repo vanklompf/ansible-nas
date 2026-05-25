@@ -1,0 +1,57 @@
+---
+- name: Render domain XML
+  ansible.builtin.template:
+    src: domain.xml.j2
+    dest: "{{ vm_storage_dir }}/domain.xml"
+    mode: "0640"
+  register: vm_domain_xml
+
+- name: Read rendered domain XML
+  ansible.builtin.slurp:
+    src: "{{ vm_storage_dir }}/domain.xml"
+  register: vm_domain_xml_blob
+
+- name: List defined libvirt domains
+  community.libvirt.virt:
+    command: list_vms
+  register: vm_defined_domains
+  changed_when: false
+
+- name: Define libvirt domain
+  community.libvirt.virt:
+    command: define
+    xml: "{{ vm_domain_xml_blob.content | b64decode }}"
+  when: vm_domain_xml.changed or (vm_name not in (vm_defined_domains.list_vms | default([])))
+  notify: Reboot virtual machine
+
+- name: Set libvirt domain autostart
+  community.libvirt.virt:
+    name: "{{ vm_name }}"
+    autostart: "{{ vm_autostart | bool }}"
+
+- name: Start libvirt domain
+  community.libvirt.virt:
+    name: "{{ vm_name }}"
+    state: running
+
+- name: Get libvirt DHCP lease for the VM
+  ansible.builtin.command:
+    cmd: "virsh net-dhcp-leases {{ vm_network }} --mac {{ vm_mac_address }}"
+  register: vm_dhcp_lease
+  changed_when: false
+  failed_when: false
+  when:
+    - vm_wait_for_boot | bool
+    - vm_mac_address | length > 0
+
+- name: Wait for SSH on the VM (via libvirt DHCP lease)
+  ansible.builtin.wait_for:
+    host: "{{ (vm_dhcp_lease.stdout_lines | select('match', '.*ipv4.*') | list | first | default('')).split()[4] | default('') | regex_replace('/.*$', '') }}"
+    port: 22
+    timeout: "{{ vm_wait_for_boot_timeout | int }}"
+  when:
+    - vm_wait_for_boot | bool
+    - vm_mac_address | length > 0
+    - vm_dhcp_lease.stdout is defined
+    - (vm_dhcp_lease.stdout_lines | select('match', '.*ipv4.*') | list | length) > 0
+  failed_when: false

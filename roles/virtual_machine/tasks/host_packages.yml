@@ -1,0 +1,44 @@
+---
+- name: Install KVM/libvirt host packages
+  ansible.builtin.apt:
+    name:
+      - qemu-kvm
+      - qemu-system-x86
+      - qemu-utils
+      - libvirt-daemon-system
+      - libvirt-clients
+      - virtinst
+      - cloud-image-utils
+      - genisoimage
+      - python3-libvirt
+      - python3-lxml
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install virtiofsd (separate package on Ubuntu 22.04+)
+  ansible.builtin.apt:
+    name: virtiofsd
+    state: present
+  failed_when: false
+  register: vm_virtiofsd_pkg
+
+- name: Ensure libvirtd is enabled and running
+  ansible.builtin.service:
+    name: libvirtd
+    state: started
+    enabled: true
+
+- name: Add the ansible-nas user to the libvirt group
+  ansible.builtin.user:
+    name: "{{ ansible_nas_user }}"
+    groups: libvirt
+    append: true
+  when: ansible_nas_user is defined and ansible_nas_user | length > 0
+
+- name: Ensure libvirt default network is started and autostarted
+  community.libvirt.virt_net:
+    name: "{{ vm_network }}"
+    state: active
+    autostart: true
+  when: vm_network == "default"
