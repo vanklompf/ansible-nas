@@ -3,6 +3,11 @@ homeassistant_enabled: false
 homeassistant_zigbee_enabled: false
 homeassistant_available_externally: false
 
+# Required when homeassistant_available_externally is true (Traefik sends X-Forwarded-For).
+homeassistant_trusted_proxies:
+  - "127.0.0.1"
+  - "::1"
+
 # ls -la /dev/serial/by-id/
 zigbee_dongle: "usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20240124165802-if00"
 mqtt_user: zigbee2mqtt
