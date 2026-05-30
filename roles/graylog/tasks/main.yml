@@ -16,11 +16,12 @@
 
     - name: Set Graylog server data directory ownership
       ansible.builtin.file:
-        path: "{{ graylog_data_directory }}/graylog"
+        path: "{{ graylog_data_directory }}"
         state: directory
         owner: "{{ graylog_uid }}"
         group: "{{ graylog_gid }}"
-        mode: "0750"
+        mode: "0755"
+        recurse: true
 
     - name: Create Graylog Network
       community.docker.docker_network:
