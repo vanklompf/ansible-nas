@@ -16,11 +16,12 @@
         image: "{{ basen_docker_image }}:{{ basen_docker_tag }}"
         pull: true
         volumes:
-          - "{{ basen_data_directory }}:/data:rw"
+          - "{{ basen_data_directory }}:/app/instance:rw"
         env:
           TZ: "{{ ansible_nas_timezone }}"
           PUID: "{{ basen_user_id }}"
           PGID: "{{ basen_group_id }}"
+          FLASK_ENV: production
         ports:
           - "{{ basen_port }}:5000"
         restart_policy: unless-stopped
