@@ -37,7 +37,7 @@
           traefik.http.routers.sonarr.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.sonarr.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.sonarr.loadbalancer.server.port: "8989"
-          homepage.group: Download Tools
+          homepage.group: Media
           homepage.name: Sonarr
           homepage.icon: sonarr
           homepage.href: "https://{{ sonarr_hostname }}.{{ ansible_nas_domain }}"
