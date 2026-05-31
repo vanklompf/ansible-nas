@@ -479,7 +479,7 @@
     - role: promtail
       tags: [promtail]
     - role: prowlarr
-      tags: [prowlarr]
+      tags: [prowlarr, core]
     - role: pyload
       tags: [pyload]
     - role: pytivo
@@ -527,7 +527,7 @@
     - role: snipeit
       tags: [snipeit]
     - role: sonarr
-      tags: [sonarr]
+      tags: [sonarr, core]
     - role: sparkyfitness
       tags: [sparkyfitness]
     - role: speedtest-tracker

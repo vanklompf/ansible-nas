@@ -61,7 +61,7 @@
           homepage.group: Media
           homepage.name: Transmission
           homepage.icon: transmission
-          homepage.href: "https://{{transmission_openvpn_hostname}}.{{ ansible_nas_domain }}/transmission/web/"
+          homepage.href: "https://{{ transmission_openvpn_hostname }}.{{ ansible_nas_domain }}/transmission/web/"
           homepage.description: Torrent client
           homepage.widget.type: transmission
           homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ transmission_openvpn_webui_port }}"
