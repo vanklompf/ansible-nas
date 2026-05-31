@@ -58,10 +58,10 @@
           traefik.http.routers.transmission_openvpn.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.transmission_openvpn.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.transmission_openvpn.loadbalancer.server.port: "9091"
-          homepage.group: Media
+          homepage.group: Download Tools
           homepage.name: Transmission
           homepage.icon: transmission
-          homepage.href: "https://{{transmission_openvpn_hostname}}.{{ ansible_nas_domain }}/transmission/web/"
+          homepage.href: "https://{{ transmission_openvpn_hostname }}.{{ ansible_nas_domain }}/transmission/web/"
           homepage.description: Torrent client
           homepage.widget.type: transmission
           homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ transmission_openvpn_webui_port }}"
