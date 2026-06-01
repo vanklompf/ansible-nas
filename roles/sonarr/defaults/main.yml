@@ -22,3 +22,6 @@ sonarr_image_version: "latest"
 
 # specs
 sonarr_memory: 1g
+
+# Homepage widget (Settings > General in Sonarr UI)
+sonarr_api_key: ""
