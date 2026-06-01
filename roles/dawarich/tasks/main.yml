@@ -51,7 +51,7 @@
           POSTGRES_USER: "{{ dawarich_pg_user }}"
           POSTGRES_PASSWORD: "{{ dawarich_pg_password }}"
         healthcheck:
-          test: [ "CMD-SHELL", "pg_isready -U postgres -d dawarich_development" ]
+          test: [ "CMD-SHELL", "pg_isready -U {{ dawarich_pg_user }} -d dawarich_development" ]
           interval: 10s
           retries: 5
           start_period: 30s
@@ -82,7 +82,7 @@
           APPLICATION_HOSTS: "{{ dawarich_hostname }}.{{ ansible_nas_domain }},{{ ansible_nas_hostname }}:{{ dawarich_port }}"
           MIN_MINUTES_SPENT_IN_CITY: "60"
           TIME_ZONE: "Europe/Warsaw"
-          APPLICATION_PROTOCOL: "https"
+          APPLICATION_PROTOCOL: "http"
           DISTANCE_UNIT: "km"
           PROMETHEUS_EXPORTER_ENABLED: "false"
           SELF_HOSTED: "true"
@@ -127,7 +127,7 @@
           DATABASE_NAME: "dawarich_development"
           APPLICATION_HOSTS: "0.0.0.0"
           BACKGROUND_PROCESSING_CONCURRENCY: "10"
-          APPLICATION_PROTOCOL: "https"
+          APPLICATION_PROTOCOL: "http"
           DISTANCE_UNIT: "km"
           PROMETHEUS_EXPORTER_ENABLED: "false"
           PROMETHEUS_EXPORTER_HOST: "{{ dawarich_app_container_name }}"
@@ -138,7 +138,7 @@
         restart_policy: unless-stopped
         memory: 4g
         healthcheck:
-          test: [ "CMD-SHELL", "bundle exec sidekiqmon processes | grep $${HOSTNAME}" ]
+          test: [ "CMD-SHELL", "pgrep -f sidekiq" ]
           interval: 10s
           retries: 30
           start_period: 30s
