@@ -1,0 +1,30 @@
+---
+quartz_enabled: false
+quartz_available_externally: false
+
+# Source checkout containing a full Quartz project and content/ vault.
+# For Franek's setup this is the shared/live working tree under code_root.
+quartz_source_directory: "{{ code_root }}/knowledge-base"
+
+# Optional: if set, Ansible will update/clone the repo into quartz_source_directory.
+# Leave empty when the checkout is managed manually or through the shared code mount.
+quartz_repo_url: ""
+quartz_repo_version: main
+quartz_repo_update: true
+
+# Mount the live Markdown vault into the container so uncommitted Obsidian edits
+# are visible through Quartz without requiring a git push or image rebuild.
+quartz_content_read_only: true
+
+# network
+quartz_port: "8128"
+quartz_hostname: "kb"
+
+# specs
+quartz_memory: 1g
+
+# docker
+quartz_container_name: quartz
+quartz_image_name: "local/quartz-knowledge-base"
+quartz_image_tag: latest
+quartz_image_force_rebuild: true
