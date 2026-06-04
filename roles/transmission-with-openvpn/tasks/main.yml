@@ -38,6 +38,8 @@
           TRANSMISSION_DOWNLOAD_QUEUE_SIZE: "{{ transmission_openvpn_download_queue_size }}"
           TRANSMISSION_SEED_QUEUE_ENABLED: "{{ transmission_openvpn_seed_queue_enabled | string }}"
           TRANSMISSION_SEED_QUEUE_SIZE: "{{ transmission_openvpn_seed_queue_size }}"
+          TRANSMISSION_QUEUE_STALLED_ENABLED: "{{ transmission_openvpn_queue_stalled_enabled | string }}"
+          TRANSMISSION_QUEUE_STALLED_MINUTES: "{{ transmission_openvpn_queue_stalled_minutes }}"
           TRANSMISSION_PEER_LIMIT_GLOBAL: "{{ transmission_openvpn_peer_limit_global }}"
           TRANSMISSION_PEER_LIMIT_PER_TORRENT: "{{ transmission_openvpn_peer_limit_per_torrent }}"
           OPENVPN_PROVIDER: "{{ openvpn_provider }}"
