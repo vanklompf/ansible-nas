@@ -18,3 +18,8 @@ automation: !include_dir_merge_list automations/
 script: !include scripts.yaml
 scene: !include scenes.yaml
 climate: !include climate.yaml
+template: !include_dir_merge_list templates/
+
+lovelace:
+  mode: storage
+  dashboards: !include lovelace/dashboards.yaml
