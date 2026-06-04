@@ -1,0 +1,90 @@
+---
+- name: Start Quartz Knowledge Base
+  block:
+    - name: Ensure Quartz parent directory exists when repo URL is configured
+      ansible.builtin.file:
+        path: "{{ quartz_source_directory | dirname }}"
+        state: directory
+        mode: "0755"
+      when: quartz_repo_url | length > 0
+
+    - name: Checkout Quartz knowledge base repo
+      ansible.builtin.git:
+        repo: "{{ quartz_repo_url }}"
+        dest: "{{ quartz_source_directory }}"
+        version: "{{ quartz_repo_version }}"
+        update: "{{ quartz_repo_update }}"
+      register: quartz_repo_checkout
+      when: quartz_repo_url | length > 0
+
+    - name: Validate Quartz source checkout exists
+      ansible.builtin.stat:
+        path: "{{ quartz_source_directory }}/package.json"
+      register: quartz_source_package
+
+    - name: Fail when Quartz source checkout is missing
+      ansible.builtin.assert:
+        that:
+          - quartz_source_package.stat.exists
+        fail_msg: >-
+          quartz_enabled is true but {{ quartz_source_directory }}/package.json was not found.
+          Clone vanklompf/knowledge-base there or set quartz_repo_url/quartz_source_directory.
+
+    - name: Validate Quartz content directory exists
+      ansible.builtin.stat:
+        path: "{{ quartz_source_directory }}/content"
+      register: quartz_source_content
+
+    - name: Fail when Quartz content directory is missing
+      ansible.builtin.assert:
+        that:
+          - quartz_source_content.stat.isdir | default(false)
+        fail_msg: >-
+          quartz_enabled is true but {{ quartz_source_directory }}/content was not found.
+          The source directory must be a Quartz/Obsidian knowledge-base checkout.
+
+    - name: Build Quartz Docker image from knowledge-base checkout
+      community.docker.docker_image:
+        name: "{{ quartz_image_name }}"
+        tag: "{{ quartz_image_tag }}"
+        source: build
+        force_source: "{{ quartz_image_force_rebuild or (quartz_repo_checkout is defined and quartz_repo_checkout.changed) }}"
+        build:
+          path: "{{ quartz_source_directory }}"
+          pull: true
+
+    - name: Create Quartz Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ quartz_container_name }}"
+        image: "{{ quartz_image_name }}:{{ quartz_image_tag }}"
+        pull: false
+        ports:
+          - "{{ quartz_port }}:8080"
+        volumes:
+          - "{{ quartz_source_directory }}/content:/usr/src/app/content{{ (quartz_content_read_only | bool) | ternary(':ro', '') }}"
+        env:
+          TZ: "{{ ansible_nas_timezone }}"
+        restart_policy: unless-stopped
+        memory: "{{ quartz_memory }}"
+        labels:
+          traefik.enable: "{{ quartz_available_externally | string }}"
+          traefik.http.routers.quartz.rule: "Host(`{{ quartz_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.quartz.tls.certresolver: "letsencrypt"
+          traefik.http.routers.quartz.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.quartz.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.quartz.loadbalancer.server.port: "8080"
+          homepage.group: Knowledge
+          homepage.name: Knowledge Base
+          homepage.icon: obsidian.png
+          homepage.href: "https://{{ quartz_hostname }}.{{ ansible_nas_domain }}"
+          homepage.description: Obsidian/Quartz knowledge base
+  when: quartz_enabled is true
+
+- name: Stop Quartz Knowledge Base
+  block:
+    - name: Stop Quartz Docker Container
+      community.docker.docker_container:
+        name: "{{ quartz_container_name }}"
+        state: absent
+  when: quartz_enabled is false

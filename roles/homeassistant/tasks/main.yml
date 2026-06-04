@@ -11,6 +11,9 @@
         state: directory
       with_items:
         - "{{ homeassistant_directory }}"
+        - "{{ homeassistant_directory }}/automations"
+        - "{{ homeassistant_directory }}/templates"
+        - "{{ homeassistant_directory }}/lovelace"
         - "{{ mosquitto_directory }}/data"
         - "{{ mosquitto_directory }}/log"
         - "{{ zigbee2mqtt_directory }}"
@@ -33,18 +36,77 @@
           dest: "{{ homeassistant_directory }}"
       register: homeassistant_config
 
-    - name: Check if user defined climate config exists
+    - name: Check if user defined Home Assistant include files exist
       ansible.builtin.stat:
-        path: "{{ inventory_dir }}/homeassistant/climate.yaml"
-      register: climate_config_src
+        path: "{{ inventory_dir }}/homeassistant/{{ item }}"
+      loop:
+        - scripts.yaml
+        - scenes.yaml
+        - climate.yaml
+      register: homeassistant_include_files_src
       ignore_errors: true
 
-    - name: Copy user defined Home Assistant config (climate.yaml)
+    - name: Copy user defined Home Assistant include files
       ansible.builtin.copy:
-        src: "{{ inventory_dir }}/homeassistant/climate.yaml"
+        src: "{{ item.stat.path }}"
         dest: "{{ homeassistant_directory }}/"
-      when: climate_config_src is not failed and climate_config_src.stat.exists
+        mode: '0640'
+      loop: "{{ homeassistant_include_files_src.results | default([]) }}"
+      when: item.stat is defined and item.stat.exists
       register: homeassistant_config_extra
+
+    - name: Check if user defined Home Assistant automations directory exists
+      ansible.builtin.stat:
+        path: "{{ inventory_dir }}/homeassistant/automations"
+      register: homeassistant_automations_src
+      ignore_errors: true
+
+    - name: Copy user defined Home Assistant automations
+      ansible.builtin.copy:
+        src: "{{ inventory_dir }}/homeassistant/automations/"
+        dest: "{{ homeassistant_directory }}/automations/"
+        mode: '0640'
+        directory_mode: '0755'
+      when: homeassistant_automations_src is not failed and homeassistant_automations_src.stat.isdir is defined and homeassistant_automations_src.stat.isdir
+      register: homeassistant_config_automations
+
+    - name: Check if user defined Home Assistant template directory exists
+      ansible.builtin.stat:
+        path: "{{ inventory_dir }}/homeassistant/templates"
+      register: homeassistant_templates_src
+      ignore_errors: true
+
+    - name: Copy user defined Home Assistant template config
+      ansible.builtin.copy:
+        src: "{{ inventory_dir }}/homeassistant/templates/"
+        dest: "{{ homeassistant_directory }}/templates/"
+        mode: '0640'
+        directory_mode: '0755'
+      when: homeassistant_templates_src is not failed and homeassistant_templates_src.stat.isdir is defined and homeassistant_templates_src.stat.isdir
+      register: homeassistant_config_templates
+
+    - name: Check if user defined Home Assistant Lovelace directory exists
+      ansible.builtin.stat:
+        path: "{{ inventory_dir }}/homeassistant/lovelace"
+      register: homeassistant_lovelace_src
+      ignore_errors: true
+
+    - name: Ensure default empty Lovelace dashboard registry exists
+      ansible.builtin.copy:
+        content: "{}\n"
+        dest: "{{ homeassistant_directory }}/lovelace/dashboards.yaml"
+        mode: '0640'
+        force: false
+      register: homeassistant_config_lovelace_default
+
+    - name: Copy user defined Home Assistant Lovelace config
+      ansible.builtin.copy:
+        src: "{{ inventory_dir }}/homeassistant/lovelace/"
+        dest: "{{ homeassistant_directory }}/lovelace/"
+        mode: '0640'
+        directory_mode: '0755'
+      when: homeassistant_lovelace_src is not failed and homeassistant_lovelace_src.stat.isdir is defined and homeassistant_lovelace_src.stat.isdir
+      register: homeassistant_config_lovelace
 
     - name: Home Assistant Docker Container
       community.docker.docker_container:
@@ -55,7 +117,7 @@
           - "{{ homeassistant_directory }}:/config:rw"
         network_mode: host
         restart_policy: unless-stopped
-        restart: "{{ homeassistant_config is changed or (homeassistant_config_extra is defined and homeassistant_config_extra is changed) }}"
+        restart: "{{ homeassistant_config is changed or (homeassistant_config_extra is defined and homeassistant_config_extra is changed) or (homeassistant_config_automations is defined and homeassistant_config_automations is changed) or (homeassistant_config_templates is defined and homeassistant_config_templates is changed) or (homeassistant_config_lovelace_default is defined and homeassistant_config_lovelace_default is changed) or (homeassistant_config_lovelace is defined and homeassistant_config_lovelace is changed) }}"
         env:
           TZ: "{{ ansible_nas_timezone }}"
         labels:

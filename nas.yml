@@ -484,6 +484,8 @@
       tags: [pyload]
     - role: pytivo
       tags: [pytivo]
+    - role: quartz
+      tags: [quartz, core]
     - role: radarr
       tags: [radarr]
     - role: rallly
