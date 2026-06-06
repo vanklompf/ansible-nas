@@ -74,7 +74,7 @@
           traefik.http.routers.quartz.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.quartz.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.quartz.loadbalancer.server.port: "8080"
-          homepage.group: Knowledge
+          homepage.group: Applications
           homepage.name: Knowledge Base
           homepage.icon: obsidian.png
           homepage.href: "https://{{ quartz_hostname }}.{{ ansible_nas_domain }}"
