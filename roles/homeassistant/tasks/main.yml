@@ -17,6 +17,7 @@
         - "{{ mosquitto_directory }}/data"
         - "{{ mosquitto_directory }}/log"
         - "{{ zigbee2mqtt_directory }}"
+        - "{{ piper_directory }}"
 
     - name: Prepare config
       ansible.builtin.template:
@@ -126,7 +127,7 @@
           traefik.http.routers.homeassistant.tls.certresolver: "letsencrypt"
           traefik.http.routers.homeassistant.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.homeassistant.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
-          traefik.http.services.homeassistant.loadbalancer.server.port: "8123"
+          traefik.http.services.homeassistant.loadbalancer.server.port: "{{ homeassistant_port }}"
           homepage.group: Home
           homepage.name: HomeAssistant
           homepage.icon: home-assistant
@@ -152,6 +153,7 @@
         env:
           TZ: "{{ ansible_nas_timezone }}"
         memory: "{{ mosquitto_memory }}"
+      when: (mosquitto_enabled | bool) or (homeassistant_zigbee_enabled | bool)
 
     - name: Zigbee2Mqtt Docker Container
       community.docker.docker_container:
@@ -184,6 +186,26 @@
           homepage.href: "https://{{ zigbee2mqtt_hostname }}.{{ ansible_nas_domain }}"
           homepage.description: Zigbee2MQTT broker
         memory: "{{ zigbee2mqtt_memory }}"
+      when: homeassistant_zigbee_enabled | bool
+
+    - name: Piper Docker Container
+      community.docker.docker_container:
+        name: "{{ piper_container_name }}"
+        image: "{{ piper_image_name }}:{{ piper_image_version }}"
+        pull: true
+        command:
+          - "--voice"
+          - "{{ piper_voice }}"
+        volumes:
+          - "{{ piper_directory }}:/data:rw"
+        network_mode: "{{ homeassistant_network_name }}"
+        ports:
+          - "{{ piper_port }}:10200"
+        restart_policy: unless-stopped
+        env:
+          TZ: "{{ ansible_nas_timezone }}"
+        memory: "{{ piper_memory }}"
+      when: homeassistant_piper_enabled is true
 
   when: homeassistant_enabled is true
 
@@ -194,4 +216,37 @@
       community.docker.docker_container:
         name: "{{ homeassistant_container_name }}"
         state: absent
+
+    - name: Stop mosquitto
+      community.docker.docker_container:
+        name: "{{ mosquitto_container_name }}"
+        state: absent
+
+    - name: Stop zigbee2mqtt
+      community.docker.docker_container:
+        name: "{{ zigbee2mqtt_container_name }}"
+        state: absent
+
+    - name: Stop piper
+      community.docker.docker_container:
+        name: "{{ piper_container_name }}"
+        state: absent
   when: homeassistant_enabled is false
+
+- name: Stop homeassistant zigbee2mqtt
+  community.docker.docker_container:
+    name: "{{ zigbee2mqtt_container_name }}"
+    state: absent
+  when: homeassistant_enabled is true and not (homeassistant_zigbee_enabled | bool)
+
+- name: Stop homeassistant mosquitto
+  community.docker.docker_container:
+    name: "{{ mosquitto_container_name }}"
+    state: absent
+  when: homeassistant_enabled is true and not ((mosquitto_enabled | bool) or (homeassistant_zigbee_enabled | bool))
+
+- name: Stop homeassistant piper
+  community.docker.docker_container:
+    name: "{{ piper_container_name }}"
+    state: absent
+  when: homeassistant_enabled is true and not (homeassistant_piper_enabled | bool)
