@@ -14,6 +14,7 @@
         - "{{ homeassistant_directory }}/automations"
         - "{{ homeassistant_directory }}/templates"
         - "{{ homeassistant_directory }}/lovelace"
+        - "{{ homeassistant_directory }}/www"
         - "{{ mosquitto_directory }}/data"
         - "{{ mosquitto_directory }}/log"
         - "{{ zigbee2mqtt_directory }}"
@@ -109,6 +110,21 @@
       when: homeassistant_lovelace_src is not failed and homeassistant_lovelace_src.stat.isdir is defined and homeassistant_lovelace_src.stat.isdir
       register: homeassistant_config_lovelace
 
+    - name: Check if user defined Home Assistant www directory exists
+      ansible.builtin.stat:
+        path: "{{ inventory_dir }}/homeassistant/www"
+      register: homeassistant_www_src
+      ignore_errors: true
+
+    - name: Copy user defined Home Assistant www assets
+      ansible.builtin.copy:
+        src: "{{ inventory_dir }}/homeassistant/www/"
+        dest: "{{ homeassistant_directory }}/www/"
+        mode: '0644'
+        directory_mode: '0755'
+      when: homeassistant_www_src is not failed and homeassistant_www_src.stat.isdir is defined and homeassistant_www_src.stat.isdir
+      register: homeassistant_config_www
+
     - name: Home Assistant Docker Container
       community.docker.docker_container:
         name: "{{ homeassistant_container_name }}"
@@ -118,7 +134,7 @@
           - "{{ homeassistant_directory }}:/config:rw"
         network_mode: host
         restart_policy: unless-stopped
-        restart: "{{ homeassistant_config is changed or (homeassistant_config_extra is defined and homeassistant_config_extra is changed) or (homeassistant_config_automations is defined and homeassistant_config_automations is changed) or (homeassistant_config_templates is defined and homeassistant_config_templates is changed) or (homeassistant_config_lovelace_default is defined and homeassistant_config_lovelace_default is changed) or (homeassistant_config_lovelace is defined and homeassistant_config_lovelace is changed) }}"
+        restart: "{{ homeassistant_config is changed or (homeassistant_config_extra is defined and homeassistant_config_extra is changed) or (homeassistant_config_automations is defined and homeassistant_config_automations is changed) or (homeassistant_config_templates is defined and homeassistant_config_templates is changed) or (homeassistant_config_lovelace_default is defined and homeassistant_config_lovelace_default is changed) or (homeassistant_config_lovelace is defined and homeassistant_config_lovelace is changed) or (homeassistant_config_www is defined and homeassistant_config_www is changed) }}"
         env:
           TZ: "{{ ansible_nas_timezone }}"
         labels:
