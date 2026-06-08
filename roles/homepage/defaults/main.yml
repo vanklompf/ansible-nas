@@ -52,6 +52,8 @@ homepage_widgets_yaml:
       units: metric # only used by cpu temp
       refresh: 60000 # optional, in ms
 
+homepage_custom_css: ""
+
 homepage_bookmarks_yaml:
   - Developer:
       - "Ansible-NAS":

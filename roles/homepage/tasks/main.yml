@@ -15,6 +15,7 @@
         dest: "{{ homepage_data_directory }}/{{ item }}"
       loop:
         - bookmarks.yaml
+        - custom.css
         - docker.yaml
         - settings.yaml
         - services.yaml
