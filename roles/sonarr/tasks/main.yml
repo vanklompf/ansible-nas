@@ -9,6 +9,8 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
+        owner: "{{ sonarr_user_id }}"
+        group: "{{ sonarr_group_id }}"
       with_items:
         - "{{ sonarr_data_directory }}"
 
@@ -18,7 +20,7 @@
         image: "{{ sonarr_image_name }}:{{ sonarr_image_version }}"
         pull: true
         volumes:
-          - "{{ sonarr_tv_directory }}:/tv:rw"
+          - "{{ sonarr_movies_directory }}:/movies:rw"
           - "{{ sonarr_download_directory }}:/downloads:rw"
           - "{{ sonarr_data_directory }}:/config:rw"
         ports:
@@ -45,6 +47,7 @@
           homepage.widget.type: sonarr
           homepage.widget.url: "http://{{ ansible_nas_ip }}:{{ sonarr_port }}"
           homepage.widget.key: "{{ sonarr_api_key }}"
+
   when: sonarr_enabled is true
 
 - name: Stop Sonarr
