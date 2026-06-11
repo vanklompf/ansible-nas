@@ -45,6 +45,8 @@
           homepage.icon: gatus.png
           homepage.href: "https://{{ gatus_hostname }}.{{ ansible_nas_domain }}"
           homepage.description: Automated service health dashboard
+          homepage.widget.type: gatus
+          homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ gatus_port }}"
   when: gatus_enabled is true
 
 - name: Stop Gatus
