@@ -45,6 +45,8 @@
         - scripts.yaml
         - scenes.yaml
         - climate.yaml
+        - input_booleans.yaml
+        - input_numbers.yaml
       register: homeassistant_include_files_src
       ignore_errors: true
 

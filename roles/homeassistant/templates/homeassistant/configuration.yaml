@@ -18,6 +18,8 @@ automation: !include_dir_merge_list automations/
 script: !include scripts.yaml
 scene: !include scenes.yaml
 climate: !include climate.yaml
+input_boolean: !include input_booleans.yaml
+input_number: !include input_numbers.yaml
 template: !include_dir_merge_list templates/
 
 lovelace:
