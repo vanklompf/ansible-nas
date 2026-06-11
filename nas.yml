@@ -489,7 +489,7 @@
     - role: quartz
       tags: [quartz, core]
     - role: radarr
-      tags: [radarr]
+      tags: [radarr, core]
     - role: rallly
       tags: [rallly]
     - role: rclone
