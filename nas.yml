@@ -72,6 +72,8 @@
       tags: [excalidraw, core]
     - role: ftp_server
       tags: [ftp_server, core]
+    - role: gatus
+      tags: [gatus, core]
     - role: handbrake
       tags: [handbrake, core]
     - role: homeassistant

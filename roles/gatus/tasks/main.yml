@@ -1,0 +1,56 @@
+---
+- name: Start Gatus
+  block:
+    - name: Create Gatus Directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ gatus_config_directory }}"
+        - "{{ gatus_db_directory }}"
+
+    - name: Copy Gatus config
+      ansible.builtin.copy:
+        src: "{{ gatus_config_file }}"
+        dest: "{{ gatus_config_directory }}/config.yaml"
+        mode: "0644"
+
+    - name: Gatus Docker Container
+      community.docker.docker_container:
+        name: "{{ gatus_container_name }}"
+        image: "{{ gatus_image_name }}:{{ gatus_image_version }}"
+        pull: true
+        ports:
+          - "{{ gatus_port }}:8080"
+        volumes:
+          - "{{ gatus_config_directory }}:/config"
+          - "{{ gatus_db_directory }}:/data"
+          - "/etc/timezone:/etc/timezone:ro"
+          - "/etc/localtime:/etc/localtime:ro"
+        env:
+          TZ: "{{ ansible_nas_timezone }}"
+          GATUS_CONFIG_PATH: "/config/config.yaml"
+          HOMEASSISTANT_ACCESS_TOKEN: "{{ homeassistant_access_token }}"
+        restart_policy: unless-stopped
+        memory: "{{ gatus_memory }}"
+        labels:
+          traefik.enable: "{{ gatus_available_externally | string }}"
+          traefik.http.routers.gatus.rule: "Host(`{{ gatus_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.gatus.tls.certresolver: "letsencrypt"
+          traefik.http.routers.gatus.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.gatus.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.gatus.loadbalancer.server.port: "8080"
+          homepage.group: Monitoring
+          homepage.name: Gatus
+          homepage.icon: gatus.png
+          homepage.href: "https://{{ gatus_hostname }}.{{ ansible_nas_domain }}"
+          homepage.description: Automated service health dashboard
+  when: gatus_enabled is true
+
+- name: Stop Gatus
+  block:
+    - name: Stop Gatus
+      community.docker.docker_container:
+        name: "{{ gatus_container_name }}"
+        state: absent
+  when: gatus_enabled is false

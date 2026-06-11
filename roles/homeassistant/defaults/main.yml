@@ -34,6 +34,9 @@ piper_port: "10200"
 homeassistant_hostname: "home"
 zigbee2mqtt_hostname: "z2m"
 
+# Long-lived access token for API integrations (Profile → Long-Lived Access Tokens)
+homeassistant_access_token: ""
+
 # docker
 homeassistant_container_name: "homeassistant"
 mosquitto_container_name: "mqtt"
