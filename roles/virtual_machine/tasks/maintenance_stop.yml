@@ -1,0 +1,53 @@
+---
+- name: List defined libvirt domains
+  community.libvirt.virt:
+    command: list_vms
+  register: vm_defined_domains
+  changed_when: false
+  failed_when: false
+
+- name: Get virtual machine state
+  ansible.builtin.command:
+    cmd: "virsh domstate {{ vm_name }}"
+  register: vm_domstate_before
+  changed_when: false
+  failed_when: false
+  when:
+    - vm_defined_domains.list_vms is defined
+    - vm_name in (vm_defined_domains.list_vms | default([]))
+
+- name: Stop the virtual machine for maintenance
+  when:
+    - vm_domstate_before.stdout is defined
+    - vm_domstate_before.stdout.strip() | lower in ['running', 'paused', 'pmsuspended']
+  block:
+    - name: Request graceful guest shutdown
+      ansible.builtin.command:
+        cmd: "virsh shutdown {{ vm_name }} --mode agent,acpi"
+      changed_when: true
+      failed_when: false
+
+    - name: Wait for the virtual machine to shut down gracefully
+      ansible.builtin.command:
+        cmd: "virsh domstate {{ vm_name }}"
+      register: vm_domstate_graceful
+      until: vm_domstate_graceful.stdout.strip() | lower in ['shut off', 'shutoff']
+      retries: "{{ ((vm_graceful_stop_timeout | int) / 5) | round(0, 'ceil') | int }}"
+      delay: 5
+      changed_when: false
+      failed_when: false
+
+    - name: Force stop the virtual machine if it did not shut down in time
+      community.libvirt.virt:
+        name: "{{ vm_name }}"
+        state: destroyed
+      when: vm_domstate_graceful.stdout.strip() | lower not in ['shut off', 'shutoff']
+
+    - name: Wait for the virtual machine to stop
+      ansible.builtin.command:
+        cmd: "virsh domstate {{ vm_name }}"
+      register: vm_domstate
+      until: vm_domstate.stdout.strip() | lower in ['shut off', 'shutoff']
+      retries: 30
+      delay: 2
+      changed_when: false

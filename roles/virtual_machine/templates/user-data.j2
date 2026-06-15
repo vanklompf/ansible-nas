@@ -28,17 +28,8 @@ packages:
   - {{ p }}
 {% endfor %}
 
-mounts:
-{% for m in vm_mounts %}
-  - [ "{{ m.tag }}", "{{ m.guest_path }}", "virtiofs", "defaults,nofail{% if m.readonly | default(false) %},ro{% endif %}", "0", "0" ]
-{% endfor %}
-
 runcmd:
-{% for m in vm_mounts %}
-  - [ install, -d, -m, "0755", "{{ m.guest_path }}" ]
-{% endfor %}
   - [ systemctl, enable, --now, qemu-guest-agent ]
-  - [ mount, -a ]
 {% if vm_tailscale_enabled | bool %}
   - [ sh, -c, "curl -fsSL https://tailscale.com/install.sh | sh" ]
   - [ sh, -c, "tailscale up --authkey={{ vm_tailscale_authkey }} --hostname={{ vm_tailscale_hostname }} --accept-dns=true {{ vm_tailscale_args }}" ]

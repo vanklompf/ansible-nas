@@ -38,7 +38,6 @@
     or vm_user_data.changed
     or vm_meta_data.changed
     or vm_network_config.changed
-  notify: Reboot virtual machine
 
 - name: Set seed iso ownership for libvirt-qemu
   ansible.builtin.file:

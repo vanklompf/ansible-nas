@@ -22,7 +22,6 @@
     command: define
     xml: "{{ vm_domain_xml_blob.content | b64decode }}"
   when: vm_domain_xml.changed or (vm_name not in (vm_defined_domains.list_vms | default([])))
-  notify: Reboot virtual machine
 
 - name: Set libvirt domain autostart
   community.libvirt.virt:
@@ -34,24 +33,12 @@
     name: "{{ vm_name }}"
     state: running
 
-- name: Get libvirt DHCP lease for the VM
+- name: Wait for the guest to become ready (QEMU guest agent)
   ansible.builtin.command:
-    cmd: "virsh net-dhcp-leases {{ vm_network }} --mac {{ vm_mac_address }}"
-  register: vm_dhcp_lease
+    cmd: "virsh qemu-agent-command {{ vm_name }} '{\"execute\":\"guest-ping\"}'"
+  register: vm_boot_agent_ping
+  until: vm_boot_agent_ping.rc == 0
+  retries: "{{ ((vm_wait_for_boot_timeout | int) / 5) | round(0, 'ceil') | int }}"
+  delay: 5
   changed_when: false
-  failed_when: false
-  when:
-    - vm_wait_for_boot | bool
-    - vm_mac_address | length > 0
-
-- name: Wait for SSH on the VM (via libvirt DHCP lease)
-  ansible.builtin.wait_for:
-    host: "{{ (vm_dhcp_lease.stdout_lines | select('match', '.*ipv4.*') | list | first | default('')).split()[4] | default('') | regex_replace('/.*$', '') }}"
-    port: 22
-    timeout: "{{ vm_wait_for_boot_timeout | int }}"
-  when:
-    - vm_wait_for_boot | bool
-    - vm_mac_address | length > 0
-    - vm_dhcp_lease.stdout is defined
-    - (vm_dhcp_lease.stdout_lines | select('match', '.*ipv4.*') | list | length) > 0
-  failed_when: false
+  when: vm_wait_for_boot | bool

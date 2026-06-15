@@ -59,3 +59,7 @@ vm_tailscale_args: ""
 # offline/lab environments.
 vm_wait_for_boot: true
 vm_wait_for_boot_timeout: 600
+
+# Seconds to wait for a graceful guest shutdown before force-stopping the
+# domain during a maintenance redeploy.
+vm_graceful_stop_timeout: 60

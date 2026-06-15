@@ -1,0 +1,30 @@
+---
+- name: Wait for QEMU guest agent
+  ansible.builtin.command:
+    cmd: "virsh qemu-agent-command {{ vm_name }} '{\"execute\":\"guest-ping\"}'"
+  register: vm_guest_agent_ping
+  until: vm_guest_agent_ping.rc == 0
+  retries: 60
+  delay: 5
+  changed_when: false
+
+- name: Configure virtiofs mounts in guest
+  delegate_to: "{{ vm_name }}"
+  vars:
+    ansible_connection: community.libvirt.libvirt_qemu
+  block:
+    - name: Ensure guest mount point directories exist
+      ansible.builtin.file:
+        path: "{{ item.guest_path }}"
+        state: directory
+        mode: "0755"
+      loop: "{{ vm_mounts }}"
+
+    - name: Mount host directories in guest via virtiofs
+      ansible.posix.mount:
+        path: "{{ item.guest_path }}"
+        src: "{{ item.tag }}"
+        fstype: virtiofs
+        opts: "defaults,nofail{% if item.readonly | default(false) %},ro{% endif %}"
+        state: mounted
+      loop: "{{ vm_mounts }}"

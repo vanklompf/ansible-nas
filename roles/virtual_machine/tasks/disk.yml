@@ -21,7 +21,6 @@
       {{ vm_disk_path }}
       {{ vm_disk_gb }}G
   when: not vm_disk_stat.stat.exists
-  notify: Reboot virtual machine
 
 - name: Inspect per-VM root disk size
   ansible.builtin.command:
@@ -36,7 +35,6 @@
   when:
     - vm_disk_stat.stat.exists
     - (vm_disk_info.stdout | from_json)['virtual-size'] | int < (vm_disk_gb | int * 1024 * 1024 * 1024)
-  notify: Reboot virtual machine
 
 - name: Set disk file ownership for libvirt-qemu
   ansible.builtin.file:

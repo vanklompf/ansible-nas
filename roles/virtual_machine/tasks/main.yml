@@ -30,6 +30,9 @@
         - "{{ vm_storage_dir }}"
         - "{{ vm_cloud_init_dir }}"
 
+    - name: Stop the virtual machine before disk and cloud-init changes
+      ansible.builtin.import_tasks: maintenance_stop.yml
+
     - name: Provision base image and disk
       ansible.builtin.import_tasks: disk.yml
 
@@ -38,6 +41,10 @@
 
     - name: Define and start the domain
       ansible.builtin.import_tasks: define.yml
+
+    - name: Apply virtiofs mounts in guest
+      ansible.builtin.import_tasks: guest_mounts.yml
+      when: vm_mounts | length > 0
   when: vm_enabled | bool
 
 - name: Stop virtual machine
