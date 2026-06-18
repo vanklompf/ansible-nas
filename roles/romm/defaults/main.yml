@@ -27,8 +27,6 @@ romm_db_image_name: "mariadb"
 romm_db_image_version: "11.2"
 
 romm_redis_container_name: "romm-redis"
-romm_redis_image_name: "redis"
-romm_redis_image_version: "alpine"
 
 # specs
 romm_memory: 2g

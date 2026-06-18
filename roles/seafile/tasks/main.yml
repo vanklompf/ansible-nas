@@ -38,7 +38,7 @@
       community.docker.docker_container:
         container_default_behavior: no_defaults
         name: "{{ seafile_redis_container_name }}"
-        image: "{{ seafile_redis_image_name }}:{{ seafile_redis_image_version }}"
+        image: "redis:{{ redis_image_version }}"
         pull: true
         command:
           ['/bin/sh', '-c', 'redis-server --requirepass {{ seafile_redis_password }}']

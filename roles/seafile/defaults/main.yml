@@ -25,8 +25,6 @@ seafile_db_image_name: "mariadb"
 seafile_db_image_version: "10.11"
 seafile_db_port: "3306"
 seafile_redis_container_name: seafile-redis
-seafile_redis_image_name: "redis"
-seafile_redis_image_version: "8.2.1"
 seafile_redis_port: "6379"
 seafile_user_id: "1000"
 seafile_group_id: "1000"

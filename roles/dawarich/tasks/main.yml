@@ -18,7 +18,7 @@
     - name: Dawarich Redis Docker Container
       community.docker.docker_container:      
         name: "{{ dawarich_redis_container_name }}"
-        image: "{{ dawarich_redis_image_name }}:{{ dawarich_redis_image_version }}"
+        image: "redis:{{ redis_image_version }}"
         state: started
         pull: true
         volumes:

@@ -28,7 +28,7 @@
     - name: Create Romm Redis
       community.docker.docker_container:
         name: "{{ romm_redis_container_name }}"
-        image: "{{ romm_redis_image_name }}:{{ romm_redis_image_version }}"
+        image: "redis:{{ redis_image_version }}"
         pull: true
         restart_policy: unless-stopped
         memory: "{{ romm_redis_memory }}"
