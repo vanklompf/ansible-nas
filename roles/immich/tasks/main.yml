@@ -159,8 +159,8 @@
               traefik.http.routers.immich_power_tools.tls.domains[0].main: "{{ ansible_nas_domain }}"
               traefik.http.routers.immich_power_tools.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
               traefik.http.services.immich_power_tools.loadbalancer.server.port: "3000"
-      when: immich_install_power_tools is true
-  when: immich_enabled is true
+      when: immich_install_power_tools | bool
+  when: immich_enabled | bool
 
 - name: Stop Immich
   block:
@@ -184,16 +184,13 @@
         name: "{{ immich_machinelearning_container_name }}"
         state: absent
 
+    - name: Stop Immich Power Tools
+      community.docker.docker_container:
+        name: "{{ immich_power_tools_container_name }}"
+        state: absent
+
     - name: Delete Immich Network
       community.docker.docker_network:
         name: "{{ immich_network_name }}"
         state: absent
-
-    - name: Stop Immich Power Tools
-      block:
-        - name: Stop Immich Power Tools
-          community.docker.docker_container:
-            name: "{{ immich_power_tools_container_name }}"
-            state: absent
-      when: immich_install_power_tools is false
-  when: immich_enabled is false
+  when: not (immich_enabled | bool)
