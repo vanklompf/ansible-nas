@@ -78,6 +78,8 @@
       tags: [handbrake, core]
     - role: homeassistant
       tags: [homeassistant, core]
+    - role: honcho
+      tags: [honcho, core]
     - role: homepage
       tags: [homepage, core]
     - role: immich
