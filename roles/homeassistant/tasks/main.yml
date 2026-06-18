@@ -15,6 +15,7 @@
         - "{{ homeassistant_directory }}/templates"
         - "{{ homeassistant_directory }}/lovelace"
         - "{{ homeassistant_directory }}/www"
+        - "{{ mosquitto_directory }}/config"
         - "{{ mosquitto_directory }}/data"
         - "{{ mosquitto_directory }}/log"
         - "{{ zigbee2mqtt_directory }}"
@@ -223,9 +224,9 @@
         env:
           TZ: "{{ ansible_nas_timezone }}"
         memory: "{{ piper_memory }}"
-      when: homeassistant_piper_enabled is true
+      when: homeassistant_piper_enabled | bool
 
-  when: homeassistant_enabled is true
+  when: homeassistant_enabled | bool
 
 
 - name: Stop homeassistant
@@ -249,22 +250,27 @@
       community.docker.docker_container:
         name: "{{ piper_container_name }}"
         state: absent
-  when: homeassistant_enabled is false
+
+    - name: Delete Home Assistant network
+      community.docker.docker_network:
+        name: "{{ homeassistant_network_name }}"
+        state: absent
+  when: not (homeassistant_enabled | bool)
 
 - name: Stop homeassistant zigbee2mqtt
   community.docker.docker_container:
     name: "{{ zigbee2mqtt_container_name }}"
     state: absent
-  when: homeassistant_enabled is true and not (homeassistant_zigbee_enabled | bool)
+  when: (homeassistant_enabled | bool) and not (homeassistant_zigbee_enabled | bool)
 
 - name: Stop homeassistant mosquitto
   community.docker.docker_container:
     name: "{{ mosquitto_container_name }}"
     state: absent
-  when: homeassistant_enabled is true and not ((mosquitto_enabled | bool) or (homeassistant_zigbee_enabled | bool))
+  when: (homeassistant_enabled | bool) and not ((mosquitto_enabled | bool) or (homeassistant_zigbee_enabled | bool))
 
 - name: Stop homeassistant piper
   community.docker.docker_container:
     name: "{{ piper_container_name }}"
     state: absent
-  when: homeassistant_enabled is true and not (homeassistant_piper_enabled | bool)
+  when: (homeassistant_enabled | bool) and not (homeassistant_piper_enabled | bool)
