@@ -25,3 +25,6 @@ ollama_image_version: "latest"
 
 ollama_webui_image_name: "ghcr.io/open-webui/open-webui"
 ollama_webui_image_version: "main"
+
+# Models to ensure are present (ollama pull). Override in host/group vars.
+ollama_models_pull: []

@@ -27,6 +27,31 @@
         restart_policy: unless-stopped
         memory: "{{ ollama_memory }}"
 
+    - name: Wait for Ollama API
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ ollama_port }}/api/tags"
+        method: GET
+      register: ollama_api
+      until: ollama_api.status == 200
+      retries: 30
+      delay: 2
+      changed_when: false
+      when: ollama_models_pull | length > 0
+
+    - name: Pull Ollama models
+      community.docker.docker_container_exec:
+        container: "{{ ollama_container_name }}"
+        command: "ollama pull {{ item }}"
+      loop: "{{ ollama_models_pull }}"
+      when: >
+        ollama_models_pull | length > 0 and
+        (ollama_api.json.models | default([]) | map(attribute='name') | list |
+         select('equalto', item) | list | length == 0) and
+        (ollama_api.json.models | default([]) | map(attribute='name') | list |
+         select('match', '^' ~ (item | regex_escape) ~ ':') | list | length == 0)
+      register: ollama_model_pull
+      changed_when: "'pulling' in ollama_model_pull.stdout | lower"
+
     - name: Ollama WebUI Docker Container
       community.docker.docker_container:
         name: "{{ ollama_webui_container_name }}"
