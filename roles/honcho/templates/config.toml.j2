@@ -1,0 +1,67 @@
+# {{ ansible_managed }}
+# Honcho base configuration. Secrets (DB URI, LLM API key, JWT secret) are
+# injected via environment variables, which take precedence over this file.
+
+[app]
+LOG_LEVEL = "{{ honcho_log_level }}"
+EMBED_MESSAGES = {{ honcho_embed_messages | bool | string | lower }}
+
+[auth]
+USE_AUTH = {{ honcho_auth_use_auth | bool | string | lower }}
+
+[cache]
+ENABLED = {{ honcho_cache_enabled | bool | string | lower }}
+URL = "{{ honcho_cache_url }}"
+
+[deriver.model_config]
+transport = "{{ honcho_llm_transport }}"
+model = "{{ honcho_llm_model }}"
+
+[deriver.model_config.overrides]
+base_url = "{{ honcho_llm_base_url }}"
+
+{% for level in honcho_dialectic_levels %}
+[dialectic.levels.{{ level }}.model_config]
+transport = "{{ honcho_llm_transport }}"
+model = "{{ honcho_llm_model }}"
+
+[dialectic.levels.{{ level }}.model_config.overrides]
+base_url = "{{ honcho_llm_base_url }}"
+
+{% endfor %}
+[summary.model_config]
+transport = "{{ honcho_llm_transport }}"
+model = "{{ honcho_llm_model }}"
+
+[summary.model_config.overrides]
+base_url = "{{ honcho_llm_base_url }}"
+
+[dream]
+ENABLED = {{ honcho_dream_enabled | bool | string | lower }}
+
+[dream.deduction_model_config]
+transport = "{{ honcho_llm_transport }}"
+model = "{{ honcho_llm_model }}"
+
+[dream.deduction_model_config.overrides]
+base_url = "{{ honcho_llm_base_url }}"
+
+[dream.induction_model_config]
+transport = "{{ honcho_llm_transport }}"
+model = "{{ honcho_llm_model }}"
+
+[dream.induction_model_config.overrides]
+base_url = "{{ honcho_llm_base_url }}"
+
+[embedding]
+VECTOR_DIMENSIONS = {{ honcho_embedding_vector_dimensions | int }}
+
+[embedding.model_config]
+transport = "{{ honcho_embedding_transport }}"
+model = "{{ honcho_embedding_model }}"
+# bge-m3 emits native 1024-dim vectors via Ollama's OpenAI-compatible API, which
+# rejects the `dimensions=` request param, so keep this on "never".
+dimensions_mode = "{{ honcho_embedding_dimensions_mode }}"
+
+[embedding.model_config.overrides]
+base_url = "{{ honcho_embedding_base_url }}"

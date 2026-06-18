@@ -1,0 +1,72 @@
+---
+honcho_enabled: false
+honcho_available_externally: false
+
+# directories
+honcho_data_directory: "{{ docker_home }}/honcho"
+honcho_postgres_data_directory: "{{ honcho_data_directory }}/postgres"
+honcho_redis_data_directory: "{{ honcho_data_directory }}/redis"
+honcho_database_init_directory: "{{ honcho_data_directory }}/database"
+honcho_config_directory: "{{ honcho_data_directory }}/config"
+
+# network
+honcho_network_name: "honcho_network"
+honcho_hostname: "honcho"
+honcho_port: "8000"
+
+# docker
+honcho_container_name: "honcho_api"
+honcho_image_name: "ghcr.io/plastic-labs/honcho"
+honcho_image_version: "latest"
+honcho_postgres_container_name: "honcho_postgres"
+honcho_postgres_image_name: "pgvector/pgvector"
+honcho_postgres_image_version: "pg15"
+honcho_redis_container_name: "honcho_redis"
+
+# app
+honcho_log_level: "INFO"
+
+# database/cache
+honcho_postgres_database: "postgres"
+honcho_postgres_user: "postgres"
+honcho_postgres_password: "postgres"
+honcho_postgres_connection_uri: "postgresql+psycopg://{{ honcho_postgres_user }}:{{ honcho_postgres_password }}@{{ honcho_postgres_container_name }}:5432/{{ honcho_postgres_database }}"
+honcho_cache_enabled: true
+honcho_cache_url: "redis://{{ honcho_redis_container_name }}:6379/0?suppress=true"
+
+# auth: enabled by default since the API is reachable beyond the tailnet.
+# Provide a strong honcho_auth_jwt_secret (secret) in inventory.
+honcho_auth_use_auth: "true"
+honcho_auth_jwt_secret: ""
+
+# LLM provider. Honcho uses OpenAI-compatible model config; OpenRouter works via
+# per-feature base URL overrides rendered into config.toml. Set the API key as an
+# explicit secret in inventory/group vars (honcho_llm_openai_api_key).
+honcho_llm_openai_api_key: ""
+honcho_llm_transport: "openai"
+honcho_llm_base_url: "https://openrouter.ai/api/v1"
+honcho_llm_model: "openai/gpt-4.1-mini"
+# Dialectic reasoning tiers; each gets the same model/base_url override.
+honcho_dialectic_levels:
+  - minimal
+  - low
+  - medium
+  - high
+  - max
+# Background "dreaming" worker (extra idle-time LLM calls). Set false to disable.
+honcho_dream_enabled: true
+
+# Embeddings: bge-m3 served by the local Ollama (OpenAI-compatible endpoint).
+# bge-m3 is 1024-dim; the API entrypoint runs configure_embeddings.py to pin the
+# pgvector schema to this dimension at bootstrap.
+honcho_embed_messages: "true"
+honcho_embedding_transport: "openai"
+honcho_embedding_model: "bge-m3"
+honcho_embedding_base_url: ""
+honcho_embedding_vector_dimensions: "1024"
+honcho_embedding_dimensions_mode: "never"
+
+# specs
+honcho_memory: 2g
+honcho_postgres_memory: 1g
+honcho_redis_memory: 256m

@@ -1,0 +1,145 @@
+---
+- name: Start Honcho
+  block:
+    - name: Create Honcho network
+      community.docker.docker_network:
+        name: "{{ honcho_network_name }}"
+
+    - name: Create Honcho directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ honcho_data_directory }}"
+        - "{{ honcho_postgres_data_directory }}"
+        - "{{ honcho_redis_data_directory }}"
+        - "{{ honcho_database_init_directory }}"
+        - "{{ honcho_config_directory }}"
+
+    - name: Install Honcho pgvector init script
+      ansible.builtin.copy:
+        dest: "{{ honcho_database_init_directory }}/init.sql"
+        mode: "0644"
+        content: |
+          CREATE EXTENSION IF NOT EXISTS vector;
+
+    - name: Render Honcho config.toml
+      ansible.builtin.template:
+        src: config.toml.j2
+        dest: "{{ honcho_config_directory }}/config.toml"
+        mode: "0644"
+      register: honcho_config_template
+
+    - name: Create Honcho PostgreSQL Docker Container
+      community.docker.docker_container:
+        name: "{{ honcho_postgres_container_name }}"
+        image: "{{ honcho_postgres_image_name }}:{{ honcho_postgres_image_version }}"
+        state: started
+        pull: true
+        command: ["postgres", "-c", "max_connections=200"]
+        volumes:
+          - "{{ honcho_postgres_data_directory }}:/var/lib/postgresql/data"
+          - "{{ honcho_database_init_directory }}/init.sql:/docker-entrypoint-initdb.d/init.sql:ro"
+        networks:
+          - name: "{{ honcho_network_name }}"
+        env:
+          POSTGRES_DB: "{{ honcho_postgres_database }}"
+          POSTGRES_USER: "{{ honcho_postgres_user }}"
+          POSTGRES_PASSWORD: "{{ honcho_postgres_password }}"
+          PGDATA: "/var/lib/postgresql/data/pgdata"
+        restart_policy: unless-stopped
+        memory: "{{ honcho_postgres_memory }}"
+        healthcheck:
+          test: ["CMD-SHELL", "pg_isready -U {{ honcho_postgres_user }} -d {{ honcho_postgres_database }}"]
+          interval: 10s
+          retries: 10
+          start_period: 30s
+          timeout: 10s
+
+    - name: Create Honcho Redis Docker Container
+      community.docker.docker_container:
+        name: "{{ honcho_redis_container_name }}"
+        image: "redis:{{ redis_image_version }}"
+        state: started
+        pull: true
+        volumes:
+          - "{{ honcho_redis_data_directory }}:/data"
+        networks:
+          - name: "{{ honcho_network_name }}"
+        restart_policy: unless-stopped
+        memory: "{{ honcho_redis_memory }}"
+        healthcheck:
+          test: ["CMD-SHELL", "redis-cli ping"]
+          interval: 10s
+          retries: 10
+          start_period: 10s
+          timeout: 5s
+
+    - name: Create Honcho API Docker Container
+      community.docker.docker_container:
+        name: "{{ honcho_container_name }}"
+        image: "{{ honcho_image_name }}:{{ honcho_image_version }}"
+        state: started
+        pull: true
+        entrypoint:
+          - sh
+          - -c
+          - >-
+            /app/.venv/bin/python scripts/provision_db.py &&
+            /app/.venv/bin/python scripts/configure_embeddings.py --yes &&
+            exec /app/.venv/bin/fastapi run --host 0.0.0.0 src/main.py
+        ports:
+          - "{{ honcho_port }}:8000"
+        networks:
+          - name: "{{ honcho_network_name }}"
+        volumes:
+          - "{{ honcho_config_directory }}/config.toml:/app/config.toml:ro"
+        env:
+          DB_CONNECTION_URI: "{{ honcho_postgres_connection_uri }}"
+          LLM_OPENAI_API_KEY: "{{ honcho_llm_openai_api_key }}"
+          AUTH_JWT_SECRET: "{{ honcho_auth_jwt_secret }}"
+        restart_policy: unless-stopped
+        memory: "{{ honcho_memory }}"
+        labels:
+          traefik.enable: "{{ honcho_available_externally | string }}"
+          traefik.http.routers.honcho.rule: "Host(`{{ honcho_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.honcho.tls.certresolver: "letsencrypt"
+          traefik.http.routers.honcho.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.honcho.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.honcho.loadbalancer.server.port: "8000"
+          homepage.group: "AI"
+          homepage.name: "Honcho"
+          homepage.icon: "memory"
+          homepage.href: "https://{{ honcho_hostname }}.{{ ansible_nas_domain }}"
+          homepage.description: "Self-hosted AI memory backend"
+        healthcheck:
+          test: ["CMD", "/app/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2).read()"]
+          interval: 10s
+          retries: 12
+          start_period: 30s
+          timeout: 5s
+
+    - name: Restart Honcho API after config change
+      community.docker.docker_container:
+        name: "{{ honcho_container_name }}"
+        restart: true
+      when: honcho_config_template is changed
+  when: honcho_enabled is true
+
+- name: Stop Honcho
+  block:
+    - name: Stop Honcho API Docker Container
+      community.docker.docker_container:
+        name: "{{ honcho_container_name }}"
+        state: absent
+
+    - name: Stop Honcho Redis Docker Container
+      community.docker.docker_container:
+        name: "{{ honcho_redis_container_name }}"
+        state: absent
+
+    - name: Stop Honcho PostgreSQL Docker Container
+      community.docker.docker_container:
+        name: "{{ honcho_postgres_container_name }}"
+        state: absent
+  when: honcho_enabled is false
