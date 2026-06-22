@@ -2,14 +2,35 @@
 apiVersion: 1
 
 datasources:
+{% if stats_prometheus_enabled | bool %}
   - name: Prometheus
     type: prometheus
     access: proxy
     orgId: 1
     url: http://{{ ansible_nas_ip }}:{{ stats_prometheus_port }}
     uid: ansible_nas
-    isDefault: true
+    isDefault: {{ (not (stats_homeassistant_influxdb_enabled | bool)) | to_json }}
     version: 4
+{% endif %}
+{% if stats_homeassistant_influxdb_enabled | bool %}
+  - name: Home Assistant InfluxDB
+    type: influxdb
+    access: proxy
+    orgId: 1
+    uid: {{ stats_homeassistant_influxdb_datasource_uid | to_json }}
+    url: {{ stats_homeassistant_influxdb_url | to_json }}
+    isDefault: true
+    version: 1
+    editable: true
+    jsonData:
+      version: Flux
+      organization: {{ stats_homeassistant_influxdb_org | to_json }}
+      defaultBucket: {{ stats_homeassistant_influxdb_bucket | to_json }}
+      tlsSkipVerify: true
+      httpMode: POST
+    secureJsonData:
+      token: {{ stats_homeassistant_influxdb_token | to_json }}
+{% endif %}
 {{ '  - name: Loki
     type: loki
     access: proxy

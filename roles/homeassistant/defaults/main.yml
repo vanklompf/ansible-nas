@@ -3,6 +3,7 @@ homeassistant_enabled: false
 homeassistant_zigbee_enabled: false
 mosquitto_enabled: false
 homeassistant_piper_enabled: true
+homeassistant_influxdb_enabled: false
 homeassistant_available_externally: false
 
 # Required when homeassistant_available_externally is true (Traefik sends X-Forwarded-For).
@@ -21,6 +22,7 @@ homeassistant_directory: "{{ docker_home }}/homeassistant"
 mosquitto_directory: "{{ docker_home }}/mosquitto"
 zigbee2mqtt_directory: "{{ docker_home }}/zigbee2mqtt"
 piper_directory: "{{ docker_home }}/piper"
+homeassistant_influxdb_directory: "{{ docker_home }}/homeassistant-influxdb"
 
 
 # network
@@ -30,6 +32,7 @@ mosquitto_port_a: "1883"
 mosquitto_port_b: "9001"
 zigbee2mqtt_port: "3882"
 piper_port: "10200"
+homeassistant_influxdb_port: "8206"
 
 homeassistant_hostname: "home"
 zigbee2mqtt_hostname: "z2m"
@@ -42,22 +45,37 @@ homeassistant_container_name: "homeassistant"
 mosquitto_container_name: "mqtt"
 zigbee2mqtt_container_name: "zigbee2mqtt"
 piper_container_name: "piper"
+homeassistant_influxdb_container_name: "homeassistant-influxdb"
 
 homeassistant_image_name: "homeassistant/home-assistant"
 mosquitto_image_name: "eclipse-mosquitto"
 zigbee2mqtt_image_name: "koenkk/zigbee2mqtt"
 piper_image_name: "rhasspy/wyoming-piper"
+homeassistant_influxdb_image_name: "influxdb"
 
 homeassistant_image_version: latest
 mosquitto_image_version: latest
 zigbee2mqtt_image_version: latest
 piper_image_version: "2.2.2"
+homeassistant_influxdb_image_version: "2.7"
 
 # Wyoming Piper TTS voice (https://github.com/rhasspy/piper/blob/master/VOICES.md)
 piper_voice: pl_PL-gosia-medium
+
+# Home Assistant recorder and long-term telemetry
+homeassistant_recorder_purge_keep_days: 10
+homeassistant_influxdb_host: "127.0.0.1"
+homeassistant_influxdb_init_username: "homeassistant"
+homeassistant_influxdb_init_password: ""
+homeassistant_influxdb_org: "home"
+homeassistant_influxdb_bucket: "ha_raw"
+homeassistant_influxdb_retention: "730d"
+homeassistant_influxdb_token_file: "{{ homeassistant_influxdb_directory }}/admin-token"
+homeassistant_influxdb_include_entities: []
 
 # specs
 homeassistant_memory: 1g
 mosquitto_memory: 1g
 zigbee2mqtt_memory: 1g
 piper_memory: 512m
+homeassistant_influxdb_memory: 1g

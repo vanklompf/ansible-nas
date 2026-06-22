@@ -15,10 +15,24 @@
         - "{{ stats_grafana_config_directory }}/provisioning/datasources"
         - "{{ stats_grafana_config_directory }}/provisioning/dashboards"
 
+    - name: Read Home Assistant InfluxDB token for Grafana datasource
+      ansible.builtin.slurp:
+        src: "{{ stats_homeassistant_influxdb_token_file }}"
+      register: stats_homeassistant_influxdb_token_file_content
+      no_log: true
+      when: stats_homeassistant_influxdb_enabled | bool
+
+    - name: Set Home Assistant InfluxDB token for Grafana datasource
+      ansible.builtin.set_fact:
+        stats_homeassistant_influxdb_token: "{{ stats_homeassistant_influxdb_token_file_content.content | b64decode | trim }}"
+      no_log: true
+      when: stats_homeassistant_influxdb_enabled | bool
+
     - name: Template Grafana data source
       ansible.builtin.template:
         src: datasources/ansible-nas.yml.j2
         dest: "{{ stats_grafana_config_directory }}/provisioning/datasources/ansible-nas.yml"
+      no_log: "{{ stats_homeassistant_influxdb_enabled | bool }}"
 
     - name: Copy Grafana dashboards configuration
       ansible.builtin.copy:
@@ -29,6 +43,12 @@
       ansible.builtin.copy:
         src: dashboards/ansible-nas-overview.json
         dest: "{{ stats_grafana_config_directory }}/dashboards/ansible-nas-overview.json"
+
+    - name: Copy Grafana Home Assistant telemetry dashboard
+      ansible.builtin.copy:
+        src: dashboards/home-assistant-telemetry.json
+        dest: "{{ stats_grafana_config_directory }}/dashboards/home-assistant-telemetry.json"
+      when: stats_homeassistant_influxdb_enabled | bool
 
     - name: Create stats network
       community.docker.docker_network:

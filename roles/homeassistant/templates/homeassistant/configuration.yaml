@@ -10,6 +10,30 @@ http:
 {% endfor %}
 {% endif %}
 
+recorder:
+  purge_keep_days: {{ homeassistant_recorder_purge_keep_days }}
+  auto_purge: true
+
+{% if homeassistant_influxdb_enabled | bool %}
+influxdb:
+  api_version: 2
+  ssl: false
+  host: {{ homeassistant_influxdb_host | to_json }}
+  port: {{ homeassistant_influxdb_port }}
+  token: {{ homeassistant_influxdb_admin_token_effective | to_json }}
+  organization: {{ homeassistant_influxdb_org | to_json }}
+  bucket: {{ homeassistant_influxdb_bucket | to_json }}
+  tags:
+    source: homeassistant
+{% if homeassistant_influxdb_include_entities | length > 0 %}
+  include:
+    entities:
+{% for entity_id in homeassistant_influxdb_include_entities %}
+      - {{ entity_id | to_json }}
+{% endfor %}
+{% endif %}
+{% endif %}
+
 # Load frontend themes from the themes folder
 frontend:
   themes: !include_dir_merge_named themes

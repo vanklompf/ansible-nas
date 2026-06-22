@@ -1,0 +1,666 @@
+{
+  "uid": "home-assistant-telemetry",
+  "title": "Home Assistant Telemetry",
+  "tags": [
+    "home-assistant",
+    "influxdb",
+    "temperature",
+    "power",
+    "energy"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 2,
+  "refresh": "1m",
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 100,
+      "type": "row",
+      "title": "Przegląd",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": []
+    },
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Temperatury teraz",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "homeassistant_influxdb"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "homeassistant_influxdb"
+          },
+          "query": "from(bucket: \"ha_raw\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._field == \"value\") |> filter(fn: (r) => exists r.entity_id and r.entity_id =~ /^(sensor\\.)?(dashboard_temp_salon|dashboard_temp_gabinet|dashboard_temp_sypialnia|dashboard_temp_pokoj_ali|dashboard_temp_lazienka_dol|dashboard_temp_lazienka_gora|dashboard_temp_garderoba|dashboard_temp_wejscie)$/) |> map(fn: (r) => ({ r with _field: if r.entity_id == \"dashboard_temp_salon\" then \"Salon\" else if r.entity_id == \"dashboard_temp_gabinet\" then \"Gabinet\" else if r.entity_id == \"dashboard_temp_sypialnia\" then \"Sypialnia\" else if r.entity_id == \"dashboard_temp_pokoj_ali\" then \"Pokój Ali\" else if r.entity_id == \"dashboard_temp_lazienka_dol\" then \"Łazienka dół\" else if r.entity_id == \"dashboard_temp_lazienka_gora\" then \"Łazienka góra\" else if r.entity_id == \"dashboard_temp_garderoba\" then \"Garderoba\" else if r.entity_id == \"dashboard_temp_wejscie\" then \"Wejście\" else r.entity_id })) |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false) |> keep(columns: [\"_time\", \"_value\", \"_field\"]) |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "decimals": 1,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              },
+              {
+                "value": 18,
+                "color": "green"
+              },
+              {
+                "value": 23,
+                "color": "orange"
+              },
+              {
+                "value": 25,
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "wideLayout": true,
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "showPercentChange": false
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Pobór mocy teraz",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "homeassistant_influxdb"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 12,
+        "y": 1
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "homeassistant_influxdb"
+          },
+          "query": "from(bucket: \"ha_raw\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._field == \"value\") |> filter(fn: (r) => exists r.entity_id and r.entity_id =~ /^(sensor\\.)?(lodowka_power|pralka_power|rekuperacja_power|komputer_power|komputer_power_2|sterownikdol_power)$/) |> map(fn: (r) => ({ r with _field: if r.entity_id == \"lodowka_power\" then \"Lodówka\" else if r.entity_id == \"pralka_power\" then \"Pralka\" else if r.entity_id == \"rekuperacja_power\" then \"Rekuperacja\" else if r.entity_id == \"komputer_power\" then \"Komputer\" else if r.entity_id == \"komputer_power_2\" then \"Komputer 2\" else if r.entity_id == \"sterownikdol_power\" then \"Sterownik dół\" else r.entity_id })) |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false) |> keep(columns: [\"_time\", \"_value\", \"_field\"]) |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 0,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 1500,
+                "color": "orange"
+              },
+              {
+                "value": 3000,
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "wideLayout": true,
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "showPercentChange": false
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Moc łącznie",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "homeassistant_influxdb"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "homeassistant_influxdb"
+          },
+          "query": "from(bucket: \"ha_raw\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._field == \"value\") |> filter(fn: (r) => exists r.entity_id and r.entity_id =~ /^(sensor\\.)?(lodowka_power|pralka_power|rekuperacja_power|komputer_power|komputer_power_2|sterownikdol_power)$/) |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false) |> group(columns: [\"_time\"]) |> sum() |> group() |> sort(columns: [\"_time\"]) |> set(key: \"_field\", value: \"Razem\") |> keep(columns: [\"_time\", \"_value\", \"_field\"]) |> yield(name: \"total\")",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 0,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 2000,
+                "color": "orange"
+              },
+              {
+                "value": 4000,
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "textMode": "value",
+        "wideLayout": true,
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "showPercentChange": false
+      }
+    },
+    {
+      "id": 101,
+      "type": "row",
+      "title": "Temperatury",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "panels": []
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Temperatury pomieszczeń",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "homeassistant_influxdb"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "homeassistant_influxdb"
+          },
+          "query": "from(bucket: \"ha_raw\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._field == \"value\") |> filter(fn: (r) => exists r.entity_id and r.entity_id =~ /^(sensor\\.)?(dashboard_temp_salon|dashboard_temp_gabinet|dashboard_temp_sypialnia|dashboard_temp_pokoj_ali|dashboard_temp_lazienka_dol|dashboard_temp_lazienka_gora|dashboard_temp_garderoba|dashboard_temp_wejscie)$/) |> map(fn: (r) => ({ r with _field: if r.entity_id == \"dashboard_temp_salon\" then \"Salon\" else if r.entity_id == \"dashboard_temp_gabinet\" then \"Gabinet\" else if r.entity_id == \"dashboard_temp_sypialnia\" then \"Sypialnia\" else if r.entity_id == \"dashboard_temp_pokoj_ali\" then \"Pokój Ali\" else if r.entity_id == \"dashboard_temp_lazienka_dol\" then \"Łazienka dół\" else if r.entity_id == \"dashboard_temp_lazienka_gora\" then \"Łazienka góra\" else if r.entity_id == \"dashboard_temp_garderoba\" then \"Garderoba\" else if r.entity_id == \"dashboard_temp_wejscie\" then \"Wejście\" else r.entity_id })) |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false) |> keep(columns: [\"_time\", \"_value\", \"_field\"]) |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "decimals": 1,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": true,
+            "gradientMode": "opacity",
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "blue"
+              },
+              {
+                "value": 18,
+                "color": "green"
+              },
+              {
+                "value": 23,
+                "color": "orange"
+              },
+              {
+                "value": 25,
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Pozostałe czujniki temperatury",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "homeassistant_influxdb"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "homeassistant_influxdb"
+          },
+          "query": "from(bucket: \"ha_raw\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._field == \"value\") |> filter(fn: (r) => exists r.entity_id and r.entity_id =~ /^(sensor\\.)?(roslina_palma_temperature|slzb_06mu_core_chip_temp|slzb_06mu_zigbee_chip_temp)$/) |> map(fn: (r) => ({ r with _field: if r.entity_id == \"roslina_palma_temperature\" then \"Palma (roślina)\" else if r.entity_id == \"slzb_06mu_core_chip_temp\" then \"SLZB – CPU\" else if r.entity_id == \"slzb_06mu_zigbee_chip_temp\" then \"SLZB – Zigbee\" else r.entity_id })) |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false) |> keep(columns: [\"_time\", \"_value\", \"_field\"]) |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "decimals": 1,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": true,
+            "gradientMode": "opacity"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 102,
+      "type": "row",
+      "title": "Moc i energia",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 26
+      },
+      "panels": []
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Pobór mocy urządzeń",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "homeassistant_influxdb"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 16,
+        "x": 0,
+        "y": 27
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "homeassistant_influxdb"
+          },
+          "query": "from(bucket: \"ha_raw\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._field == \"value\") |> filter(fn: (r) => exists r.entity_id and r.entity_id =~ /^(sensor\\.)?(lodowka_power|pralka_power|rekuperacja_power|komputer_power|komputer_power_2|sterownikdol_power)$/) |> map(fn: (r) => ({ r with _field: if r.entity_id == \"lodowka_power\" then \"Lodówka\" else if r.entity_id == \"pralka_power\" then \"Pralka\" else if r.entity_id == \"rekuperacja_power\" then \"Rekuperacja\" else if r.entity_id == \"komputer_power\" then \"Komputer\" else if r.entity_id == \"komputer_power_2\" then \"Komputer 2\" else if r.entity_id == \"sterownikdol_power\" then \"Sterownik dół\" else r.entity_id })) |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false) |> keep(columns: [\"_time\", \"_value\", \"_field\"]) |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": true,
+            "gradientMode": "opacity",
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              },
+              {
+                "value": 1500,
+                "color": "orange"
+              },
+              {
+                "value": 3000,
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Łączny pobór mocy",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "homeassistant_influxdb"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 27
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "homeassistant_influxdb"
+          },
+          "query": "from(bucket: \"ha_raw\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._field == \"value\") |> filter(fn: (r) => exists r.entity_id and r.entity_id =~ /^(sensor\\.)?(lodowka_power|pralka_power|rekuperacja_power|komputer_power|komputer_power_2|sterownikdol_power)$/) |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false) |> group(columns: [\"_time\"]) |> sum() |> group() |> sort(columns: [\"_time\"]) |> set(key: \"_field\", value: \"Razem\") |> keep(columns: [\"_time\", \"_value\", \"_field\"]) |> yield(name: \"total\")",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 20,
+            "showPoints": "never",
+            "spanNulls": true,
+            "gradientMode": "opacity"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": "bargauge",
+      "title": "Zużycie energii (wybrany zakres)",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "homeassistant_influxdb"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 36
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "homeassistant_influxdb"
+          },
+          "query": "from(bucket: \"ha_raw\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._field == \"value\") |> filter(fn: (r) => exists r.entity_id and r.entity_id =~ /^(sensor\\.)?(lodowka_energy|pralka_energy|rekuperacja_energy|komputer_energy|komputer_energy_2|sterownikdol_energy)$/) |> map(fn: (r) => ({ r with _field: if r.entity_id == \"lodowka_energy\" then \"Lodówka\" else if r.entity_id == \"pralka_energy\" then \"Pralka\" else if r.entity_id == \"rekuperacja_energy\" then \"Rekuperacja\" else if r.entity_id == \"komputer_energy\" then \"Komputer\" else if r.entity_id == \"komputer_energy_2\" then \"Komputer 2\" else if r.entity_id == \"sterownikdol_energy\" then \"Sterownik dół\" else r.entity_id })) |> increase() |> last() |> keep(columns: [\"_time\", \"_value\", \"_field\"]) |> yield(name: \"used\")",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "min": 0,
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "value": null,
+                "color": "green"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "valueMode": "color",
+        "showUnfilled": true
+      }
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Zużycie energii w czasie (narastająco)",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "homeassistant_influxdb"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 16,
+        "x": 8,
+        "y": 36
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "homeassistant_influxdb"
+          },
+          "query": "from(bucket: \"ha_raw\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._field == \"value\") |> filter(fn: (r) => exists r.entity_id and r.entity_id =~ /^(sensor\\.)?(lodowka_energy|pralka_energy|rekuperacja_energy|komputer_energy|komputer_energy_2|sterownikdol_energy)$/) |> map(fn: (r) => ({ r with _field: if r.entity_id == \"lodowka_energy\" then \"Lodówka\" else if r.entity_id == \"pralka_energy\" then \"Pralka\" else if r.entity_id == \"rekuperacja_energy\" then \"Rekuperacja\" else if r.entity_id == \"komputer_energy\" then \"Komputer\" else if r.entity_id == \"komputer_energy_2\" then \"Komputer 2\" else if r.entity_id == \"sterownikdol_energy\" then \"Sterownik dół\" else r.entity_id })) |> increase() |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false) |> keep(columns: [\"_time\", \"_value\", \"_field\"]) |> yield(name: \"energy\")",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": true,
+            "gradientMode": "opacity"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    }
+  ]
+}

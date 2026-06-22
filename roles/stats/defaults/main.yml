@@ -71,6 +71,14 @@ stats_influxdb_init_admin_token: ""
 stats_influxdb_default_database: "ansible-nas"
 stats_influxdb_default_server_name: "Production InfluxDB 3"
 
+# Optional Grafana datasource/dashboard for Home Assistant's dedicated InfluxDB v2 telemetry store.
+stats_homeassistant_influxdb_enabled: false
+stats_homeassistant_influxdb_url: "http://{{ ansible_nas_ip }}:{{ homeassistant_influxdb_port | default('8206') }}"
+stats_homeassistant_influxdb_token_file: "{{ homeassistant_influxdb_token_file | default((docker_home ~ '/homeassistant-influxdb/admin-token')) }}"
+stats_homeassistant_influxdb_org: "{{ homeassistant_influxdb_org | default('home') }}"
+stats_homeassistant_influxdb_bucket: "{{ homeassistant_influxdb_bucket | default('ha_raw') }}"
+stats_homeassistant_influxdb_datasource_uid: "homeassistant_influxdb"
+
 # docker
 stats_grafana_container_name: stats-grafana
 stats_grafana_docker_image_name: "grafana/grafana"

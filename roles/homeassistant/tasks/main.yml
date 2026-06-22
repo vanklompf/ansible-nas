@@ -20,12 +20,54 @@
         - "{{ mosquitto_directory }}/log"
         - "{{ zigbee2mqtt_directory }}"
         - "{{ piper_directory }}"
+        - "{{ homeassistant_influxdb_directory }}"
+      register: homeassistant_directories
+
+    - name: Check if Home Assistant InfluxDB admin token exists
+      ansible.builtin.stat:
+        path: "{{ homeassistant_influxdb_token_file }}"
+      register: homeassistant_influxdb_token_stat
+      changed_when: false
+      when: homeassistant_influxdb_enabled | bool
+
+    - name: Generate Home Assistant InfluxDB admin token
+      ansible.builtin.command: openssl rand -hex 32
+      register: homeassistant_influxdb_generated_token
+      changed_when: true
+      no_log: true
+      when:
+        - homeassistant_influxdb_enabled | bool
+        - not homeassistant_influxdb_token_stat.stat.exists
+
+    - name: Persist Home Assistant InfluxDB admin token
+      ansible.builtin.copy:
+        content: "{{ homeassistant_influxdb_generated_token.stdout }}\n"
+        dest: "{{ homeassistant_influxdb_token_file }}"
+        mode: '0600'
+      no_log: true
+      when:
+        - homeassistant_influxdb_enabled | bool
+        - not homeassistant_influxdb_token_stat.stat.exists
+
+    - name: Read Home Assistant InfluxDB admin token
+      ansible.builtin.slurp:
+        src: "{{ homeassistant_influxdb_token_file }}"
+      register: homeassistant_influxdb_token_file_content
+      no_log: true
+      when: homeassistant_influxdb_enabled | bool
+
+    - name: Set Home Assistant InfluxDB admin token fact
+      ansible.builtin.set_fact:
+        homeassistant_influxdb_admin_token_effective: "{{ homeassistant_influxdb_token_file_content.content | b64decode | trim }}"
+      no_log: true
+      when: homeassistant_influxdb_enabled | bool
 
     - name: Prepare config
       ansible.builtin.template:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
         mode: '0640'
+      diff: false
       loop:
         - src: zigbee2mqtt/configuration.yaml
           dest: "{{ zigbee2mqtt_directory }}"
@@ -127,6 +169,35 @@
         directory_mode: '0755'
       when: homeassistant_www_src is not failed and homeassistant_www_src.stat.isdir is defined and homeassistant_www_src.stat.isdir
       register: homeassistant_config_www
+
+    - name: Home Assistant InfluxDB Docker Container
+      community.docker.docker_container:
+        name: "{{ homeassistant_influxdb_container_name }}"
+        image: "{{ homeassistant_influxdb_image_name }}:{{ homeassistant_influxdb_image_version }}"
+        pull: true
+        volumes:
+          - "{{ homeassistant_influxdb_directory }}:/var/lib/influxdb2:rw"
+        ports:
+          - "{{ homeassistant_influxdb_port }}:8086"
+        restart_policy: unless-stopped
+        env:
+          TZ: "{{ ansible_nas_timezone }}"
+          DOCKER_INFLUXDB_INIT_MODE: setup
+          DOCKER_INFLUXDB_INIT_USERNAME: "{{ homeassistant_influxdb_init_username }}"
+          DOCKER_INFLUXDB_INIT_PASSWORD: "{{ homeassistant_influxdb_init_password if (homeassistant_influxdb_init_password | length > 0) else homeassistant_influxdb_admin_token_effective }}"
+          DOCKER_INFLUXDB_INIT_ORG: "{{ homeassistant_influxdb_org }}"
+          DOCKER_INFLUXDB_INIT_BUCKET: "{{ homeassistant_influxdb_bucket }}"
+          DOCKER_INFLUXDB_INIT_RETENTION: "{{ homeassistant_influxdb_retention }}"
+          DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: "{{ homeassistant_influxdb_admin_token_effective }}"
+        labels:
+          homepage.group: Monitoring
+          homepage.name: HA InfluxDB
+          homepage.icon: influxdb
+          homepage.href: "http://{{ ansible_nas_ip }}:{{ homeassistant_influxdb_port }}"
+          homepage.description: Home Assistant long-term telemetry
+        memory: "{{ homeassistant_influxdb_memory }}"
+      no_log: true
+      when: homeassistant_influxdb_enabled | bool
 
     - name: Home Assistant Docker Container
       community.docker.docker_container:
@@ -249,6 +320,11 @@
     - name: Stop piper
       community.docker.docker_container:
         name: "{{ piper_container_name }}"
+        state: absent
+
+    - name: Stop Home Assistant InfluxDB
+      community.docker.docker_container:
+        name: "{{ homeassistant_influxdb_container_name }}"
         state: absent
 
     - name: Delete Home Assistant network
