@@ -35,7 +35,7 @@
         name: "{{ honcho_postgres_container_name }}"
         image: "{{ honcho_postgres_image_name }}:{{ honcho_postgres_image_version }}"
         state: started
-        pull: true
+        pull: missing
         command: ["postgres", "-c", "max_connections=200"]
         volumes:
           - "{{ honcho_postgres_data_directory }}:/var/lib/postgresql/data"
@@ -61,7 +61,7 @@
         name: "{{ honcho_redis_container_name }}"
         image: "redis:{{ redis_image_version }}"
         state: started
-        pull: true
+        pull: missing
         volumes:
           - "{{ honcho_redis_data_directory }}:/data"
         networks:
@@ -114,15 +114,47 @@
           start_period: 30s
           timeout: 5s
 
+    - name: Create Honcho Deriver Docker Container
+      community.docker.docker_container:
+        name: "{{ honcho_deriver_container_name }}"
+        image: "{{ honcho_image_name }}:{{ honcho_image_version }}"
+        state: started
+        pull: true
+        command:
+          - /app/.venv/bin/python
+          - -m
+          - src.deriver
+        networks:
+          - name: "{{ honcho_network_name }}"
+        volumes:
+          - "{{ honcho_config_directory }}/config.toml:/app/config.toml:ro"
+        env:
+          DB_CONNECTION_URI: "{{ honcho_postgres_connection_uri }}"
+          LLM_OPENAI_API_KEY: "{{ honcho_llm_openai_api_key }}"
+          AUTH_JWT_SECRET: "{{ honcho_auth_jwt_secret }}"
+        restart_policy: unless-stopped
+        memory: "{{ honcho_deriver_memory }}"
+
     - name: Restart Honcho API after config change
       community.docker.docker_container:
         name: "{{ honcho_container_name }}"
+        restart: true
+      when: honcho_config_template is changed
+
+    - name: Restart Honcho Deriver after config change
+      community.docker.docker_container:
+        name: "{{ honcho_deriver_container_name }}"
         restart: true
       when: honcho_config_template is changed
   when: honcho_enabled is true
 
 - name: Stop Honcho
   block:
+    - name: Stop Honcho Deriver Docker Container
+      community.docker.docker_container:
+        name: "{{ honcho_deriver_container_name }}"
+        state: absent
+
     - name: Stop Honcho API Docker Container
       community.docker.docker_container:
         name: "{{ honcho_container_name }}"

@@ -16,6 +16,7 @@ honcho_port: "8000"
 
 # docker
 honcho_container_name: "honcho_api"
+honcho_deriver_container_name: "honcho_deriver"
 honcho_image_name: "ghcr.io/plastic-labs/honcho"
 honcho_image_version: "latest"
 honcho_postgres_container_name: "honcho_postgres"
@@ -68,5 +69,6 @@ honcho_embedding_dimensions_mode: "never"
 
 # specs
 honcho_memory: 2g
+honcho_deriver_memory: 2g
 honcho_postgres_memory: 1g
 honcho_redis_memory: 256m

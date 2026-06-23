@@ -2,9 +2,10 @@
 
 Self-hosted Honcho memory backend for Hermes Agent.
 
-The role runs three containers:
+The role runs four containers:
 
 - `honcho_api` from `ghcr.io/plastic-labs/honcho`
+- `honcho_deriver` from `ghcr.io/plastic-labs/honcho`, running `python -m src.deriver`
 - `honcho_postgres` from `pgvector/pgvector:pg15`
 - `honcho_redis` from `redis:8.2`
 
