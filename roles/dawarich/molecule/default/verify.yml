@@ -1,0 +1,40 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+
+    - name: Get Dawarich Redis container state
+      community.docker.docker_container_info:
+        name: "{{ dawarich_redis_container_name }}"
+      register: result_redis
+
+    - name: Get Dawarich Postgres container state
+      community.docker.docker_container_info:
+        name: "{{ dawarich_pg_container_name }}"
+      register: result_pg
+
+    - name: Get Dawarich App container state
+      community.docker.docker_container_info:
+        name: "{{ dawarich_app_container_name }}"
+      register: result_app
+
+    - name: Get Dawarich Sidekiq container state
+      community.docker.docker_container_info:
+        name: "{{ dawarich_sidekiq_container_name }}"
+      register: result_sidekiq
+
+    - name: Check Dawarich containers are running
+      ansible.builtin.assert:
+        that:
+          - result_redis.container['State']['Status'] == "running"
+          - result_redis.container['State']['Restarting'] == false
+          - result_pg.container['State']['Status'] == "running"
+          - result_pg.container['State']['Restarting'] == false
+          - result_app.container['State']['Status'] == "running"
+          - result_app.container['State']['Restarting'] == false
+          - result_sidekiq.container['State']['Status'] == "running"
+          - result_sidekiq.container['State']['Restarting'] == false
