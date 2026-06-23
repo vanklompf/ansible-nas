@@ -30,7 +30,7 @@ arcane_jwt_secret: 6FY0aTuea4NiExORg0FmWZ4SrfZpQ6h3LhPletQ/YhCPhd1BtT/MHny27/82m
 
 # --- Remote environment agent (edge) ----------------------------------------
 arcane_agent_enabled: false
-arcane_agent_manager_url: ''
+arcane_agent_manager_url: "http://arcane.{{ ansible_nas_domain }}:3552"
 arcane_agent_token: ''
 arcane_agent_data_directory: '{{ docker_home }}/arcane-agent'
 arcane_agent_memory: 1g
