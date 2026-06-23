@@ -14,7 +14,7 @@
       community.docker.docker_container:
         name: "{{ romm_db_container_name }}"
         image: "{{ romm_db_image_name }}:{{ romm_db_image_version }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ romm_db_data_directory }}/db:/var/lib/mysql"
         env:
@@ -29,7 +29,7 @@
       community.docker.docker_container:
         name: "{{ romm_redis_container_name }}"
         image: "redis:{{ redis_image_version }}"
-        pull: true
+        pull: missing
         restart_policy: unless-stopped
         memory: "{{ romm_redis_memory }}"
 

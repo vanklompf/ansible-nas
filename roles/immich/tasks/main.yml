@@ -17,7 +17,7 @@
       community.docker.docker_container:
         name: "{{ immich_postgres_container_name }}"
         image: "{{ immich_postgres_image }}:{{ immich_postgres_tag }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ immich_data_directory }}/database:/var/lib/postgresql/data:rw"
         networks:
@@ -34,7 +34,7 @@
       community.docker.docker_container:
         name: "{{ immich_redis_container_name }}"
         image: "{{ immich_redis_image }}:{{ immich_redis_tag }}"
-        pull: true
+        pull: missing
         command: --save 60 1 --loglevel warning
         volumes:
           - "{{ immich_data_directory }}/redis:/data:rw"

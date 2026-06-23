@@ -20,7 +20,7 @@
         name: "{{ dawarich_redis_container_name }}"
         image: "redis:{{ redis_image_version }}"
         state: started
-        pull: true
+        pull: missing
         volumes:
           - "{{ dawarich_directory }}/shared:/data"
         networks:
@@ -39,7 +39,7 @@
         name: "{{ dawarich_pg_container_name }}"
         image: "{{ dawarich_pg_image_name }}:{{ dawarich_pg_image_version }}"
         state: started
-        pull: true
+        pull: missing
         volumes:
           - "{{ dawarich_directory }}/data:/var/lib/postgresql/data"
           - "{{ dawarich_directory }}/shared:/var/shared"

@@ -19,7 +19,7 @@
       community.docker.docker_container:
         name: "{{ paperless_ng_container_name_redis }}"
         image: "redis:{{ redis_image_version }}"
-        pull: true
+        pull: missing
         restart_policy: unless-stopped
         memory: "{{ paperless_ng_redis_memory }}"
         networks:
@@ -30,7 +30,7 @@
       community.docker.docker_container:
         name: "{{ paperless_ng_container_name_gotenberg }}"
         image: thecodingmachine/gotenberg
-        pull: true
+        pull: missing
         restart_policy: unless-stopped
 
         env:
@@ -42,7 +42,7 @@
       community.docker.docker_container:
         name: "{{ paperless_ng_container_name_tika }}"
         image: apache/tika
-        pull: true
+        pull: missing
         restart_policy: unless-stopped
         networks:
           - name: "{{ paperless_ng_network_name }}"

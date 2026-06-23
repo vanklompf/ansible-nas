@@ -28,7 +28,7 @@
         container_default_behavior: no_defaults
         name: "{{ searxng_redis_container_name }}"
         image: "{{ searxng_redis_image_name }}:{{ searxng_redis_image_version }}"
-        pull: true
+        pull: missing
         cap_drop:
           - ALL
         capabilities:

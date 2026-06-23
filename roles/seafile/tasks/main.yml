@@ -17,7 +17,7 @@
         container_default_behavior: no_defaults
         name: "{{ seafile_db_container_name }}"
         image: "{{ seafile_db_image_name }}:{{ seafile_db_image_version }}"
-        pull: true
+        pull: missing
         networks:
           - name: "{{ seafile_network_name }}"
         network_mode: "{{ seafile_network_name }}"
@@ -39,7 +39,7 @@
         container_default_behavior: no_defaults
         name: "{{ seafile_redis_container_name }}"
         image: "redis:{{ redis_image_version }}"
-        pull: true
+        pull: missing
         command:
           ['/bin/sh', '-c', 'redis-server --requirepass {{ seafile_redis_password }}']
         networks:
