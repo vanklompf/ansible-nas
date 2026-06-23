@@ -90,8 +90,30 @@
         - climate.yaml
         - input_booleans.yaml
         - input_numbers.yaml
+        - sensors.yaml
       register: homeassistant_include_files_src
       ignore_errors: true
+
+    - name: Ensure default empty Home Assistant include files exist
+      ansible.builtin.copy:
+        content: "{{ item.content }}"
+        dest: "{{ homeassistant_directory }}/{{ item.name }}"
+        mode: '0640'
+        force: false
+      loop:
+        - name: scripts.yaml
+          content: "{}\n"
+        - name: scenes.yaml
+          content: "[]\n"
+        - name: climate.yaml
+          content: "[]\n"
+        - name: input_booleans.yaml
+          content: "{}\n"
+        - name: input_numbers.yaml
+          content: "{}\n"
+        - name: sensors.yaml
+          content: "[]\n"
+      register: homeassistant_config_include_defaults
 
     - name: Copy user defined Home Assistant include files
       ansible.builtin.copy:
@@ -174,7 +196,7 @@
       community.docker.docker_container:
         name: "{{ homeassistant_influxdb_container_name }}"
         image: "{{ homeassistant_influxdb_image_name }}:{{ homeassistant_influxdb_image_version }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ homeassistant_influxdb_directory }}:/var/lib/influxdb2:rw"
         ports:
@@ -208,7 +230,7 @@
           - "{{ homeassistant_directory }}:/config:rw"
         network_mode: host
         restart_policy: unless-stopped
-        restart: "{{ homeassistant_config is changed or (homeassistant_config_extra is defined and homeassistant_config_extra is changed) or (homeassistant_config_automations is defined and homeassistant_config_automations is changed) or (homeassistant_config_templates is defined and homeassistant_config_templates is changed) or (homeassistant_config_lovelace_default is defined and homeassistant_config_lovelace_default is changed) or (homeassistant_config_lovelace is defined and homeassistant_config_lovelace is changed) or (homeassistant_config_www is defined and homeassistant_config_www is changed) }}"
+        restart: "{{ homeassistant_config is changed or (homeassistant_config_include_defaults is defined and homeassistant_config_include_defaults is changed) or (homeassistant_config_extra is defined and homeassistant_config_extra is changed) or (homeassistant_config_automations is defined and homeassistant_config_automations is changed) or (homeassistant_config_templates is defined and homeassistant_config_templates is changed) or (homeassistant_config_lovelace_default is defined and homeassistant_config_lovelace_default is changed) or (homeassistant_config_lovelace is defined and homeassistant_config_lovelace is changed) or (homeassistant_config_www is defined and homeassistant_config_www is changed) }}"
         env:
           TZ: "{{ ansible_nas_timezone }}"
         labels:
