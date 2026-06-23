@@ -9,12 +9,15 @@ arcane_data_directory: '{{ docker_home }}/arcane'
 arcane_port: '3552'
 arcane_hostname: arcane
 
+arcane_app_url: "{{ 'https://' + arcane_hostname + '.' + ansible_nas_domain if arcane_available_externally else 'http://localhost:' + arcane_port }}"
+arcane_trusted_proxies: '172.16.0.0/12'
+
 # specs
 arcane_memory: 1g
 
 # docker
 arcane_container_name: arcane
-arcane_image_name: ghcr.io/getarcaneapp/arcane
+arcane_image_name: ghcr.io/getarcaneapp/manager
 arcane_image_version: latest
 arcane_user_id: '1000'
 arcane_group_id: '1000'
@@ -24,3 +27,13 @@ arcane_encryption_key: BfSQVy0XxFr3lyZHU1zAbCIBc25C5cJg23wLu2VSUPQ=
 
 #openssl rand -base64 48
 arcane_jwt_secret: 6FY0aTuea4NiExORg0FmWZ4SrfZpQ6h3LhPletQ/YhCPhd1BtT/MHny27/82mziB
+
+# --- Remote environment agent (edge) ----------------------------------------
+arcane_agent_enabled: false
+arcane_agent_manager_url: ''
+arcane_agent_token: ''
+arcane_agent_data_directory: '{{ docker_home }}/arcane-agent'
+arcane_agent_memory: 1g
+arcane_agent_container_name: arcane-agent
+arcane_agent_image_name: ghcr.io/getarcaneapp/arcane-headless
+arcane_agent_image_version: latest

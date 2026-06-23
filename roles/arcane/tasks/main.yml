@@ -26,6 +26,8 @@
           PGID: '{{ arcane_group_id }}'
           ENCRYPTION_KEY: '{{ arcane_encryption_key }}'
           JWT_SECRET: '{{ arcane_jwt_secret }}'
+          APP_URL: '{{ arcane_app_url }}'
+          TRUSTED_PROXIES: '{{ arcane_trusted_proxies }}'
         restart_policy: unless-stopped
         memory: '{{ arcane_memory }}'
         labels:
@@ -42,8 +44,10 @@
           homepage.description: Docker monitoring
         healthcheck:
           test:
-            - CMD-SHELL
-            - curl -fsS http://localhost:3552/api/health >/dev/null || exit 1
+            - CMD
+            - curl
+            - -fsS
+            - http://localhost:3552/api/health
           interval: 10s
           timeout: 3s
           retries: 5
@@ -56,3 +60,39 @@
         name: '{{ arcane_container_name }}'
         state: absent
   when: arcane_enabled is false
+
+- name: Start Arcane Agent
+  block:
+    - name: Create Arcane Agent Directory
+      ansible.builtin.file:
+        path: '{{ arcane_agent_data_directory }}'
+        state: directory
+        mode: '0755'
+    - name: Create Arcane Agent Docker Container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: '{{ arcane_agent_container_name }}'
+        image: '{{ arcane_agent_image_name }}:{{ arcane_agent_image_version }}'
+        pull: true
+        state: started
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+          - '{{ arcane_agent_data_directory }}:/app/data:rw'
+        env:
+          PUID: '{{ arcane_user_id }}'
+          PGID: '{{ arcane_group_id }}'
+          EDGE_AGENT: 'true'
+          EDGE_TRANSPORT: poll
+          AGENT_TOKEN: '{{ arcane_agent_token }}'
+          MANAGER_API_URL: '{{ arcane_agent_manager_url }}'
+        restart_policy: unless-stopped
+        memory: '{{ arcane_agent_memory }}'
+  when: arcane_agent_enabled is true
+
+- name: Stop Arcane Agent
+  block:
+    - name: Stop Arcane Agent
+      community.docker.docker_container:
+        name: '{{ arcane_agent_container_name }}'
+        state: absent
+  when: arcane_agent_enabled is false
