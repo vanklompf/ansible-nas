@@ -23,7 +23,7 @@
         name: '{{ booklore_mariadb_container_name }}'
         image: '{{ booklore_mariadb_image_name }}:{{ booklore_mariadb_image_version
           }}'
-        pull: true
+        pull: missing
         networks:
           - name: '{{ booklore_network_name }}'
         volumes: ['{{ booklore_config_directory }}:/config:rw']
