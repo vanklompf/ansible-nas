@@ -13,6 +13,18 @@ http:
 recorder:
   purge_keep_days: {{ homeassistant_recorder_purge_keep_days }}
   auto_purge: true
+  exclude:
+    entities:
+      # Noisy integration convenience entity: bounces around 0 kW grid flow.
+      - binary_sensor.sigen_plant_importing_from_grid
+      # Google Cast / YouTube reports frequent playing/paused/idle/buffering transitions.
+      - media_player.googletv6794
+
+logbook:
+  exclude:
+    entities:
+      - binary_sensor.sigen_plant_importing_from_grid
+      - media_player.googletv6794
 
 {% if homeassistant_influxdb_enabled | bool %}
 influxdb:
