@@ -26,7 +26,9 @@
           POSTGRES_PASSWORD: "{{ immich_db_password }}"
           POSTGRES_USER: "{{ immich_db_username }}"
           POSTGRES_DB: "{{ immich_db_name }}"
+          POSTGRES_INITDB_ARGS: "--data-checksums"
           PG_DATA: /var/lib/postgresql/data
+        shm_size: "128M"
         restart_policy: always
         memory: "{{ immich_postgres_memory }}"
 
@@ -112,17 +114,6 @@
           PGID: "{{ immich_group_id | quote }}"
           NODE_ENV: "production"
           IMMICH_VERSION: "{{ immich_version }}"
-          REDIS_HOSTNAME: "{{ immich_redis_container_name }}"
-          DB_HOSTNAME: "{{ immich_postgres_container_name }}"
-          DB_USERNAME: "{{ immich_db_username }}"
-          DB_PASSWORD: "{{ immich_db_password }}"
-          DB_DATABASE_NAME: "{{ immich_db_name }}"
-          DB_PORT: "{{ immich_db_port }}"
-          JWT_SECRET: "{{ immich_jwt_secret }}"
-          ENABLE_MAPBOX: "{{ immich_enable_mapbox }}"
-          MAPBOX_KEY: "{{ immich_mapbox_key }}"
-          PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
-          IMMICH_MACHINE_LEARNING_CLIP_IMAGE_MODEL: "{{ immich_machine_learning_clip_image_model }}"
         labels:
           traefik.enable: "false"
         restart_policy: unless-stopped
