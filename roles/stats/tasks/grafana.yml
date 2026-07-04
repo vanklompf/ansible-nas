@@ -84,7 +84,7 @@
           homepage.group: Monitoring
           homepage.name: Grafana
           homepage.icon: grafana
-          homepage.href: "http://{{ ansible_nas_ip }}:{{ stats_grafana_port }}"
+          homepage.href: "https://{{ stats_grafana_hostname }}.{{ ansible_nas_domain }}"
           homepage.description: Dashboards and centralized observability.
   when: stats_enabled is true
 
