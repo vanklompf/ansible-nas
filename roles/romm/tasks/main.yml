@@ -10,6 +10,17 @@
         - "{{ romm_db_data_directory }}"
         - "{{ romm_config_directory }}"
 
+    - name: Ensure Romm auth secret key is persisted on host
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
+      vars:
+        _host_secret_file: "{{ romm_auth_secret_key_file }}"
+        _host_secret_generate_cmd: openssl rand -hex 32
+        _host_secret_effective_var: romm_auth_secret_key_effective
+        _host_secret_container_name: "{{ romm_container_name }}"
+        _host_secret_container_env_key: ROMM_AUTH_SECRET_KEY
+        _host_secret_seed_value: "{{ romm_auth_secret_key }}"
+        _host_secret_default_placeholder: aaaabbbbccccdddd
+
     - name: MariaDB Docker Container for Romm
       community.docker.docker_container:
         name: "{{ romm_db_container_name }}"
@@ -52,7 +63,7 @@
           DB_PASSWD: "{{ romm_database_password }}"
           DB_NAME: "romm"
           ROMM_AUTH_ENABLED: "true"
-          ROMM_AUTH_SECRET_KEY: "{{ romm_auth_secret_key }}"
+          ROMM_AUTH_SECRET_KEY: "{{ romm_auth_secret_key_effective }}"
           ENABLE_EXPERIMENTAL_REDIS: "true"
           REDIS_HOST: "redis"
           REDIS_PORT: "6379"

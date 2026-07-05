@@ -9,7 +9,9 @@ seafile_data_directory: "{{ docker_home }}/seafile"
 seafile_port: "8101"
 seafile_hostname: "seafile"
 seafile_network_name: "seafile"
-seafile_jwt_key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+# Persisted on the host at seafile_jwt_key_file on first deploy.
+seafile_jwt_key_file: "{{ seafile_data_directory }}/.jwt_private_key"
+seafile_jwt_key: ""
 
 # specs
 seafile_memory: 1g

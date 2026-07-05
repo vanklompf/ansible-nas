@@ -44,6 +44,8 @@ romm_mobygames_client_id: "abcd"
 romm_steamgriddb_client_id: "abcd"
 
 # auth config
-romm_auth_secret_key: "aaaabbbbccccdddd" # Generate a key with `openssl rand -hex 32`
+# Persisted on the host at romm_auth_secret_key_file on first deploy.
+romm_auth_secret_key_file: "{{ romm_home }}/.auth_secret_key"
+romm_auth_secret_key: ""
 romm_auth_username: "admin"
 romm_auth_password: "admin"

@@ -16,6 +16,16 @@
         - "{{ honcho_database_init_directory }}"
         - "{{ honcho_config_directory }}"
 
+    - name: Ensure Honcho JWT secret is persisted on host
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
+      vars:
+        _host_secret_file: "{{ honcho_auth_jwt_secret_file }}"
+        _host_secret_generate_cmd: openssl rand -base64 48
+        _host_secret_effective_var: honcho_auth_jwt_secret_effective
+        _host_secret_container_name: "{{ honcho_container_name }}"
+        _host_secret_container_env_key: AUTH_JWT_SECRET
+        _host_secret_seed_value: "{{ honcho_auth_jwt_secret }}"
+
     - name: Install Honcho pgvector init script
       ansible.builtin.copy:
         dest: "{{ honcho_database_init_directory }}/init.sql"
@@ -97,7 +107,7 @@
         env:
           DB_CONNECTION_URI: "{{ honcho_postgres_connection_uri }}"
           LLM_OPENAI_API_KEY: "{{ honcho_llm_openai_api_key }}"
-          AUTH_JWT_SECRET: "{{ honcho_auth_jwt_secret }}"
+          AUTH_JWT_SECRET: "{{ honcho_auth_jwt_secret_effective }}"
         restart_policy: unless-stopped
         memory: "{{ honcho_memory }}"
         labels:
@@ -131,7 +141,7 @@
         env:
           DB_CONNECTION_URI: "{{ honcho_postgres_connection_uri }}"
           LLM_OPENAI_API_KEY: "{{ honcho_llm_openai_api_key }}"
-          AUTH_JWT_SECRET: "{{ honcho_auth_jwt_secret }}"
+          AUTH_JWT_SECRET: "{{ honcho_auth_jwt_secret_effective }}"
         restart_policy: unless-stopped
         memory: "{{ honcho_deriver_memory }}"
 

@@ -8,6 +8,17 @@
       with_items:
         - "{{ seafile_data_directory }}"
 
+    - name: Ensure Seafile JWT private key is persisted on host
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
+      vars:
+        _host_secret_file: "{{ seafile_jwt_key_file }}"
+        _host_secret_generate_cmd: openssl rand -base64 32
+        _host_secret_effective_var: seafile_jwt_key_effective
+        _host_secret_container_name: "{{ seafile_container_name }}"
+        _host_secret_container_env_key: JWT_PRIVATE_KEY
+        _host_secret_seed_value: "{{ seafile_jwt_key }}"
+        _host_secret_default_placeholder: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
     - name: Create Seafile Network
       community.docker.docker_network:
         name: "{{ seafile_network_name }}"
@@ -79,7 +90,7 @@
           SEAFILE_SERVER_LETSENCRYPT: "{{ seafile_server_letsencrypt }}"   # Whether to use https or not.
           SEAFILE_SERVER_HOSTNAME: "{{ seafile_hostname }}.{{ ansible_nas_domain }}" # Specifies your host name if https is enabled.
           TIME_ZONE: "{{ ansible_nas_timezone }}"
-          JWT_PRIVATE_KEY: "{{ seafile_jwt_key }}"
+          JWT_PRIVATE_KEY: "{{ seafile_jwt_key_effective }}"
           SEAFILE_SERVER_PROTOCOL: "https"
         restart_policy: unless-stopped
         memory: "{{ seafile_memory }}"

@@ -36,8 +36,9 @@ honcho_cache_enabled: true
 honcho_cache_url: "redis://{{ honcho_redis_container_name }}:6379/0?suppress=true"
 
 # auth: enabled by default since the API is reachable beyond the tailnet.
-# Provide a strong honcho_auth_jwt_secret (secret) in inventory.
+# Persisted on the host at honcho_auth_jwt_secret_file on first deploy.
 honcho_auth_use_auth: "true"
+honcho_auth_jwt_secret_file: "{{ honcho_data_directory }}/.jwt_secret"
 honcho_auth_jwt_secret: ""
 
 # LLM provider. Honcho uses OpenAI-compatible model config; OpenRouter works via
