@@ -26,6 +26,7 @@
           traefik.http.routers.code_server.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.code_server.loadbalancer.server.port: "8443"
           homepage.group: Applications
+          homepage.weight: "40"
           homepage.name: Code Server
           homepage.icon: code-server
           homepage.href: "https://{{ code_server_hostname }}.{{ ansible_nas_domain }}"

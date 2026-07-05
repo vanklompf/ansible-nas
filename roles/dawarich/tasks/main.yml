@@ -94,6 +94,7 @@
           traefik.http.routers.dawarich.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.dawarich.loadbalancer.server.port: "3000"
           homepage.group: Applications
+          homepage.weight: "10"
           homepage.name: Dawarich
           homepage.icon: dawarich
           homepage.href: "https://{{ dawarich_hostname }}.{{ ansible_nas_domain }}"

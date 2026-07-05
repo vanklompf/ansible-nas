@@ -41,6 +41,7 @@
           traefik.http.routers.gatus.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.gatus.loadbalancer.server.port: "8080"
           homepage.group: Monitoring
+          homepage.weight: "30"
           homepage.name: Gatus
           homepage.icon: gatus.png
           homepage.href: "https://{{ gatus_hostname }}.{{ ansible_nas_domain }}"

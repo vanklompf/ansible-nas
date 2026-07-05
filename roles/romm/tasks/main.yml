@@ -86,6 +86,7 @@
           traefik.http.routers.romm.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.romm.loadbalancer.server.port: "8080"
           homepage.group: Media
+          homepage.weight: "60"
           homepage.name: Romm
           homepage.icon: romm
           homepage.href: "https://{{ romm_hostname }}.{{ ansible_nas_domain }}"

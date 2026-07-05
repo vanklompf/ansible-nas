@@ -82,6 +82,7 @@
           traefik.http.routers.grafana.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.grafana.loadbalancer.server.port: "3000"
           homepage.group: Monitoring
+          homepage.weight: "40"
           homepage.name: Grafana
           homepage.icon: grafana
           homepage.href: "https://{{ stats_grafana_hostname }}.{{ ansible_nas_domain }}"

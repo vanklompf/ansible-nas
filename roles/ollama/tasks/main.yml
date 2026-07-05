@@ -75,6 +75,7 @@
           traefik.http.routers.ollama_webui.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.ollama_webui.loadbalancer.server.port: "8080"
           homepage.group: Applications
+          homepage.weight: "90"
           homepage.name: Ollama
           homepage.icon: ollama
           homepage.href: "https://{{ ollama_hostname }}.{{ ansible_nas_domain }}"

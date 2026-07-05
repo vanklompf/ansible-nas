@@ -47,6 +47,7 @@
           traefik.http.routers.libretranslate.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.libretranslate.loadbalancer.server.port: "5000"
           homepage.group: Applications
+          homepage.weight: "80"
           homepage.name: Libretranslate
           homepage.icon: libretranslate
           homepage.href: "https://{{ libretranslate_hostname }}.{{ ansible_nas_domain }}"

@@ -32,6 +32,7 @@
         memory_swap: "{{ handbrake_memory }}"
         labels:
           homepage.group: Applications
+          homepage.weight: "70"
           homepage.name: Handbrake
           homepage.icon: handbrake
           homepage.href: "https://{{ handbrake_hostname }}.{{ ansible_nas_domain }}"

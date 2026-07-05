@@ -59,6 +59,7 @@
           traefik.http.routers.arcane.tls.domains[0].sans: '*.{{ ansible_nas_domain }}'
           traefik.http.services.arcane.loadbalancer.server.port: '3552'
           homepage.group: Monitoring
+          homepage.weight: "10"
           homepage.name: Arcane
           homepage.icon: arcane
           homepage.href: "https://{{ arcane_hostname }}.{{ ansible_nas_domain }}"

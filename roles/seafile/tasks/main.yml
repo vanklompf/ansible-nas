@@ -102,6 +102,7 @@
           traefik.http.routers.seafile.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.seafile.loadbalancer.server.port: "80"
           homepage.group: Media
+          homepage.weight: "70"
           homepage.name: Seafile
           homepage.icon: seafile
           homepage.href: "https://{{ seafile_hostname }}.{{ ansible_nas_domain }}"

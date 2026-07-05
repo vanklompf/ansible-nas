@@ -99,6 +99,7 @@
           traefik.http.routers.immich.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.immich.loadbalancer.server.port: "2283"
           homepage.group: Media
+          homepage.weight: "30"
           homepage.name: Immich
           homepage.icon: immich.png
           homepage.href: "https://{{ immich_hostname }}.{{ ansible_nas_domain }}"

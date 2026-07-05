@@ -21,6 +21,7 @@
           traefik.http.routers.excalidraw.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.excalidraw.loadbalancer.server.port: "80"
           homepage.group: Applications
+          homepage.weight: "60"
           homepage.name: Excalidraw
           homepage.icon: excalidraw.png
           homepage.href: "https://{{ excalidraw_hostname }}.{{ ansible_nas_domain }}"

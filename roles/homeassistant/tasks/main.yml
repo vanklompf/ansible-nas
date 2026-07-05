@@ -213,6 +213,7 @@
           DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: "{{ homeassistant_influxdb_admin_token_effective }}"
         labels:
           homepage.group: Monitoring
+          homepage.weight: "50"
           homepage.name: HA InfluxDB
           homepage.icon: influxdb
           homepage.href: "http://{{ ansible_nas_ip }}:{{ homeassistant_influxdb_port }}"
@@ -241,6 +242,7 @@
           traefik.http.routers.homeassistant.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.homeassistant.loadbalancer.server.port: "{{ homeassistant_port }}"
           homepage.group: Home
+          homepage.weight: "10"
           homepage.name: HomeAssistant
           homepage.icon: home-assistant
           homepage.href: "https://{{ homeassistant_hostname }}.{{ ansible_nas_domain }}"
@@ -293,6 +295,7 @@
           traefik.http.routers.zigbee2mqtt.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.zigbee2mqtt.loadbalancer.server.port: "8080"
           homepage.group: Home
+          homepage.weight: "50"
           homepage.name: Zigbee2MQTT
           homepage.icon: zigbee2mqtt.png
           homepage.href: "https://{{ zigbee2mqtt_hostname }}.{{ ansible_nas_domain }}"

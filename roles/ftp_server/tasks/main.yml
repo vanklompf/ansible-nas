@@ -27,6 +27,7 @@
         memory: "{{ ftp_server_memory }}"
         labels:
           homepage.group: Networking
+          homepage.weight: "20"
           homepage.name: FTP Server
           homepage.icon: mdi-folder-network
           homepage.href: "ftp://{{ ftp_server_hostname }}.{{ ansible_nas_domain }}:{{ ftp_server_port }}"

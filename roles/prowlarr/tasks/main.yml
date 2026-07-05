@@ -36,6 +36,7 @@
           traefik.http.routers.prowlarr.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.prowlarr.loadbalancer.server.port: "9696"
           homepage.group: Media
+          homepage.weight: "40"
           homepage.name: Prowlarr
           homepage.icon: prowlarr
           homepage.href: "https://{{ prowlarr_hostname }}.{{ ansible_nas_domain }}"

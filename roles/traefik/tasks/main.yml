@@ -40,6 +40,7 @@
         memory: '{{ traefik_memory }}'
         labels:
           homepage.group: Networking
+          homepage.weight: "50"
           homepage.name: Traefik
           homepage.icon: traefik
           homepage.href: "http://{{ ansible_nas_ip }}:{{ traefik_port_ui }}"

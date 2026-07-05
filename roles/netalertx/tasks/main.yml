@@ -44,6 +44,7 @@
           traefik.http.routers.netalertx.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.netalertx.loadbalancer.server.port: "20211"
           homepage.group: Monitoring
+          homepage.weight: "60"
           homepage.name: NetAlertX
           homepage.icon: netalertx.png
           homepage.href: "https://{{ netalertx_hostname }}.{{ ansible_nas_domain }}"
