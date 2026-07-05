@@ -49,7 +49,10 @@ immich_db_port: "5432"
 
 # immich
 immich_version: "release"
-immich_jwt_secret: "verylongandsecrettext"
+# Persisted on the host at immich_jwt_secret_file on first deploy. Optional
+# immich_jwt_secret seeds the file once when migrating from inventory.
+immich_jwt_secret_file: "{{ immich_data_directory }}/.jwt_secret"
+immich_jwt_secret: ""
 immich_enable_mapbox: "false"
 immich_mapbox_key: ""
 immich_upload_location: "./library"

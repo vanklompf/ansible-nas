@@ -10,6 +10,27 @@
         - '{{ arcane_data_directory }}'
         - '{{ arcane_data_directory }}/data'
         - '{{ arcane_data_directory }}/projects'
+
+    - name: Ensure Arcane encryption key is persisted on host
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
+      vars:
+        _host_secret_file: "{{ arcane_encryption_key_file }}"
+        _host_secret_generate_cmd: openssl rand -base64 32
+        _host_secret_effective_var: arcane_encryption_key_effective
+        _host_secret_container_name: "{{ arcane_container_name }}"
+        _host_secret_container_env_key: ENCRYPTION_KEY
+        _host_secret_seed_value: "{{ arcane_encryption_key }}"
+
+    - name: Ensure Arcane JWT secret is persisted on host
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
+      vars:
+        _host_secret_file: "{{ arcane_jwt_secret_file }}"
+        _host_secret_generate_cmd: openssl rand -base64 48
+        _host_secret_effective_var: arcane_jwt_secret_effective
+        _host_secret_container_name: "{{ arcane_container_name }}"
+        _host_secret_container_env_key: JWT_SECRET
+        _host_secret_seed_value: "{{ arcane_jwt_secret }}"
+
     - name: Create Arcane Docker Container
       community.docker.docker_container:
         container_default_behavior: no_defaults
@@ -24,8 +45,8 @@
         env:
           PUID: '{{ arcane_user_id }}'
           PGID: '{{ arcane_group_id }}'
-          ENCRYPTION_KEY: '{{ arcane_encryption_key }}'
-          JWT_SECRET: '{{ arcane_jwt_secret }}'
+          ENCRYPTION_KEY: '{{ arcane_encryption_key_effective }}'
+          JWT_SECRET: '{{ arcane_jwt_secret_effective }}'
           APP_URL: '{{ arcane_app_url }}'
           TRUSTED_PROXIES: '{{ arcane_trusted_proxies }}'
         restart_policy: unless-stopped

@@ -22,11 +22,12 @@ arcane_image_version: latest
 arcane_user_id: '1000'
 arcane_group_id: '1000'
 
-#openssl rand -base64 32
-arcane_encryption_key: BfSQVy0XxFr3lyZHU1zAbCIBc25C5cJg23wLu2VSUPQ=
-
-#openssl rand -base64 48
-arcane_jwt_secret: 6FY0aTuea4NiExORg0FmWZ4SrfZpQ6h3LhPletQ/YhCPhd1BtT/MHny27/82mziB
+# Persisted on the host on first deploy. Optional inventory values seed the
+# files once when migrating from config.
+arcane_encryption_key_file: "{{ arcane_data_directory }}/.encryption_key"
+arcane_jwt_secret_file: "{{ arcane_data_directory }}/.jwt_secret"
+arcane_encryption_key: ""
+arcane_jwt_secret: ""
 
 # --- Remote environment agent (edge) ----------------------------------------
 arcane_agent_enabled: false

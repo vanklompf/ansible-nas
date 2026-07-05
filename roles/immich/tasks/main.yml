@@ -13,6 +13,17 @@
       community.docker.docker_network:
         name: "{{ immich_network_name }}"
 
+    - name: Ensure Immich JWT secret is persisted on host
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
+      vars:
+        _host_secret_file: "{{ immich_jwt_secret_file }}"
+        _host_secret_generate_cmd: openssl rand -base64 48
+        _host_secret_effective_var: immich_jwt_secret_effective
+        _host_secret_container_name: "{{ immich_server_container_name }}"
+        _host_secret_container_env_key: JWT_SECRET
+        _host_secret_seed_value: "{{ immich_jwt_secret }}"
+        _host_secret_default_placeholder: verylongandsecrettext
+
     - name: Immich Postgress Docker Container
       community.docker.docker_container:
         name: "{{ immich_postgres_container_name }}"
@@ -75,7 +86,7 @@
           DB_PASSWORD: "{{ immich_db_password }}"
           DB_DATABASE_NAME: "{{ immich_db_name }}"
           DB_PORT: "{{ immich_db_port }}"
-          JWT_SECRET: "{{ immich_jwt_secret }}"
+          JWT_SECRET: "{{ immich_jwt_secret_effective }}"
           ENABLE_MAPBOX: "{{ immich_enable_mapbox }}"
           MAPBOX_KEY: "{{ immich_mapbox_key }}"
           PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"

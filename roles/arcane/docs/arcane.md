@@ -22,12 +22,8 @@ independent of the manager, so a host can run the manager, the agent, or both.
 
    ```yaml
    arcane_agent_enabled: true
-   arcane_agent_manager_url: "http://<manager-tailscale-ip>:3552"
    arcane_agent_token: "arc_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
    ```
 
 3. Deploy the remote host. The agent dials out to the manager and auto-pairs on
    startup.
-
-Use the manager's Tailscale IP (not MagicDNS): the agent runs in a container
-and uses the host's LAN resolver, which cannot resolve `*.ts.net` names.
