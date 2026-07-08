@@ -5,6 +5,9 @@ homepage_available_externally: false
 
 # directories
 homepage_data_directory: "{{ docker_home }}/homepage"
+homepage_images_directory: "{{ homepage_data_directory }}/images"
+
+homepage_logo_file: ""
 
 # network
 homepage_hostname: "homepage"
@@ -37,13 +40,9 @@ homepage_services_yaml:
           description: Unifi
 
 homepage_widgets_yaml:
-  - search:
-      provider: google # google, duckduckgo, bing, baidu, brave or custom
-      focus: true # Optional, will set focus to the search bar on page load
-      target: _blank # One of _self, _blank, _parent or _top
   - greeting:
       text_size: xl
-      text: Ansible-NAS
+      text: "{{ homepage_title }}"
   - resources:
       cpu: true
       memory: true

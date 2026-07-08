@@ -8,6 +8,15 @@
         mode: "0755"
       loop:
         - "{{ homepage_data_directory }}"
+        - "{{ homepage_images_directory }}"
+
+    - name: Copy Homepage logo
+      ansible.builtin.copy:
+        src: "{{ homepage_logo_file }}"
+        dest: "{{ homepage_images_directory }}/{{ homepage_logo_file | basename }}"
+        mode: "0644"
+      when: homepage_logo_file | length > 0
+      register: homepage_logo
 
     - name: Template config files
       ansible.builtin.template:
@@ -28,6 +37,7 @@
         image: "{{ homepage_image_name }}:{{ homepage_image_tag }}"
         volumes:
           - "{{ homepage_data_directory }}:/app/config"
+          - "{{ homepage_images_directory }}:/app/public/images"
           - "/var/run/docker.sock:/var/run/docker.sock"
         env:
           TZ: "{{ ansible_nas_timezone }}"

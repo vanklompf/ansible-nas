@@ -1,2 +1,6 @@
 ---
-{{ homepage_widgets_yaml | to_nice_yaml }}
+{% set widgets = homepage_widgets_yaml %}
+{% if homepage_logo_file | length > 0 %}
+{% set widgets = [{'logo': {'icon': '/images/' + (homepage_logo_file | basename)}}] + widgets %}
+{% endif %}
+{{ widgets | to_nice_yaml }}
