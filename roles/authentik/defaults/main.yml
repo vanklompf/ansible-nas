@@ -6,10 +6,16 @@ authentik_available_externally: false
 authentik_data_directory: "{{ docker_home }}/authentik"
 
 # network
-authentik_http_port: "9001"
+authentik_http_port: "9002"
 authentik_https_port: "9443"
 authentik_hostname: "authentik"
 authentik_network_name: "authentik"
+
+# Restrict who can reach authentik through Traefik. Disable (or widen the
+# sourcerange) when authentik must serve external users and act as an OIDC
+# provider for other apps.
+authentik_ip_allowlist_enabled: true
+authentik_ip_allowlist_sourcerange: "127.0.0.1/32, 192.168.0.0/16"
 
 # specs
 authentik_database_memory: 1g
@@ -23,23 +29,35 @@ authentik_redis_container_name: "authentik_redis"
 authentik_server_container_name: "authentik_server"
 authentik_worker_container_name: "authentik_worker"
 authentik_server_image_name: "ghcr.io/goauthentik/server"
-authentik_server_image_tag: "latest"
+authentik_server_image_tag: "2025.4.4"
 authentik_worker_image_name: "ghcr.io/goauthentik/server"
-authentik_worker_image_tag: "latest"
+authentik_worker_image_tag: "2025.4.4"
 authentik_database_image_name: "docker.io/library/postgres"
-authentik_database_image_tag: "12-alpine"
+authentik_database_image_tag: "16-alpine"
 authentik_redis_image_name: "docker.io/library/redis"
 authentik_redis_image_tag: "alpine"
 authentik_user_id: "1000"
 authentik_group_id: "1000"
+# Official redis:alpine image runs as redis (999:1000).
+authentik_redis_user_id: "999"
+authentik_redis_group_id: "1000"
 
 # database
-authentik_pg_pass: "password" # $(pwgen -s 40 1)
+# The password is generated and persisted on the host on first deploy. Leave
+# authentik_pg_pass at the default "password" to auto-generate; set it to a real
+# value only to seed/migrate an existing database password once (used when the
+# host file does not yet exist).
+authentik_pg_pass_file: "{{ authentik_data_directory }}/.pg_pass"
+authentik_pg_pass: "password"
 authentik_pg_user: "authentik"
 authentik_pg_db: "authentik"
 
 # authentik
-authentik_secret_key: "secret"  # $(pwgen -s 50 1)
+# Generated and persisted on the host on first deploy (like the Arcane secrets).
+# Leave authentik_secret_key empty to auto-generate; set it only to seed an
+# existing value once when migrating from an inventory-managed secret.
+authentik_secret_key_file: "{{ authentik_data_directory }}/.secret_key"
+authentik_secret_key: ""
 authentik_error_reporting: true
 authentik_email_host: "localhost"
 authentik_email_port: "25"
@@ -52,3 +70,31 @@ authentik_email_from: "authentik@{{ ansible_nas_domain }}"
 authentik_disable_update_check: true
 authentik_disable_startup_analytics: true
 authentik_avatars: "gravatar"
+
+# Blueprints (declarative config applied by the worker from /blueprints/managed)
+authentik_blueprints_directory: "{{ authentik_data_directory }}/blueprints"
+
+# Shared SSO admin user + nas-admins group (uses sso_admin_* from group_vars/all.yml).
+# Password is generated and persisted on the host when sso_admin_password is empty.
+authentik_blueprint_sso_admin_enabled: false
+sso_admin_password_file: "{{ authentik_data_directory }}/.sso_admin_password"
+
+# OAuth2 provider + application for Arcane SSO. Reuses arcane_oidc_client_id and
+# arcane_oidc_client_secret from inventory; enable arcane_oidc_enabled on the
+# arcane role separately.
+authentik_blueprint_arcane_enabled: false
+authentik_blueprint_arcane_application_slug: "arcane"
+authentik_blueprint_arcane_provider_name: "Arcane"
+authentik_blueprint_arcane_launch_url: "{{ arcane_app_url | default('https://' + (arcane_hostname | default('arcane')) + '.' + ansible_nas_domain) }}"
+authentik_blueprint_arcane_redirect_uri: "{{ authentik_blueprint_arcane_launch_url }}/auth/oidc/callback"
+
+# Homepage (gethomepage.dev) — service account + API token provisioned via blueprint.
+# The key is generated and persisted on the host. Set authentik_homepage_api_key only
+# to seed/migrate an existing token once when the host file does not yet exist.
+authentik_blueprint_homepage_api_enabled: true
+authentik_homepage_api_key_file: "{{ authentik_data_directory }}/.homepage_api_key"
+authentik_homepage_api_username: homepage-api
+authentik_homepage_weight: "50"
+authentik_homepage_api_key: ""
+# 1 for authentik < 2025.8.0, 2 for >= 2025.8.0
+authentik_homepage_widget_version: "1"

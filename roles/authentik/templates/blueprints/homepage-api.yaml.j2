@@ -1,0 +1,30 @@
+# Managed by ansible-nas authentik role. Do not edit on the host.
+version: 1
+metadata:
+  name: Homepage API token
+  labels:
+    blueprints.goauthentik.io/instantiate: "true"
+entries:
+  - model: authentik_core.user
+    id: homepage-api-user
+    identifiers:
+      username: {{ authentik_homepage_api_username | to_json }}
+    attrs:
+      username: {{ authentik_homepage_api_username | to_json }}
+      name: Homepage API
+      type: service_account
+      path: goauthentik.io/service-accounts
+      is_active: true
+      permissions:
+        - authentik_core.view_user
+        - authentik_events.view_event
+
+  - model: authentik_core.token
+    identifiers:
+      identifier: homepage-api
+    attrs:
+      identifier: homepage-api
+      key: {{ authentik_homepage_api_key_effective | to_json }}
+      user: !KeyOf homepage-api-user
+      intent: api
+      description: Homepage widget

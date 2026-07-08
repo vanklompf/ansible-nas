@@ -31,6 +31,16 @@
         _host_secret_container_env_key: JWT_SECRET
         _host_secret_seed_value: "{{ arcane_jwt_secret }}"
 
+    - name: Ensure Arcane admin API key is persisted on host
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
+      vars:
+        _host_secret_file: "{{ arcane_api_key_file }}"
+        _host_secret_generate_cmd: bash -c 'printf "arc_%s" "$(openssl rand -hex 32)"'
+        _host_secret_effective_var: arcane_api_key_effective
+        _host_secret_container_name: "{{ arcane_container_name }}"
+        _host_secret_container_env_key: ADMIN_STATIC_API_KEY
+        _host_secret_seed_value: "{{ arcane_api_key }}"
+
     - name: Create Arcane Docker Container
       community.docker.docker_container:
         container_default_behavior: no_defaults
@@ -43,12 +53,24 @@
           - '{{ arcane_data_directory }}/projects:/app/data/projects:rw'
         ports: ['{{ arcane_port }}:3552']
         env:
-          PUID: '{{ arcane_user_id }}'
-          PGID: '{{ arcane_group_id }}'
-          ENCRYPTION_KEY: '{{ arcane_encryption_key_effective }}'
-          JWT_SECRET: '{{ arcane_jwt_secret_effective }}'
-          APP_URL: '{{ arcane_app_url }}'
-          TRUSTED_PROXIES: '{{ arcane_trusted_proxies }}'
+          PUID: "{{ arcane_user_id }}"
+          PGID: "{{ arcane_group_id }}"
+          ENCRYPTION_KEY: "{{ arcane_encryption_key_effective }}"
+          JWT_SECRET: "{{ arcane_jwt_secret_effective }}"
+          ADMIN_STATIC_API_KEY: "{{ arcane_api_key_effective }}"
+          APP_URL: "{{ arcane_app_url }}"
+          TRUSTED_PROXIES: "{{ arcane_trusted_proxies }}"
+          OIDC_ENABLED: "{{ 'true' if arcane_oidc_enabled | bool else 'false' }}"
+          OIDC_CLIENT_ID: "{{ arcane_oidc_client_id if arcane_oidc_enabled | bool else omit }}"
+          OIDC_CLIENT_SECRET: "{{ arcane_oidc_client_secret if arcane_oidc_enabled | bool else omit }}"
+          OIDC_ISSUER_URL: "{{ arcane_oidc_issuer_url if arcane_oidc_enabled | bool else omit }}"
+          OIDC_SCOPES: "{{ arcane_oidc_scopes if arcane_oidc_enabled | bool else omit }}"
+          OIDC_GROUPS_CLAIM: "{{ arcane_oidc_groups_claim if arcane_oidc_enabled | bool else omit }}"
+          OIDC_MERGE_ACCOUNTS: "{{ 'true' if arcane_oidc_enabled | bool else omit }}"
+          OIDC_AUTO_REDIRECT_TO_PROVIDER: "{{ ('true' if arcane_oidc_auto_redirect | bool else 'false') if arcane_oidc_enabled | bool else omit }}"
+          OIDC_PROVIDER_NAME: "{{ oidc_provider_name if arcane_oidc_enabled | bool else omit }}"
+          OIDC_PROVIDER_LOGO_URL: "{{ oidc_provider_logo_url | default(omit) if arcane_oidc_enabled | bool else omit }}"
+          OIDC_ROLE_MAPPINGS: "{{ arcane_oidc_role_mappings if arcane_oidc_enabled | bool else omit }}"
         restart_policy: unless-stopped
         memory: '{{ arcane_memory }}'
         labels:
@@ -59,11 +81,15 @@
           traefik.http.routers.arcane.tls.domains[0].sans: '*.{{ ansible_nas_domain }}'
           traefik.http.services.arcane.loadbalancer.server.port: '3552'
           homepage.group: Monitoring
-          homepage.weight: "10"
+          homepage.weight: "{{ arcane_homepage_weight }}"
           homepage.name: Arcane
           homepage.icon: arcane
           homepage.href: "https://{{ arcane_hostname }}.{{ ansible_nas_domain }}"
           homepage.description: Docker monitoring
+          homepage.widget.type: arcane
+          homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ arcane_port }}"
+          homepage.widget.env: "{{ arcane_homepage_widget_env }}"
+          homepage.widget.key: "{{ arcane_api_key_effective }}"
         healthcheck:
           test:
             - CMD

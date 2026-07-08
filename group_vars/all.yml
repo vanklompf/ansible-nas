@@ -29,6 +29,15 @@ ansible_nas_ip: "{{ ansible_facts['default_ipv4']['address'] }}"
 # What version of python ansible should use on target system (path to spesific binary)
 ansible_python_interpreter: /usr/bin/python3
 
+oidc_provider_name: "{{ samba_server_string }}"
+oidc_provider_logo_url: ""
+
+sso_admin_username: "{{ ansible_nas_user }}"
+sso_admin_email: "{{ ansible_nas_email }}"
+sso_admin_name: "{{ ansible_nas_user }}"
+sso_admin_group: nas-admins
+sso_admin_password: ""
+
 ###
 ### Common container images
 ###

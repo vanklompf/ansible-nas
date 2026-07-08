@@ -1,0 +1,26 @@
+# Managed by ansible-nas authentik role. Do not edit on the host.
+version: 1
+metadata:
+  name: SSO admin user and group
+  labels:
+    blueprints.goauthentik.io/instantiate: "true"
+entries:
+  - model: authentik_core.group
+    id: sso-admin-group
+    identifiers:
+      name: {{ sso_admin_group | to_json }}
+    attrs:
+      name: {{ sso_admin_group | to_json }}
+      is_superuser: true
+
+  - model: authentik_core.user
+    identifiers:
+      username: {{ sso_admin_username | to_json }}
+    attrs:
+      username: {{ sso_admin_username | to_json }}
+      email: {{ sso_admin_email | to_json }}
+      name: {{ sso_admin_name | to_json }}
+      password: {{ sso_admin_password_effective | to_json }}
+      is_active: true
+      groups:
+        - !Find [authentik_core.group, [name, {{ sso_admin_group | to_json }}]]
