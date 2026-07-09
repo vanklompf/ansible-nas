@@ -7,6 +7,28 @@ dawarich_directory: "{{ docker_home }}/dawarich"
 dawarich_network_name: "dawarich_network"
 dawarich_port: "3888"
 dawarich_hostname: dawarich
+
+dawarich_app_url: "{{ 'https://' + dawarich_hostname + '.' + ansible_nas_domain if dawarich_available_externally else 'http://' + ansible_nas_hostname + ':' + dawarich_port }}"
+dawarich_application_protocol: "{{ 'https' if dawarich_available_externally | bool else 'http' }}"
+dawarich_domain: "{{ dawarich_hostname + '.' + ansible_nas_domain if dawarich_available_externally | bool else ansible_nas_hostname }}"
+
+# --- OIDC / SSO (e.g. authentik) --------------------------------------------
+# Redirect URI to register with the provider:
+# {{ dawarich_app_url }}/users/auth/openid_connect/callback
+dawarich_oidc_enabled: false
+dawarich_oidc_client_id: ""
+dawarich_oidc_client_secret: ""
+# Issuer URL of the provider. For authentik use the application issuer URL with a
+# trailing slash, e.g. https://<authentik_host>/application/o/<application_slug>/
+dawarich_oidc_issuer_url: ""
+dawarich_oidc_redirect_uri: "{{ dawarich_app_url }}/users/auth/openid_connect/callback"
+dawarich_oidc_auto_register: true
+# Required when the OIDC client enforces PKCE (e.g. hardened Authentik/Keycloak).
+dawarich_oidc_pkce_enabled: false
+dawarich_oidc_allow_email_password_registration: false
+# Set to false to hide the email/password form and require OIDC sign-in.
+dawarich_oidc_allow_email_password_login: true
+
 # docker
 dawarich_redis_container_name: "dawarich_redis"
 

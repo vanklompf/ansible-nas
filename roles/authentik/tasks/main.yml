@@ -58,6 +58,19 @@
         state: absent
       when: not authentik_blueprint_arcane_enabled | bool
 
+    - name: Deploy Dawarich OIDC authentik blueprint
+      ansible.builtin.template:
+        src: blueprints/dawarich.yaml.j2
+        dest: "{{ authentik_blueprints_directory }}/dawarich.yaml"
+        mode: "0644"
+      when: authentik_blueprint_dawarich_enabled | bool
+
+    - name: Remove Dawarich OIDC authentik blueprint
+      ansible.builtin.file:
+        path: "{{ authentik_blueprints_directory }}/dawarich.yaml"
+        state: absent
+      when: not authentik_blueprint_dawarich_enabled | bool
+
     - name: Ensure Homepage API key is persisted on host
       ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
       vars:
@@ -301,6 +314,14 @@
       register: authentik_blueprint_arcane_apply
       changed_when: authentik_blueprint_arcane_apply.rc == 0
       when: authentik_blueprint_arcane_enabled | bool
+
+    - name: Apply Dawarich OIDC authentik blueprint
+      community.docker.docker_container_exec:
+        container: "{{ authentik_worker_container_name }}"
+        command: ak apply_blueprint /blueprints/managed/dawarich.yaml
+      register: authentik_blueprint_dawarich_apply
+      changed_when: authentik_blueprint_dawarich_apply.rc == 0
+      when: authentik_blueprint_dawarich_enabled | bool
 
     - name: Apply Homepage API authentik blueprint
       community.docker.docker_container_exec:

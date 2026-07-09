@@ -88,6 +88,15 @@ authentik_blueprint_arcane_provider_name: "Arcane"
 authentik_blueprint_arcane_launch_url: "{{ arcane_app_url | default('https://' + (arcane_hostname | default('arcane')) + '.' + ansible_nas_domain) }}"
 authentik_blueprint_arcane_redirect_uri: "{{ authentik_blueprint_arcane_launch_url }}/auth/oidc/callback"
 
+# OAuth2 provider + application for Dawarich SSO. Reuses dawarich_oidc_client_id and
+# dawarich_oidc_client_secret from inventory; enable dawarich_oidc_enabled on the
+# dawarich role separately.
+authentik_blueprint_dawarich_enabled: false
+authentik_blueprint_dawarich_application_slug: "dawarich"
+authentik_blueprint_dawarich_provider_name: "Dawarich"
+authentik_blueprint_dawarich_launch_url: "{{ dawarich_app_url | default('https://' + (dawarich_hostname | default('dawarich')) + '.' + ansible_nas_domain) }}"
+authentik_blueprint_dawarich_redirect_uri: "{{ authentik_blueprint_dawarich_launch_url }}/users/auth/openid_connect/callback"
+
 # Homepage (gethomepage.dev) — service account + API token provisioned via blueprint.
 # The key is generated and persisted on the host. Set authentik_homepage_api_key only
 # to seed/migrate an existing token once when the host file does not yet exist.

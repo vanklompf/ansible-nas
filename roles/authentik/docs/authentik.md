@@ -37,6 +37,14 @@ The role templates an OAuth2 provider and application (slug `arcane`). Map the
 shared `sso_admin_group` to the Arcane admin role via
 `arcane_oidc_role_mappings` on the arcane role.
 
+### Dawarich OIDC
+
+Set `authentik_blueprint_dawarich_enabled: true` together with the Dawarich OIDC
+inventory variables (`dawarich_oidc_client_id`, `dawarich_oidc_client_secret`, etc.).
+The role templates an OAuth2 provider and application (slug `dawarich`). Enable
+`dawarich_oidc_enabled` on the dawarich role to pass the same credentials into
+the app and sidekiq containers.
+
 ### Homepage API token
 
 Set `authentik_blueprint_homepage_api_enabled: true` (default) to provision a dedicated
