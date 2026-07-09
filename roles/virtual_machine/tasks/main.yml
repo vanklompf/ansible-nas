@@ -30,6 +30,28 @@
         - "{{ vm_storage_dir }}"
         - "{{ vm_cloud_init_dir }}"
 
+    # virtiofsd needs each shared host_path to exist before the domain starts.
+    - name: Stat vm_mounts host paths
+      ansible.builtin.stat:
+        path: "{{ item.host_path }}"
+      loop: "{{ vm_mounts }}"
+      loop_control:
+        label: "{{ item.host_path }}"
+      register: vm_mount_host_stats
+
+    # Only create when missing so existing shares are never re-owned or re-permissioned.
+    - name: Create missing vm_mounts host directories
+      ansible.builtin.file:
+        path: "{{ item.item.host_path }}"
+        state: directory
+        owner: "{{ item.item.owner | default(ansible_nas_user) }}"
+        group: "{{ item.item.group | default(omit) }}"
+        mode: "{{ item.item.mode | default('0755') }}"
+      loop: "{{ vm_mount_host_stats.results }}"
+      loop_control:
+        label: "{{ item.item.host_path }}"
+      when: not item.stat.exists
+
     - name: Stop the virtual machine before disk and cloud-init changes
       ansible.builtin.import_tasks: maintenance_stop.yml
 

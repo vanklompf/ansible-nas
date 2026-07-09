@@ -1,9 +1,42 @@
 ---
+# The per-VM disk is a qcow2 overlay backed by this cached image. If the
+# cache file is overwritten in place (e.g. upstream re-spins the release
+# image and get_url re-downloads it), every existing overlay that references
+# it is silently corrupted. To prevent that we content-address the cache
+# filename by the resolved checksum, so a changed upstream image lands as a
+# new file and never mutates a backing image an existing overlay depends on.
+- name: Split base image checksum into algorithm and source
+  ansible.builtin.set_fact:
+    vm_image_checksum_algo: "{{ vm_image_checksum.split(':', 1)[0] }}"
+    vm_image_checksum_source: "{{ vm_image_checksum.split(':', 1)[1] }}"
+
+- name: Resolve base image checksum from upstream checksum file
+  when: vm_image_checksum_source is match('^https?://')
+  block:
+    - name: Fetch upstream checksum file
+      ansible.builtin.uri:
+        url: "{{ vm_image_checksum_source }}"
+        return_content: true
+      register: vm_image_checksum_download
+
+    - name: Extract checksum for the base image
+      ansible.builtin.set_fact:
+        vm_image_checksum_value: "{{ (vm_image_checksum_download.content.splitlines() | select('search', '[ *]' ~ (vm_image_url | basename | regex_escape) ~ '$') | first).split()[0] }}"
+
+- name: Use literal base image checksum
+  ansible.builtin.set_fact:
+    vm_image_checksum_value: "{{ vm_image_checksum_source }}"
+  when: vm_image_checksum_source is not match('^https?://')
+
+- name: Build content-addressed cache filename for the base image
+  ansible.builtin.set_fact:
+    vm_image_cache_filename: "{{ vm_image_url | basename | regex_replace('(\\.[^.]*)$', '-' ~ (vm_image_checksum_value[:16]) ~ '\\1') }}"
+
 - name: Cache base cloud image
   ansible.builtin.get_url:
     url: "{{ vm_image_url }}"
     dest: "{{ vm_image_cache_dir }}/{{ vm_image_cache_filename }}"
-    checksum: "{{ vm_image_checksum }}"
+    checksum: "{{ vm_image_checksum_algo }}:{{ vm_image_checksum_value }}"
     mode: "0644"
   register: vm_base_image
 
