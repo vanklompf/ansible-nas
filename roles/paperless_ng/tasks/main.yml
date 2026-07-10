@@ -32,6 +32,7 @@
         image: thecodingmachine/gotenberg
         pull: missing
         restart_policy: unless-stopped
+        memory: "{{ paperless_ng_gotenberg_memory }}"
 
         env:
           DISABLE_GOOGLE_CHROME: "1"
@@ -44,6 +45,7 @@
         image: apache/tika
         pull: missing
         restart_policy: unless-stopped
+        memory: "{{ paperless_ng_tika_memory }}"
         networks:
           - name: "{{ paperless_ng_network_name }}"
 
