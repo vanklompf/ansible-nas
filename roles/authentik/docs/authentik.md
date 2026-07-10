@@ -57,8 +57,7 @@ migrating.
 
 When `homepage_enabled` is true, the server container is labelled for Homepage under
 **Networking**. With `authentik_blueprint_homepage_api_enabled`, the widget key is wired
-automatically. For authentik 2025.8.0+, set `authentik_homepage_widget_version: "2"`.
-
+automatically via `authentik_homepage_widget_version` (default `"2"`).
 ## Specific Configuration
 
 Check [https://goauthentik.io/docs/installation/configuration](https://goauthentik.io/docs/installation/configuration) for full list of configuration options.

@@ -19,28 +19,20 @@ authentik_ip_allowlist_sourcerange: "127.0.0.1/32, 192.168.0.0/16"
 
 # specs
 authentik_database_memory: 1g
-authentik_redis_memory: 1g
 authentik_server_memory: 1g
 authentik_worker_memory: 1g
+authentik_shm_size: 512m
 
 # docker
 authentik_database_container_name: "authentik_postgres"
-authentik_redis_container_name: "authentik_redis"
 authentik_server_container_name: "authentik_server"
 authentik_worker_container_name: "authentik_worker"
-authentik_server_image_name: "ghcr.io/goauthentik/server"
-authentik_server_image_tag: "2025.4.4"
-authentik_worker_image_name: "ghcr.io/goauthentik/server"
-authentik_worker_image_tag: "2025.4.4"
+authentik_image_name: "ghcr.io/goauthentik/server"
+authentik_image_tag: "2026.5.4"
 authentik_database_image_name: "docker.io/library/postgres"
 authentik_database_image_tag: "16-alpine"
-authentik_redis_image_name: "docker.io/library/redis"
-authentik_redis_image_tag: "alpine"
 authentik_user_id: "1000"
 authentik_group_id: "1000"
-# Official redis:alpine image runs as redis (999:1000).
-authentik_redis_user_id: "999"
-authentik_redis_group_id: "1000"
 
 # database
 # The password is generated and persisted on the host on first deploy. Leave
@@ -105,5 +97,4 @@ authentik_homepage_api_key_file: "{{ authentik_data_directory }}/.homepage_api_k
 authentik_homepage_api_username: homepage-api
 authentik_homepage_weight: "50"
 authentik_homepage_api_key: ""
-# 1 for authentik < 2025.8.0, 2 for >= 2025.8.0
-authentik_homepage_widget_version: "1"
+authentik_homepage_widget_version: "2"

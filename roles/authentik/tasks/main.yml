@@ -15,14 +15,6 @@
         - "{{ authentik_data_directory }}/certs"
         - "{{ authentik_blueprints_directory }}"
 
-    - name: Create Authentik Redis data directory
-      ansible.builtin.file:
-        path: "{{ authentik_data_directory }}/redis"
-        state: directory
-        owner: "{{ authentik_redis_user_id }}"
-        group: "{{ authentik_redis_group_id }}"
-        mode: 0755
-
     - name: Ensure SSO admin password is persisted on host
       ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
       vars:
@@ -156,27 +148,6 @@
           retries: 5
           timeout: 5s
 
-    - name: Authentik Redis Docker Container
-      community.docker.docker_container:
-        name: "{{ authentik_redis_container_name }}"
-        image: "{{ authentik_redis_image_name }}:{{ authentik_redis_image_tag }}"
-        pull: true
-        command: --save 60 1 --loglevel warning
-        volumes:
-          - "{{ authentik_data_directory }}/redis:/data:rw"
-        networks:
-          - name: "{{ authentik_network_name }}"
-        labels:
-          traefik.enable: "false"
-        restart_policy: unless-stopped
-        memory: "{{ authentik_redis_memory }}"
-        healthcheck:
-          test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
-          start_period: 20s
-          interval: 30s
-          retries: 5
-          timeout: 3s
-
     - name: Authentik Server Docker Container
       vars:
         _authentik_base_labels:
@@ -205,7 +176,7 @@
           homepage.widget.version: "{{ authentik_homepage_widget_version }}"
       community.docker.docker_container:
         name: "{{ authentik_server_container_name }}"
-        image: "{{ authentik_server_image_name }}:{{ authentik_server_image_tag }}"
+        image: "{{ authentik_image_name }}:{{ authentik_image_tag }}"
         pull: true
         command: server
         volumes:
@@ -217,7 +188,6 @@
         networks:
           - name: "{{ authentik_network_name }}"
         env:
-          AUTHENTIK_REDIS__HOST: "{{ authentik_redis_container_name }}"
           AUTHENTIK_POSTGRESQL__HOST: "{{ authentik_database_container_name }}"
           AUTHENTIK_POSTGRESQL__USER: "{{ authentik_pg_user }}"
           AUTHENTIK_POSTGRESQL__NAME: "{{ authentik_pg_db }}"
@@ -236,7 +206,6 @@
           AUTHENTIK_EMAIL__TIMEOUT: "{{ authentik_email_timeout }}"
           # Email address authentik will send from, should have a correct @domain
           AUTHENTIK_EMAIL__FROM: "{{ authentik_email_from }}"
-          # WORKERS: 2
           AUTHENTIK_SECRET_KEY: "{{ authentik_secret_key_effective }}"
           AUTHENTIK_DISABLE_UPDATE_CHECK: "{{ authentik_disable_update_check | string }}"
           AUTHENTIK_DISABLE_STARTUP_ANALYTICS: "{{ authentik_disable_startup_analytics | string }}"
@@ -250,11 +219,12 @@
           }}
         restart_policy: unless-stopped
         memory: "{{ authentik_server_memory }}"
+        shm_size: "{{ authentik_shm_size }}"
 
     - name: Authentik Worker Docker Container
       community.docker.docker_container:
         name: "{{ authentik_worker_container_name }}"
-        image: "{{ authentik_worker_image_name }}:{{ authentik_worker_image_tag }}"
+        image: "{{ authentik_image_name }}:{{ authentik_image_tag }}"
         pull: true
         command: worker
         volumes:
@@ -266,7 +236,6 @@
         networks:
           - name: "{{ authentik_network_name }}"
         env:
-          AUTHENTIK_REDIS__HOST: "{{ authentik_redis_container_name }}"
           AUTHENTIK_POSTGRESQL__HOST: "{{ authentik_database_container_name }}"
           AUTHENTIK_POSTGRESQL__USER: "{{ authentik_pg_user }}"
           AUTHENTIK_POSTGRESQL__NAME: "{{ authentik_pg_db }}"
@@ -285,7 +254,6 @@
           AUTHENTIK_EMAIL__TIMEOUT: "{{ authentik_email_timeout }}"
           # Email address authentik will send from, should have a correct @domain
           AUTHENTIK_EMAIL__FROM: "{{ authentik_email_from }}"
-          # WORKERS: 2
           AUTHENTIK_SECRET_KEY: "{{ authentik_secret_key_effective }}"
         # `user: root` and the docker socket volume are optional.
         # See more for the docker socket integration here:
@@ -298,6 +266,7 @@
           traefik.enable: "false"
         restart_policy: unless-stopped
         memory: "{{ authentik_worker_memory }}"
+        shm_size: "{{ authentik_shm_size }}"
 
     - name: Apply SSO admin authentik blueprint
       community.docker.docker_container_exec:
@@ -305,6 +274,9 @@
         command: ak apply_blueprint /blueprints/managed/sso-admin.yaml
       register: authentik_blueprint_sso_admin_apply
       changed_when: authentik_blueprint_sso_admin_apply.rc == 0
+      until: authentik_blueprint_sso_admin_apply.rc == 0
+      retries: 12
+      delay: 10
       when: authentik_blueprint_sso_admin_enabled | bool
 
     - name: Apply Arcane OIDC authentik blueprint
@@ -313,6 +285,9 @@
         command: ak apply_blueprint /blueprints/managed/arcane.yaml
       register: authentik_blueprint_arcane_apply
       changed_when: authentik_blueprint_arcane_apply.rc == 0
+      until: authentik_blueprint_arcane_apply.rc == 0
+      retries: 12
+      delay: 10
       when: authentik_blueprint_arcane_enabled | bool
 
     - name: Apply Dawarich OIDC authentik blueprint
@@ -321,6 +296,9 @@
         command: ak apply_blueprint /blueprints/managed/dawarich.yaml
       register: authentik_blueprint_dawarich_apply
       changed_when: authentik_blueprint_dawarich_apply.rc == 0
+      until: authentik_blueprint_dawarich_apply.rc == 0
+      retries: 12
+      delay: 10
       when: authentik_blueprint_dawarich_enabled | bool
 
     - name: Apply Homepage API authentik blueprint
@@ -329,6 +307,9 @@
         command: ak apply_blueprint /blueprints/managed/homepage-api.yaml
       register: authentik_blueprint_homepage_api_apply
       changed_when: authentik_blueprint_homepage_api_apply.rc == 0
+      until: authentik_blueprint_homepage_api_apply.rc == 0
+      retries: 12
+      delay: 10
       when: authentik_blueprint_homepage_api_enabled | bool
   when: authentik_enabled is true
 
@@ -337,11 +318,6 @@
     - name: Stop Authentik Database
       community.docker.docker_container:
         name: "{{ authentik_database_container_name }}"
-        state: absent
-
-    - name: Stop Authentik Redis
-      community.docker.docker_container:
-        name: "{{ authentik_redis_container_name }}"
         state: absent
 
     - name: Stop Authentik Server

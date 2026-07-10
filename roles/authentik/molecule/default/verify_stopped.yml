@@ -13,12 +13,6 @@
         state: absent
       register: result_database
 
-    - name: Try and stop and remove Authentik Redis
-      community.docker.docker_container:
-        name: "{{ authentik_redis_container_name }}"
-        state: absent
-      register: result_redis
-
     - name: Try and stop and remove Authentik Server
       community.docker.docker_container:
         name: "{{ authentik_server_container_name }}"
@@ -35,6 +29,5 @@
       ansible.builtin.assert:
         that:
           - not result_database.changed
-          - not result_redis.changed
           - not result_server.changed
           - not result_worker.changed
