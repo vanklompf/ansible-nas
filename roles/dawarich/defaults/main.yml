@@ -9,7 +9,7 @@ dawarich_port: "3888"
 dawarich_hostname: dawarich
 
 dawarich_app_url: "{{ 'https://' + dawarich_hostname + '.' + ansible_nas_domain if dawarich_available_externally else 'http://' + ansible_nas_hostname + ':' + dawarich_port }}"
-dawarich_application_protocol: "{{ 'https' if dawarich_available_externally | bool else 'http' }}"
+dawarich_application_protocol: "http"
 dawarich_domain: "{{ dawarich_hostname + '.' + ansible_nas_domain if dawarich_available_externally | bool else ansible_nas_hostname }}"
 
 # --- OIDC / SSO (e.g. authentik) --------------------------------------------
