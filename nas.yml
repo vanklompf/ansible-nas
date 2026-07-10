@@ -147,7 +147,7 @@
     - role: authelia
       tags: [authelia]
     - role: authentik
-      tags: [authentik]
+      tags: [authentik, core]
     - role: bambustudio
       tags: [bambustudio]
     - role: barcodebuddy
@@ -233,7 +233,7 @@
     - role: flame
       tags: [flame]
     - role: flaresolverr
-      tags: [flaresolverr]
+      tags: [flaresolverr, core]
     - role: flarum
       tags: [flarum]
     - role: flatnotes
