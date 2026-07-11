@@ -24,6 +24,41 @@
         _host_secret_seed_value: "{{ immich_jwt_secret }}"
         _host_secret_default_placeholder: verylongandsecrettext
 
+    - name: Ensure Immich OIDC client secret is persisted on host
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
+      vars:
+        _host_secret_file: "{{ immich_oidc_client_secret_file }}"
+        _host_secret_generate_cmd: openssl rand -hex 32
+        _host_secret_effective_var: immich_oidc_client_secret_effective
+      when: immich_oidc_enabled | bool
+
+    - name: Manage Immich OIDC authentik blueprint
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/authentik_app_blueprint.yml"
+      vars:
+        _authentik_app_blueprint_enabled: "{{ immich_oidc_enabled | bool }}"
+        _authentik_app_blueprint_filename: immich.yaml
+        _authentik_app_blueprint_slug: "{{ immich_hostname }}"
+        _authentik_app_blueprint_client_secret: "{{ immich_oidc_client_secret_effective | default('') }}"
+        _authentik_app_blueprint_launch_url: "{{ immich_app_url }}"
+        _authentik_app_blueprint_redirect_uris:
+          - "{{ immich_app_url }}/auth/login"
+          - "{{ immich_app_url }}/user-settings"
+          - "app.immich:///oauth-callback"
+
+    - name: Template Immich OIDC config file
+      ansible.builtin.template:
+        src: immich-config.json.j2
+        dest: "{{ immich_config_file }}"
+        mode: "0640"
+      no_log: true
+      when: immich_oidc_enabled | bool
+
+    - name: Remove Immich OIDC config file when disabled
+      ansible.builtin.file:
+        path: "{{ immich_config_file }}"
+        state: absent
+      when: not (immich_oidc_enabled | bool)
+
     - name: Immich Postgress Docker Container
       community.docker.docker_container:
         name: "{{ immich_postgres_container_name }}"
@@ -63,13 +98,18 @@
           timeout: 3s
 
     - name: Immich Server Docker Container
+      vars:
+        _immich_server_volumes: >-
+          {{
+            [immich_data_directory ~ '/data:/data:rw',
+             immich_upload_directory ~ ':/usr/src/app/upload:rw']
+            + ([immich_config_file ~ ':/config/immich-config.json:ro'] if immich_oidc_enabled | bool else [])
+          }}
       community.docker.docker_container:
         name: "{{ immich_server_container_name }}"
         image: "{{ immich_server_image }}:{{ immich_server_tag }}"
         pull: true
-        volumes:
-          - "{{ immich_data_directory }}/data:/data:rw"
-          - "{{ immich_upload_directory }}:/usr/src/app/upload:rw"
+        volumes: "{{ _immich_server_volumes }}"
         networks:
           - name: "{{ immich_network_name }}"
         devices: "{{ immich_devices | default(omit) }}"
@@ -91,6 +131,7 @@
           MAPBOX_KEY: "{{ immich_mapbox_key }}"
           PUBLIC_LOGIN_PAGE_MESSAGE: "{{ immich_public_login_page_message }}"
           IMMICH_HELMET_FILE: "true"
+          IMMICH_CONFIG_FILE: "{{ '/config/immich-config.json' if immich_oidc_enabled | bool else omit }}"
         labels:
           traefik.enable: "{{ immich_available_externally | string }}"
           traefik.http.routers.immich.rule: "Host(`{{ immich_hostname }}.{{ ansible_nas_domain }}`)"
@@ -196,4 +237,10 @@
       community.docker.docker_network:
         name: "{{ immich_network_name }}"
         state: absent
+
+    - name: Remove Immich OIDC authentik blueprint
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/authentik_app_blueprint.yml"
+      vars:
+        _authentik_app_blueprint_enabled: false
+        _authentik_app_blueprint_filename: immich.yaml
   when: not (immich_enabled | bool)

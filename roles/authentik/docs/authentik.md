@@ -29,21 +29,15 @@ Set `authentik_blueprint_sso_admin_enabled: true` together with the shared
 from `sso_admin_password` when set, otherwise generated and persisted on the
 host at `{{ authentik_data_directory }}/.sso_admin_password`.
 
-### Arcane OIDC
+### App OIDC blueprints (Immich, Arcane, Dawarich)
 
-Set `authentik_blueprint_arcane_enabled: true` together with the Arcane OIDC
-inventory variables (`arcane_oidc_client_id`, `arcane_oidc_client_secret`, etc.).
-The role templates an OAuth2 provider and application (slug `arcane`). Map the
-shared `sso_admin_group` to the Arcane admin role via
-`arcane_oidc_role_mappings` on the arcane role.
+OAuth2 provider/application blueprints for Immich, Arcane, and Dawarich are
+owned by each app role. Enable `immich_oidc_enabled`, `arcane_oidc_enabled`, or
+`dawarich_oidc_enabled` on the respective role; the app role templates its
+blueprint into `{{ authentik_blueprints_directory }}`, and this role applies it
+with `ak apply_blueprint` after the worker starts.
 
-### Dawarich OIDC
-
-Set `authentik_blueprint_dawarich_enabled: true` together with the Dawarich OIDC
-inventory variables (`dawarich_oidc_client_id`, `dawarich_oidc_client_secret`, etc.).
-The role templates an OAuth2 provider and application (slug `dawarich`). Enable
-`dawarich_oidc_enabled` on the dawarich role to pass the same credentials into
-the app and sidekiq containers.
+See each app's documentation for OIDC inventory variables and redirect URIs.
 
 ### Homepage API token
 

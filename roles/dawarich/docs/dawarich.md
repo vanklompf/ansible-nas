@@ -22,29 +22,28 @@ the bundled [authentik](../../authentik/docs/authentik.md) role).
    {{ dawarich_app_url }}/users/auth/openid_connect/callback
    ```
 
-   With authentik, enable `authentik_blueprint_dawarich_enabled: true` on the
-   authentik role instead — it creates the provider and application
-   declaratively from the same `dawarich_oidc_*` inventory variables.
+   With authentik, enable `dawarich_oidc_enabled: true` — the dawarich role
+   templates the OAuth2 provider and application; the authentik role applies
+   the blueprint.
 
-   Otherwise, note the generated client ID and client secret from the UI.
-
-2. In your inventory, enable and configure OIDC:
+2. In your inventory, enable OIDC:
 
    ```yaml
    dawarich_oidc_enabled: true
-   dawarich_oidc_client_id: "<client id from provider>"
-   dawarich_oidc_client_secret: "<client secret from provider>"
-   # For authentik use the application issuer URL with a trailing slash:
-   dawarich_oidc_issuer_url: "https://authentik.example.com/application/o/dawarich/"
    ```
+
+   With authentik, application slug and OAuth client ID match `dawarich_hostname`,
+   and `dawarich_oidc_issuer_url` defaults from the shared `authentik_oidc_issuer_base`.
+   The client secret is auto-generated and persisted at
+   `dawarich_oidc_client_secret_file`.
 
    The provider name shown on the login screen comes from the shared
    `oidc_provider_name` variable (see `group_vars/all.yml`), so it can be
    reused across apps.
 
-   Set `dawarich_oidc_allow_email_password_login: false` to hide the local
-   email/password form and require OIDC sign-in. All available variables are
-   listed in `roles/dawarich/defaults/main.yml`.
+   Set `dawarich_oidc_auto_login: true` to hide the local email/password form and
+   require OIDC sign-in. All available variables are listed in
+   `roles/dawarich/defaults/main.yml`.
 
 OIDC environment variables must be set on both the `dawarich_app` and
 `dawarich_sidekiq` containers; the role handles this automatically.

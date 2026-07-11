@@ -1,0 +1,45 @@
+---
+# Deploy or remove an app-owned authentik OIDC blueprint in the shared managed
+# directory, using the single shared template tasks/templates/authentik-app-blueprint.yaml.j2.
+#
+# Required vars (set by the including app role):
+#   _authentik_app_blueprint_enabled       - whether OIDC (and blueprint) is active
+#   _authentik_app_blueprint_filename      - e.g. immich.yaml
+#
+# Required when enabled:
+#   _authentik_app_blueprint_slug          - application slug / OAuth client_id (app hostname)
+#   _authentik_app_blueprint_client_secret - OAuth client secret
+#   _authentik_app_blueprint_launch_url    - meta_launch_url shown in authentik
+#   _authentik_app_blueprint_redirect_uris - list of allowed redirect URIs
+#
+# authentik_blueprints_directory is defined in the authentik role defaults. When
+# only an app tag runs (e.g. --tags immich), fall back to the same path formula.
+
+- name: Resolve Authentik blueprints directory
+  ansible.builtin.set_fact:
+    _authentik_blueprints_directory: >-
+      {{
+        authentik_blueprints_directory
+        | default((authentik_data_directory | default(docker_home ~ '/authentik')) ~ '/blueprints')
+      }}
+
+- name: Ensure Authentik blueprints directory exists
+  ansible.builtin.file:
+    path: "{{ _authentik_blueprints_directory }}"
+    state: directory
+    mode: "0755"
+  when: _authentik_app_blueprint_enabled | bool
+
+- name: Deploy OIDC authentik blueprint
+  ansible.builtin.template:
+    src: "{{ playbook_dir }}/tasks/templates/authentik-app-blueprint.yaml.j2"
+    dest: "{{ _authentik_blueprints_directory }}/{{ _authentik_app_blueprint_filename }}"
+    mode: "0644"
+  no_log: true
+  when: _authentik_app_blueprint_enabled | bool
+
+- name: Remove OIDC authentik blueprint
+  ansible.builtin.file:
+    path: "{{ _authentik_blueprints_directory }}/{{ _authentik_app_blueprint_filename }}"
+    state: absent
+  when: not (_authentik_app_blueprint_enabled | bool)

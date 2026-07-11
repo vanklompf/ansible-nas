@@ -28,26 +28,14 @@ arcane_encryption_key_file: "{{ arcane_data_directory }}/.encryption_key"
 arcane_jwt_secret_file: "{{ arcane_data_directory }}/.jwt_secret"
 arcane_api_key_file: "{{ arcane_data_directory }}/.api_key"
 arcane_encryption_key: ""
-arcane_jwt_secret: ""
-# Optional one-time seed for the host-persisted admin API key (arc_ prefix required).
-arcane_api_key: ""
 
 # --- OIDC / SSO (e.g. authentik) --------------------------------------------
-# Redirect URI to register with the provider: {{ arcane_app_url }}/auth/oidc/callback
 arcane_oidc_enabled: false
-arcane_oidc_client_id: ""
-arcane_oidc_client_secret: ""
-# Issuer URL of the provider, no trailing slash. For authentik this is
-# https://<authentik_host>/application/o/<application_slug>
-arcane_oidc_issuer_url: ""
-# Include the groups scope/claim when using OIDC group -> role mappings.
-arcane_oidc_scopes: "openid email profile groups"
-arcane_oidc_groups_claim: "groups"
-# Declarative group -> role mappings. Defaults map the shared SSO admin group and
-# authentik's automatic superuser group to the Arcane admin role.
-arcane_oidc_role_mappings: '[{"claimValue":"{{ sso_admin_group }}","roleId":"role_admin"},{"claimValue":"authentik Admins","roleId":"role_admin"}]'
+# Client secret is auto-generated and persisted on the host.
+arcane_oidc_client_secret_file: "{{ arcane_data_directory }}/.oidc_client_secret"
+arcane_oidc_issuer_url: "{{ authentik_oidc_issuer_base }}/{{ arcane_hostname }}/"
 # Send users straight to the provider instead of showing the local login form.
-arcane_oidc_auto_redirect: false
+arcane_oidc_auto_login: false
 
 # Homepage widget uses the host-persisted admin API key below.
 # Local environment ID; 0 is the default manager environment.

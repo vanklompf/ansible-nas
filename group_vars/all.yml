@@ -32,6 +32,10 @@ ansible_python_interpreter: /usr/bin/python3
 oidc_provider_name: "{{ samba_server_string }}"
 oidc_provider_logo_url: ""
 
+# Base issuer URL for authentik OIDC providers. Each app derives its own issuer
+# as "{{ authentik_oidc_issuer_base }}/<app_hostname>/".
+authentik_oidc_issuer_base: "https://{{ authentik_hostname | default('authentik') }}.{{ ansible_nas_domain }}/application/o"
+
 sso_admin_username: "{{ ansible_nas_user }}"
 sso_admin_email: "{{ ansible_nas_email }}"
 sso_admin_name: "{{ ansible_nas_user }}"

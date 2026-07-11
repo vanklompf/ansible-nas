@@ -63,7 +63,9 @@ authentik_disable_update_check: true
 authentik_disable_startup_analytics: true
 authentik_avatars: "gravatar"
 
-# Blueprints (declarative config applied by the worker from /blueprints/managed)
+# Blueprints (declarative config applied by the worker from /blueprints/managed).
+# App roles template OIDC blueprints here; path is also resolved with a fallback in
+# tasks/authentik_app_blueprint.yml when only an app tag runs without authentik.
 authentik_blueprints_directory: "{{ authentik_data_directory }}/blueprints"
 
 # Shared SSO admin user + nas-admins group (uses sso_admin_* from group_vars/all.yml).
@@ -71,23 +73,11 @@ authentik_blueprints_directory: "{{ authentik_data_directory }}/blueprints"
 authentik_blueprint_sso_admin_enabled: false
 sso_admin_password_file: "{{ authentik_data_directory }}/.sso_admin_password"
 
-# OAuth2 provider + application for Arcane SSO. Reuses arcane_oidc_client_id and
-# arcane_oidc_client_secret from inventory; enable arcane_oidc_enabled on the
-# arcane role separately.
-authentik_blueprint_arcane_enabled: false
-authentik_blueprint_arcane_application_slug: "arcane"
-authentik_blueprint_arcane_provider_name: "Arcane"
-authentik_blueprint_arcane_launch_url: "{{ arcane_app_url | default('https://' + (arcane_hostname | default('arcane')) + '.' + ansible_nas_domain) }}"
-authentik_blueprint_arcane_redirect_uri: "{{ authentik_blueprint_arcane_launch_url }}/auth/oidc/callback"
-
-# OAuth2 provider + application for Dawarich SSO. Reuses dawarich_oidc_client_id and
-# dawarich_oidc_client_secret from inventory; enable dawarich_oidc_enabled on the
-# dawarich role separately.
-authentik_blueprint_dawarich_enabled: false
-authentik_blueprint_dawarich_application_slug: "dawarich"
-authentik_blueprint_dawarich_provider_name: "Dawarich"
-authentik_blueprint_dawarich_launch_url: "{{ dawarich_app_url | default('https://' + (dawarich_hostname | default('dawarich')) + '.' + ansible_nas_domain) }}"
-authentik_blueprint_dawarich_redirect_uri: "{{ authentik_blueprint_dawarich_launch_url }}/users/auth/openid_connect/callback"
+# Authentik 2026.5+ requires explicit grant_types on OAuth2 providers. Blueprints
+# that omit this field create providers with grant_types=[] and reject login.
+authentik_blueprint_oauth2_grant_types:
+  - authorization_code
+  - refresh_token
 
 # Homepage (gethomepage.dev) — service account + API token provisioned via blueprint.
 # The key is generated and persisted on the host. Set authentik_homepage_api_key only

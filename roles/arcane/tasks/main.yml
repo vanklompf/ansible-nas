@@ -29,7 +29,6 @@
         _host_secret_effective_var: arcane_jwt_secret_effective
         _host_secret_container_name: "{{ arcane_container_name }}"
         _host_secret_container_env_key: JWT_SECRET
-        _host_secret_seed_value: "{{ arcane_jwt_secret }}"
 
     - name: Ensure Arcane admin API key is persisted on host
       ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
@@ -39,9 +38,49 @@
         _host_secret_effective_var: arcane_api_key_effective
         _host_secret_container_name: "{{ arcane_container_name }}"
         _host_secret_container_env_key: ADMIN_STATIC_API_KEY
-        _host_secret_seed_value: "{{ arcane_api_key }}"
+
+    - name: Ensure Arcane OIDC client secret is persisted on host
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
+      vars:
+        _host_secret_file: "{{ arcane_oidc_client_secret_file }}"
+        _host_secret_generate_cmd: openssl rand -hex 32
+        _host_secret_effective_var: arcane_oidc_client_secret_effective
+      when: arcane_oidc_enabled | bool
+
+    - name: Manage Arcane OIDC authentik blueprint
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/authentik_app_blueprint.yml"
+      vars:
+        _authentik_app_blueprint_enabled: "{{ arcane_oidc_enabled | bool }}"
+        _authentik_app_blueprint_filename: arcane.yaml
+        _authentik_app_blueprint_slug: "{{ arcane_hostname }}"
+        _authentik_app_blueprint_client_secret: "{{ arcane_oidc_client_secret_effective | default('') }}"
+        _authentik_app_blueprint_launch_url: "{{ arcane_app_url }}"
+        _authentik_app_blueprint_redirect_uris:
+          - "{{ arcane_app_url }}/auth/oidc/callback"
 
     - name: Create Arcane Docker Container
+      vars:
+        _arcane_env_base:
+          PUID: "{{ arcane_user_id }}"
+          PGID: "{{ arcane_group_id }}"
+          ENCRYPTION_KEY: "{{ arcane_encryption_key_effective }}"
+          JWT_SECRET: "{{ arcane_jwt_secret_effective }}"
+          ADMIN_STATIC_API_KEY: "{{ arcane_api_key_effective }}"
+          APP_URL: "{{ arcane_app_url }}"
+          TRUSTED_PROXIES: "{{ arcane_trusted_proxies }}"
+          OIDC_ENABLED: "false"
+        _arcane_env_oidc:
+          OIDC_ENABLED: "true"
+          OIDC_CLIENT_ID: "{{ arcane_hostname }}"
+          OIDC_CLIENT_SECRET: "{{ arcane_oidc_client_secret_effective | default('') }}"
+          OIDC_ISSUER_URL: "{{ arcane_oidc_issuer_url }}"
+          OIDC_SCOPES: "openid email profile groups"
+          OIDC_GROUPS_CLAIM: "groups"
+          OIDC_MERGE_ACCOUNTS: "true"
+          OIDC_AUTO_REDIRECT_TO_PROVIDER: "{{ 'true' if arcane_oidc_auto_login | bool else 'false' }}"
+          OIDC_PROVIDER_NAME: "{{ oidc_provider_name }}"
+          OIDC_PROVIDER_LOGO_URL: "{{ oidc_provider_logo_url | default('') }}"
+          OIDC_ROLE_MAPPINGS: "{{ [{'claimValue': sso_admin_group, 'roleId': 'role_admin'}, {'claimValue': 'authentik Admins', 'roleId': 'role_admin'}] | to_json }}"
       community.docker.docker_container:
         container_default_behavior: no_defaults
         name: '{{ arcane_container_name }}'
@@ -52,25 +91,7 @@
           - '{{ arcane_data_directory }}/data:/app/data:rw'
           - '{{ arcane_data_directory }}/projects:/app/data/projects:rw'
         ports: ['{{ arcane_port }}:3552']
-        env:
-          PUID: "{{ arcane_user_id }}"
-          PGID: "{{ arcane_group_id }}"
-          ENCRYPTION_KEY: "{{ arcane_encryption_key_effective }}"
-          JWT_SECRET: "{{ arcane_jwt_secret_effective }}"
-          ADMIN_STATIC_API_KEY: "{{ arcane_api_key_effective }}"
-          APP_URL: "{{ arcane_app_url }}"
-          TRUSTED_PROXIES: "{{ arcane_trusted_proxies }}"
-          OIDC_ENABLED: "{{ 'true' if arcane_oidc_enabled | bool else 'false' }}"
-          OIDC_CLIENT_ID: "{{ arcane_oidc_client_id if arcane_oidc_enabled | bool else omit }}"
-          OIDC_CLIENT_SECRET: "{{ arcane_oidc_client_secret if arcane_oidc_enabled | bool else omit }}"
-          OIDC_ISSUER_URL: "{{ arcane_oidc_issuer_url if arcane_oidc_enabled | bool else omit }}"
-          OIDC_SCOPES: "{{ arcane_oidc_scopes if arcane_oidc_enabled | bool else omit }}"
-          OIDC_GROUPS_CLAIM: "{{ arcane_oidc_groups_claim if arcane_oidc_enabled | bool else omit }}"
-          OIDC_MERGE_ACCOUNTS: "{{ 'true' if arcane_oidc_enabled | bool else omit }}"
-          OIDC_AUTO_REDIRECT_TO_PROVIDER: "{{ ('true' if arcane_oidc_auto_redirect | bool else 'false') if arcane_oidc_enabled | bool else omit }}"
-          OIDC_PROVIDER_NAME: "{{ oidc_provider_name if arcane_oidc_enabled | bool else omit }}"
-          OIDC_PROVIDER_LOGO_URL: "{{ oidc_provider_logo_url | default(omit) if arcane_oidc_enabled | bool else omit }}"
-          OIDC_ROLE_MAPPINGS: "{{ arcane_oidc_role_mappings if arcane_oidc_enabled | bool else omit }}"
+        env: "{{ _arcane_env_base | combine(_arcane_env_oidc if arcane_oidc_enabled | bool else {}) }}"
         restart_policy: unless-stopped
         memory: '{{ arcane_memory }}'
         labels:
@@ -107,6 +128,12 @@
       community.docker.docker_container:
         name: '{{ arcane_container_name }}'
         state: absent
+
+    - name: Remove Arcane OIDC authentik blueprint
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/authentik_app_blueprint.yml"
+      vars:
+        _authentik_app_blueprint_enabled: false
+        _authentik_app_blueprint_filename: arcane.yaml
   when: arcane_enabled is false
 
 - name: Start Arcane Agent

@@ -13,6 +13,7 @@ immich_power_tools_port: "3035"
 immich_hostname: "immich"
 immich_power_tools_hostname: "immich-power-tools"
 immich_network_name: "immich"
+immich_app_url: "{{ 'https://' + immich_hostname + '.' + ansible_nas_domain if immich_available_externally else 'http://' + ansible_nas_hostname + ':' + immich_port }}"
 
 # specs
 immich_postgres_memory: 1g
@@ -59,3 +60,14 @@ immich_upload_location: "./library"
 immich_public_login_page_message: "Welcome to Immich!"
 immich_api_key: ""
 immich_metrics: "false"
+
+# OAuth/OIDC SSO. Application slug and client_id match immich_hostname in authentik.
+immich_oidc_enabled: false
+# Client secret is auto-generated and persisted on the host.
+immich_oidc_client_secret_file: "{{ immich_data_directory }}/.oidc_client_secret"
+immich_oidc_issuer_url: "{{ authentik_oidc_issuer_base }}/{{ immich_hostname }}/"
+# Send users straight to the provider instead of showing Immich's local login form.
+immich_oidc_auto_login: false
+# OIDC settings are written to this file and mounted read-only into the server
+# via IMMICH_CONFIG_FILE (managed settings become read-only in the Immich UI).
+immich_config_file: "{{ immich_data_directory }}/immich-config.json"

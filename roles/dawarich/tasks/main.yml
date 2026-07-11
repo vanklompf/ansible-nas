@@ -15,6 +15,38 @@
         - "{{ dawarich_directory }}/watched"
         - "{{ dawarich_directory }}/storage"
 
+    - name: Ensure Dawarich OIDC client secret is persisted on host
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
+      vars:
+        _host_secret_file: "{{ dawarich_oidc_client_secret_file }}"
+        _host_secret_generate_cmd: openssl rand -hex 32
+        _host_secret_effective_var: dawarich_oidc_client_secret_effective
+      when: dawarich_oidc_enabled | bool
+
+    - name: Manage Dawarich OIDC authentik blueprint
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/authentik_app_blueprint.yml"
+      vars:
+        _authentik_app_blueprint_enabled: "{{ dawarich_oidc_enabled | bool }}"
+        _authentik_app_blueprint_filename: dawarich.yaml
+        _authentik_app_blueprint_slug: "{{ dawarich_hostname }}"
+        _authentik_app_blueprint_client_secret: "{{ dawarich_oidc_client_secret_effective | default('') }}"
+        _authentik_app_blueprint_launch_url: "{{ dawarich_app_url }}"
+        _authentik_app_blueprint_redirect_uris:
+          - "{{ dawarich_app_url }}/users/auth/openid_connect/callback"
+
+    - name: Build Dawarich OIDC environment
+      ansible.builtin.set_fact:
+        _dawarich_env_oidc: "{{ {} if not dawarich_oidc_enabled | bool else _dawarich_env_oidc_enabled }}"
+      vars:
+        _dawarich_env_oidc_enabled:
+          OIDC_CLIENT_ID: "{{ dawarich_hostname }}"
+          OIDC_CLIENT_SECRET: "{{ dawarich_oidc_client_secret_effective | default('') }}"
+          OIDC_ISSUER: "{{ dawarich_oidc_issuer_url }}"
+          OIDC_REDIRECT_URI: "{{ dawarich_app_url }}/users/auth/openid_connect/callback"
+          OIDC_PROVIDER_NAME: "{{ oidc_provider_name }}"
+          OIDC_AUTO_REGISTER: "true"
+          ALLOW_EMAIL_PASSWORD_LOGIN: "{{ 'false' if dawarich_oidc_auto_login | bool else 'true' }}"
+
     - name: Dawarich Redis Docker Container
       community.docker.docker_container:      
         name: "{{ dawarich_redis_container_name }}"
@@ -58,6 +90,22 @@
           timeout: 10s
 
     - name: Dawarich App Docker Container
+      vars:
+        _dawarich_app_env_base:
+          RAILS_ENV: "development"
+          REDIS_URL: "redis://{{ dawarich_redis_container_name }}:6379"
+          DATABASE_HOST: "{{ dawarich_pg_container_name }}"
+          DATABASE_USERNAME: "{{ dawarich_pg_user }}"
+          DATABASE_PASSWORD: "{{ dawarich_pg_password }}"
+          DATABASE_NAME: "dawarich_development"
+          APPLICATION_HOSTS: "{{ dawarich_hostname }}.{{ ansible_nas_domain }},{{ ansible_nas_hostname }}:{{ dawarich_port }}"
+          DOMAIN: "{{ dawarich_domain }}"
+          MIN_MINUTES_SPENT_IN_CITY: "60"
+          TIME_ZONE: "Europe/Warsaw"
+          APPLICATION_PROTOCOL: "{{ dawarich_application_protocol }}"
+          DISTANCE_UNIT: "km"
+          PROMETHEUS_EXPORTER_ENABLED: "false"
+          SELF_HOSTED: "true"
       community.docker.docker_container:      
         name: "{{ dawarich_app_container_name }}"
         image: "{{ dawarich_image_name }}:{{ dawarich_image_version }}"
@@ -72,30 +120,7 @@
           - name: "{{ dawarich_network_name }}"
         ports:
           - "{{ dawarich_port }}:3000"
-        env:
-          RAILS_ENV: "development"
-          REDIS_URL: "redis://{{ dawarich_redis_container_name }}:6379"
-          DATABASE_HOST: "{{ dawarich_pg_container_name }}"
-          DATABASE_USERNAME: "{{ dawarich_pg_user }}"
-          DATABASE_PASSWORD: "{{ dawarich_pg_password }}"
-          DATABASE_NAME: "dawarich_development"
-          APPLICATION_HOSTS: "{{ dawarich_hostname }}.{{ ansible_nas_domain }},{{ ansible_nas_hostname }}:{{ dawarich_port }}"
-          DOMAIN: "{{ dawarich_domain }}"
-          MIN_MINUTES_SPENT_IN_CITY: "60"
-          TIME_ZONE: "Europe/Warsaw"
-          APPLICATION_PROTOCOL: "{{ dawarich_application_protocol }}"
-          OIDC_CLIENT_ID: "{{ dawarich_oidc_client_id if dawarich_oidc_enabled | bool else omit }}"
-          OIDC_CLIENT_SECRET: "{{ dawarich_oidc_client_secret if dawarich_oidc_enabled | bool else omit }}"
-          OIDC_ISSUER: "{{ dawarich_oidc_issuer_url if dawarich_oidc_enabled | bool else omit }}"
-          OIDC_REDIRECT_URI: "{{ dawarich_oidc_redirect_uri if dawarich_oidc_enabled | bool else omit }}"
-          OIDC_PROVIDER_NAME: "{{ oidc_provider_name if dawarich_oidc_enabled | bool else omit }}"
-          OIDC_AUTO_REGISTER: "{{ dawarich_oidc_auto_register | string | lower if dawarich_oidc_enabled | bool else omit }}"
-          OIDC_PKCE_ENABLED: "{{ dawarich_oidc_pkce_enabled | string | lower if dawarich_oidc_enabled | bool else omit }}"
-          ALLOW_EMAIL_PASSWORD_REGISTRATION: "{{ dawarich_oidc_allow_email_password_registration | string | lower if dawarich_oidc_enabled | bool else omit }}"
-          ALLOW_EMAIL_PASSWORD_LOGIN: "{{ dawarich_oidc_allow_email_password_login | string | lower if dawarich_oidc_enabled | bool else omit }}"
-          DISTANCE_UNIT: "km"
-          PROMETHEUS_EXPORTER_ENABLED: "false"
-          SELF_HOSTED: "true"
+        env: "{{ _dawarich_app_env_base | combine(_dawarich_env_oidc) }}"
         labels:
           traefik.enable: "{{ dawarich_available_externally | string }}"
           traefik.http.routers.dawarich.rule: "Host(`{{ dawarich_hostname }}.{{ ansible_nas_domain }}`)"
@@ -119,6 +144,22 @@
           timeout: 10s
 
     - name: Dawarich Sidekiq Docker Container
+      vars:
+        _dawarich_sidekiq_env_base:
+          RAILS_ENV: "development"
+          REDIS_URL: "redis://{{ dawarich_redis_container_name }}:6379"
+          DATABASE_HOST: "{{ dawarich_pg_container_name }}"
+          DATABASE_USERNAME: "{{ dawarich_pg_user }}"
+          DATABASE_PASSWORD: "{{ dawarich_pg_password }}"
+          DATABASE_NAME: "dawarich_development"
+          APPLICATION_HOSTS: "0.0.0.0"
+          BACKGROUND_PROCESSING_CONCURRENCY: "10"
+          APPLICATION_PROTOCOL: "{{ dawarich_application_protocol }}"
+          DISTANCE_UNIT: "km"
+          PROMETHEUS_EXPORTER_ENABLED: "false"
+          PROMETHEUS_EXPORTER_HOST: "{{ dawarich_app_container_name }}"
+          PROMETHEUS_EXPORTER_PORT: "9394"
+          SELF_HOSTED: "true"
       community.docker.docker_container:      
         name: "{{ dawarich_sidekiq_container_name }}"
         image: "{{ dawarich_image_name }}:{{ dawarich_image_version }}"
@@ -129,30 +170,7 @@
           - "{{ dawarich_directory }}/public:/var/app/public"
           - "{{ dawarich_directory }}/watched:/var/app/watched"
           - "{{ dawarich_directory }}/storage:/var/app/storage"
-        env:
-          RAILS_ENV: "development"
-          REDIS_URL: "redis://{{ dawarich_redis_container_name }}:6379"
-          DATABASE_HOST: "{{ dawarich_pg_container_name }}"
-          DATABASE_USERNAME: "{{ dawarich_pg_user }}"
-          DATABASE_PASSWORD: "{{ dawarich_pg_password }}"
-          DATABASE_NAME: "dawarich_development"
-          APPLICATION_HOSTS: "0.0.0.0"
-          BACKGROUND_PROCESSING_CONCURRENCY: "10"
-          APPLICATION_PROTOCOL: "{{ dawarich_application_protocol }}"
-          OIDC_CLIENT_ID: "{{ dawarich_oidc_client_id if dawarich_oidc_enabled | bool else omit }}"
-          OIDC_CLIENT_SECRET: "{{ dawarich_oidc_client_secret if dawarich_oidc_enabled | bool else omit }}"
-          OIDC_ISSUER: "{{ dawarich_oidc_issuer_url if dawarich_oidc_enabled | bool else omit }}"
-          OIDC_REDIRECT_URI: "{{ dawarich_oidc_redirect_uri if dawarich_oidc_enabled | bool else omit }}"
-          OIDC_PROVIDER_NAME: "{{ oidc_provider_name if dawarich_oidc_enabled | bool else omit }}"
-          OIDC_AUTO_REGISTER: "{{ dawarich_oidc_auto_register | string | lower if dawarich_oidc_enabled | bool else omit }}"
-          OIDC_PKCE_ENABLED: "{{ dawarich_oidc_pkce_enabled | string | lower if dawarich_oidc_enabled | bool else omit }}"
-          ALLOW_EMAIL_PASSWORD_REGISTRATION: "{{ dawarich_oidc_allow_email_password_registration | string | lower if dawarich_oidc_enabled | bool else omit }}"
-          ALLOW_EMAIL_PASSWORD_LOGIN: "{{ dawarich_oidc_allow_email_password_login | string | lower if dawarich_oidc_enabled | bool else omit }}"
-          DISTANCE_UNIT: "km"
-          PROMETHEUS_EXPORTER_ENABLED: "false"
-          PROMETHEUS_EXPORTER_HOST: "{{ dawarich_app_container_name }}"
-          PROMETHEUS_EXPORTER_PORT: "9394"
-          SELF_HOSTED: "true"
+        env: "{{ _dawarich_sidekiq_env_base | combine(_dawarich_env_oidc) }}"
         networks:
           - name: "{{ dawarich_network_name }}"
         restart_policy: unless-stopped
@@ -176,4 +194,10 @@
       community.docker.docker_container:
         name: "{{ dawarich_pg_container_name }}"
         state: absent
+
+    - name: Remove Dawarich OIDC authentik blueprint
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/authentik_app_blueprint.yml"
+      vars:
+        _authentik_app_blueprint_enabled: false
+        _authentik_app_blueprint_filename: dawarich.yaml
   when: dawarich_enabled is false
