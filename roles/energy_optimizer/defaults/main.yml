@@ -1,0 +1,52 @@
+---
+energy_optimizer_enabled: false
+energy_optimizer_available_externally: false
+
+# directories
+energy_optimizer_data_directory: "{{ docker_home }}/energy-optimizer"
+
+# network
+energy_optimizer_port: "8320"
+energy_optimizer_hostname: pv
+
+# docker
+energy_optimizer_container_name: energy-optimizer
+energy_optimizer_image_name: ghcr.io/vanklompf/energy-optimizer
+energy_optimizer_image_version: latest
+energy_optimizer_image_pull: true
+
+# local build (skip GHCR and build the image on the NAS from the PvOpti source tree)
+energy_optimizer_build_locally: false
+energy_optimizer_source_directory: "{{ code_root }}/PvOpti"
+energy_optimizer_local_image_name: energy-optimizer
+energy_optimizer_local_image_version: local
+energy_optimizer_image_force_rebuild: false
+
+# application (MVP remains recommendation-only)
+energy_optimizer_mode: dry_run
+energy_optimizer_ha_url: "http://{{ ansible_nas_ip }}:{{ homeassistant_port }}"
+energy_optimizer_ha_token: ""
+energy_optimizer_ha_verify_ssl: true
+energy_optimizer_pstryk_api_key: ""
+energy_optimizer_mqtt_enabled: true
+
+# Sigen Hybrid 6.0 TP2 (3-phase) + SigenStor ESS (~18 kWh stack)
+energy_optimizer_battery_capacity_kwh: "18.08"
+energy_optimizer_battery_max_charge_kw: "8.8"
+energy_optimizer_battery_max_discharge_kw: "9.6"
+energy_optimizer_battery_soc_min_pct: "20"
+energy_optimizer_battery_soc_max_pct: "98"
+energy_optimizer_battery_round_trip_efficiency: "0.90"
+energy_optimizer_site_import_limit_kw: "11.0"   # 16 A grid breaker @ 400 V 3-phase
+energy_optimizer_site_export_limit_kw: "6.6"  # max apparent AC output (6600 VA)
+energy_optimizer_inverter_limit_kw: "6.0"    # nominal AC output
+
+# PV forecast
+# Kraszewskiego 5, Lancut; panels are on the south-east roof slope.
+# Forecast.Solar azimuth is measured from south: east is negative, west is positive.
+energy_optimizer_pv_lat: "50.0710512"
+energy_optimizer_pv_lon: "22.2254857"
+energy_optimizer_pv_planes: '[{"peak_kwp":7.0,"tilt":35,"azimuth":-37.3,"inverter_limit_kw":6.0}]'
+
+# specs
+energy_optimizer_memory: 768m

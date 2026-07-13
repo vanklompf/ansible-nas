@@ -1,0 +1,124 @@
+---
+- name: Start Energy Optimizer
+  block:
+    - name: Create Energy Optimizer data directory
+      ansible.builtin.file:
+        path: "{{ energy_optimizer_data_directory }}"
+        state: directory
+        owner: "10001"
+        group: "10001"
+        mode: "0750"
+
+    - name: Ensure Homepage images directory exists
+      ansible.builtin.file:
+        path: "{{ homepage_images_directory }}"
+        state: directory
+        mode: "0755"
+
+    - name: Install Energy Optimizer Homepage icon
+      ansible.builtin.copy:
+        src: energy-optimizer.svg
+        dest: "{{ homepage_images_directory }}/energy-optimizer.svg"
+        mode: "0644"
+
+    - name: Validate PvOpti source checkout exists
+      ansible.builtin.stat:
+        path: "{{ energy_optimizer_source_directory }}/Dockerfile"
+      register: energy_optimizer_source_dockerfile
+      when: energy_optimizer_build_locally | bool
+
+    - name: Fail when PvOpti source is missing
+      ansible.builtin.assert:
+        that:
+          - energy_optimizer_source_dockerfile.stat.exists | default(false)
+        fail_msg: >-
+          energy_optimizer_build_locally is true but
+          {{ energy_optimizer_source_directory }}/Dockerfile was not found.
+          Clone vanklompf/PvOpti there or set energy_optimizer_source_directory.
+      when: energy_optimizer_build_locally | bool
+
+    - name: Build Energy Optimizer image from PvOpti source
+      community.docker.docker_image:
+        name: "{{ energy_optimizer_local_image_name }}"
+        tag: "{{ energy_optimizer_local_image_version }}"
+        source: build
+        force_source: "{{ energy_optimizer_image_force_rebuild | bool }}"
+        build:
+          path: "{{ energy_optimizer_source_directory }}"
+          target: runtime
+          pull: true
+      when: energy_optimizer_build_locally | bool
+
+    - name: Resolve Energy Optimizer image reference
+      ansible.builtin.set_fact:
+        energy_optimizer_effective_image: >-
+          {{ (energy_optimizer_local_image_name ~ ':' ~ energy_optimizer_local_image_version)
+             if (energy_optimizer_build_locally | bool)
+             else (energy_optimizer_image_name ~ ':' ~ energy_optimizer_image_version) }}
+        energy_optimizer_effective_pull: >-
+          {{ false if (energy_optimizer_build_locally | bool)
+             else (energy_optimizer_image_pull | bool) }}
+
+    - name: Create Energy Optimizer container
+      community.docker.docker_container:
+        name: "{{ energy_optimizer_container_name }}"
+        image: "{{ energy_optimizer_effective_image }}"
+        state: started
+        pull: "{{ energy_optimizer_effective_pull | bool }}"
+        volumes:
+          - "{{ energy_optimizer_data_directory }}:/data:rw"
+        network_mode: "{{ homeassistant_network_name }}"
+        ports:
+          - "{{ energy_optimizer_port }}:8320"
+        env:
+          EO_MODE: "{{ energy_optimizer_mode }}"
+          EO_TZ: "{{ ansible_nas_timezone }}"
+          EO_HA_URL: "{{ energy_optimizer_ha_url }}"
+          EO_HA_TOKEN: "{{ energy_optimizer_ha_token }}"
+          EO_HA_VERIFY_SSL: "{{ energy_optimizer_ha_verify_ssl | string | lower }}"
+          EO_PSTRYK_API_KEY: "{{ energy_optimizer_pstryk_api_key }}"
+          EO_MQTT_ENABLED: "{{ energy_optimizer_mqtt_enabled | string | lower }}"
+          EO_MQTT_HOST: "{{ mosquitto_container_name }}"
+          EO_MQTT_PORT: "1883"
+          EO_MQTT_USERNAME: "{{ mqtt_user }}"
+          EO_MQTT_PASSWORD: "{{ mqtt_password }}"
+          EO_BATTERY_CAPACITY_KWH: "{{ energy_optimizer_battery_capacity_kwh | string }}"
+          EO_BATTERY_MAX_CHARGE_KW: "{{ energy_optimizer_battery_max_charge_kw | string }}"
+          EO_BATTERY_MAX_DISCHARGE_KW: "{{ energy_optimizer_battery_max_discharge_kw | string }}"
+          EO_BATTERY_SOC_MIN_PCT: "{{ energy_optimizer_battery_soc_min_pct | string }}"
+          EO_BATTERY_SOC_MAX_PCT: "{{ energy_optimizer_battery_soc_max_pct | string }}"
+          EO_BATTERY_ROUND_TRIP_EFFICIENCY: "{{ energy_optimizer_battery_round_trip_efficiency | string }}"
+          EO_SITE_IMPORT_LIMIT_KW: "{{ energy_optimizer_site_import_limit_kw | string }}"
+          EO_SITE_EXPORT_LIMIT_KW: "{{ energy_optimizer_site_export_limit_kw | string }}"
+          EO_INVERTER_LIMIT_KW: "{{ energy_optimizer_inverter_limit_kw | string }}"
+          EO_PV_LAT: "{{ energy_optimizer_pv_lat | string }}"
+          EO_PV_LON: "{{ energy_optimizer_pv_lon | string }}"
+          EO_PV_PLANES: "{{ energy_optimizer_pv_planes }}"
+        restart_policy: unless-stopped
+        memory: "{{ energy_optimizer_memory }}"
+        labels:
+          traefik.enable: "{{ energy_optimizer_available_externally | string }}"
+          traefik.http.routers.energy-optimizer.rule: "Host(`{{ energy_optimizer_hostname }}.{{ ansible_nas_domain }}`)"
+          traefik.http.routers.energy-optimizer.tls.certresolver: letsencrypt
+          traefik.http.routers.energy-optimizer.tls.domains[0].main: "{{ ansible_nas_domain }}"
+          traefik.http.routers.energy-optimizer.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+          traefik.http.services.energy-optimizer.loadbalancer.server.port: "8320"
+          homepage.group: Home
+          homepage.weight: "60"
+          homepage.name: Energy Optimizer
+          homepage.icon: /images/energy-optimizer.svg
+          homepage.href: "{{ 'https://' + energy_optimizer_hostname + '.' + ansible_nas_domain if energy_optimizer_available_externally else 'http://' + ansible_nas_hostname + ':' + energy_optimizer_port }}"
+          homepage.description: Solar and battery optimisation
+        healthcheck:
+          test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8320/healthz').status==200 else 1)"]
+          interval: 30s
+          retries: 3
+          start_period: 20s
+          timeout: 5s
+  when: energy_optimizer_enabled | bool
+
+- name: Stop Energy Optimizer
+  community.docker.docker_container:
+    name: "{{ energy_optimizer_container_name }}"
+    state: absent
+  when: not (energy_optimizer_enabled | bool)

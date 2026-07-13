@@ -1,0 +1,162 @@
+---
+- name: Start Steam Headless
+  when: steam_headless_enabled | bool
+  block:
+    - name: Validate Steam Headless configuration
+      ansible.builtin.assert:
+        that:
+          - steam_headless_image_digest is match('^sha256:[0-9a-f]{64}$')
+          - steam_headless_user_password | length > 0
+          - not (steam_headless_sunshine_enabled | bool) or (steam_headless_sunshine_password | length > 0)
+          - steam_headless_gpu_vendor in ['amd', 'intel', 'nvidia']
+          - steam_headless_gpu_vendor == 'nvidia' or (steam_headless_gpu_devices | length > 0)
+          - steam_headless_mode in ['primary', 'secondary']
+          - steam_headless_web_ui_mode in ['vnc', 'neko', 'none']
+          - steam_headless_web_ui_port is match('^[0-9]+$')
+          - steam_headless_web_ui_port | int >= 1024
+          - steam_headless_web_ui_port | int <= 65535
+          - steam_headless_host_network_acknowledged | bool
+        fail_msg: >-
+          Steam Headless requires a pinned image digest, private UI credentials,
+          valid session settings, an explicit GPU configuration, and acknowledgement
+          that host networking exposes services on every host interface.
+
+    - name: Create Steam Headless directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ steam_headless_user_id }}"
+        group: "{{ steam_headless_group_id }}"
+        mode: "0750"
+      loop:
+        - "{{ steam_headless_home_directory }}"
+        - "{{ steam_headless_sockets_directory }}"
+        - "{{ steam_headless_sockets_directory }}/.X11-unix"
+        - "{{ steam_headless_sockets_directory }}/pulse"
+
+    - name: Create role-managed games directory
+      ansible.builtin.file:
+        path: "{{ steam_headless_games_directory }}"
+        state: directory
+        owner: "{{ steam_headless_games_directory_owner }}"
+        group: "{{ steam_headless_games_directory_group }}"
+        mode: "{{ steam_headless_games_directory_mode }}"
+      when: steam_headless_manage_games_directory | bool
+
+    - name: Check externally managed games directory
+      ansible.builtin.stat:
+        path: "{{ steam_headless_games_directory }}"
+      register: steam_headless_games_directory_status
+      when: not (steam_headless_manage_games_directory | bool)
+
+    - name: Validate externally managed games directory
+      ansible.builtin.assert:
+        that:
+          - steam_headless_games_directory_status.stat.exists
+          - steam_headless_games_directory_status.stat.isdir
+        fail_msg: >-
+          The externally managed Steam games directory must already exist and be
+          a directory. Create it outside this role or explicitly enable directory
+          management.
+      when: not (steam_headless_manage_games_directory | bool)
+
+    - name: Check Steam Headless host devices
+      ansible.builtin.stat:
+        path: "{{ item.split(':')[0] }}"
+      loop: "{{ steam_headless_base_devices + steam_headless_gpu_devices }}"
+      register: steam_headless_device_status
+
+    - name: Validate Steam Headless host devices
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.ischr | default(false)
+        fail_msg: "Required character device {{ item.item.split(':')[0] }} is unavailable."
+      loop: "{{ steam_headless_device_status.results }}"
+
+    - name: Check existing Steam Headless container
+      community.docker.docker_container_info:
+        name: "{{ steam_headless_container_name }}"
+      register: steam_headless_container_info
+
+    - name: Check Steam Headless host ports
+      ansible.builtin.command:
+        argv:
+          - ss
+          - -H
+          - -lntu
+          - "sport = :{{ item }}"
+      loop: "{{ steam_headless_required_host_ports }}"
+      register: steam_headless_port_checks
+      changed_when: false
+      check_mode: false
+      when: >-
+        not steam_headless_container_info.exists or
+        not (steam_headless_container_info.container.State.Running | default(false))
+
+    - name: Validate Steam Headless host ports
+      ansible.builtin.assert:
+        that:
+          - >-
+            steam_headless_port_checks.results
+            | selectattr('stdout', 'defined')
+            | selectattr('stdout', 'ne', '')
+            | list
+            | length == 0
+        fail_msg: >-
+          At least one Steam Headless, Sunshine, noVNC, or Steam Remote Play port
+          is already in use. Review the port-check results before enabling the service.
+      when: >-
+        not steam_headless_container_info.exists or
+        not (steam_headless_container_info.container.State.Running | default(false))
+
+    - name: Inspect Docker runtimes for NVIDIA
+      community.docker.docker_host_info:
+      register: steam_headless_docker_host_info
+      when: steam_headless_gpu_vendor == 'nvidia'
+
+    - name: Validate NVIDIA container runtime
+      ansible.builtin.assert:
+        that:
+          - "'nvidia' in (steam_headless_docker_host_info.host_info.Runtimes | default({}))"
+        fail_msg: >-
+          Docker does not advertise the NVIDIA runtime. Install and configure
+          NVIDIA Container Toolkit before enabling Steam Headless.
+      when: steam_headless_gpu_vendor == 'nvidia'
+
+    - name: Create Steam Headless Docker container
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ steam_headless_container_name }}"
+        hostname: "{{ steam_headless_hostname }}"
+        image: "{{ steam_headless_image_name }}@{{ steam_headless_image_digest }}"
+        pull: missing
+        state: started
+        restart_policy: unless-stopped
+        network_mode: host
+        ipc_mode: host
+        etc_hosts:
+          "{{ steam_headless_hostname }}": 127.0.0.1
+        runtime: "{{ 'nvidia' if steam_headless_gpu_vendor == 'nvidia' else omit }}"
+        shm_size: "{{ steam_headless_shm_size }}"
+        memory: "{{ steam_headless_memory }}"
+        ulimits: "{{ steam_headless_ulimits }}"
+        capabilities: "{{ steam_headless_capabilities }}"
+        security_opts: "{{ steam_headless_security_opts }}"
+        devices: "{{ steam_headless_base_devices + steam_headless_gpu_devices }}"
+        device_cgroup_rules: "{{ steam_headless_device_cgroup_rules }}"
+        volumes:
+          - "{{ steam_headless_home_directory }}:/home/default:rw"
+          - "{{ steam_headless_games_directory }}:/mnt/games:rw"
+          - "{{ steam_headless_sockets_directory }}/.X11-unix:/tmp/.X11-unix:rw"
+          - "{{ steam_headless_sockets_directory }}/pulse:/tmp/pulse:rw"
+        env: "{{ steam_headless_env }}"
+        labels:
+          traefik.enable: "false"
+      no_log: true
+
+- name: Stop Steam Headless
+  community.docker.docker_container:
+    name: "{{ steam_headless_container_name }}"
+    state: absent
+  when: not (steam_headless_enabled | bool)
