@@ -1,0 +1,26 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+
+    - name: Get Beszel Hub container state
+      community.docker.docker_container_info:
+        name: "{{ beszel_container_name }}"
+      register: result_hub
+
+    - name: Get Beszel Agent container state
+      community.docker.docker_container_info:
+        name: "{{ beszel_agent_container_name }}"
+      register: result_agent
+
+    - name: Check Beszel containers are running
+      ansible.builtin.assert:
+        that:
+          - result_hub.container['State']['Status'] == "running"
+          - result_hub.container['State']['Restarting'] == false
+          - result_agent.container['State']['Status'] == "running"
+          - result_agent.container['State']['Restarting'] == false
