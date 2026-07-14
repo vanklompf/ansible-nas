@@ -1,0 +1,107 @@
+---
+steam_enabled: false
+
+# Persistent data
+steam_data_directory: "{{ docker_home }}/steam"
+steam_home_directory: "{{ steam_data_directory }}/home"
+steam_sockets_directory: "{{ steam_data_directory }}/sockets"
+steam_games_directory: "{{ steam_data_directory }}/games"
+
+# Container image. Enabling the role requires a tested sha256 digest.
+steam_container_name: steam
+steam_hostname: Steam
+steam_image_name: "josh5/steam-headless"
+steam_image_digest: ""
+
+# User/session
+steam_user_id: "1000"
+steam_group_id: "1000"
+steam_umask: "002"
+steam_user_locales: "en_US.UTF-8 UTF-8"
+steam_password: ""
+steam_display: ":55"
+steam_mode: primary
+steam_shm_size: 2G
+steam_memory: 16g
+
+# Private noVNC administration UI. Host networking exposes this port directly.
+steam_web_ui_mode: vnc
+steam_web_ui_port: "9083"
+steam_vnc_audio_enabled: true
+steam_neko_nat1to1: ""
+steam_homepage_weight: "10"
+
+# Host networking exposes every container listener on every host interface.
+# Enabling the role requires an explicit acknowledgement after firewall review.
+steam_host_network_acknowledged: false
+steam_required_host_ports:
+  - "{{ steam_web_ui_port | int }}"
+  - 47984
+  - 47989
+  - 47990
+  - 47998
+  - 47999
+  - 48000
+  - 48002
+  - 48010
+  - 27031
+  - 27032
+  - 27033
+  - 27034
+  - 27035
+  - 27036
+  - 27037
+
+# Steam client
+steam_client_enabled: true
+steam_client_args: "-silent"
+
+# Sunshine / Moonlight
+steam_sunshine_enabled: true
+steam_sunshine_user: admin
+
+# Xorg and input
+steam_evdev_inputs_enabled: true
+steam_force_x11_dummy_config: true
+steam_base_devices:
+  - /dev/fuse:/dev/fuse
+  - /dev/uinput:/dev/uinput
+steam_device_cgroup_rules:
+  - "c 13:* rmw"
+
+# GPU. Configure exact card and render-node mappings before enabling.
+steam_gpu_vendor: ""
+steam_gpu_devices: []
+
+# Upstream Steam Headless requires broad host integration. Keep these configurable
+# so permissions can be reduced after hardware-specific testing.
+steam_capabilities:
+  - NET_ADMIN
+  - SYS_ADMIN
+  - SYS_NICE
+steam_security_opts:
+  - seccomp:unconfined
+  - apparmor:unconfined
+steam_ulimits:
+  - nofile:1024:524288
+
+steam_env:
+  TZ: "{{ ansible_nas_timezone }}"
+  USER_LOCALES: "{{ steam_user_locales }}"
+  DISPLAY: "{{ steam_display }}"
+  PUID: "{{ steam_user_id }}"
+  PGID: "{{ steam_group_id }}"
+  UMASK: "{{ steam_umask }}"
+  USER_PASSWORD: "{{ steam_password }}"
+  MODE: "{{ steam_mode }}"
+  WEB_UI_MODE: "{{ steam_web_ui_mode }}"
+  ENABLE_VNC_AUDIO: "{{ steam_vnc_audio_enabled | string | lower }}"
+  PORT_NOVNC_WEB: "{{ steam_web_ui_port }}"
+  NEKO_NAT1TO1: "{{ steam_neko_nat1to1 }}"
+  ENABLE_STEAM: "{{ steam_client_enabled | string | lower }}"
+  STEAM_ARGS: "{{ steam_client_args }}"
+  ENABLE_SUNSHINE: "{{ steam_sunshine_enabled | string | lower }}"
+  SUNSHINE_USER: "{{ steam_sunshine_user }}"
+  SUNSHINE_PASS: "{{ steam_password }}"
+  ENABLE_EVDEV_INPUTS: "{{ steam_evdev_inputs_enabled | string | lower }}"
+  FORCE_X11_DUMMY_CONFIG: "{{ steam_force_x11_dummy_config | string | lower }}"

@@ -546,6 +546,8 @@
       tags: [stalwart]
     - role: standardnotes
       tags: [standardnotes]
+    - role: steam
+      tags: [steam]
     - role: suitecrm
       tags: [suitecrm]
     - role: superproductivity
