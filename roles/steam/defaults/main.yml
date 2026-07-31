@@ -29,7 +29,15 @@ steam_web_ui_mode: vnc
 steam_web_ui_port: "9083"
 steam_vnc_audio_enabled: true
 steam_neko_nat1to1: ""
-steam_homepage_weight: "10"
+
+steam_sunshine_homepage_services_entry:
+  Sunshine:
+    icon: mdi-cast-connected
+    href: "https://{{ ansible_nas_ip }}:{{ steam_sunshine_web_ui_port }}"
+    description: Moonlight game streaming admin
+    weight: "{{ steam_sunshine_homepage_weight }}"
+    server: "{{ ansible_nas_hostname }}"
+    container: "{{ steam_container_name }}"
 
 # Host networking exposes every container listener on every host interface.
 # Enabling the role requires an explicit acknowledgement after firewall review.
@@ -38,7 +46,7 @@ steam_required_host_ports:
   - "{{ steam_web_ui_port | int }}"
   - 47984
   - 47989
-  - 47990
+  - "{{ steam_sunshine_web_ui_port | int }}"
   - 47998
   - 47999
   - 48000
@@ -59,6 +67,8 @@ steam_client_args: "-silent"
 # Sunshine / Moonlight
 steam_sunshine_enabled: true
 steam_sunshine_user: admin
+steam_sunshine_web_ui_port: "47990"
+steam_sunshine_homepage_weight: "11"
 
 # Xorg and input
 steam_evdev_inputs_enabled: true

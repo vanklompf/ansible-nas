@@ -113,11 +113,11 @@
         labels:
           traefik.enable: "false"
           homepage.group: Applications
+          homepage.weight: "10"
           homepage.name: Steam
           homepage.icon: steam
           homepage.href: "http://{{ ansible_nas_ip }}:{{ steam_web_ui_port }}"
           homepage.description: Steam desktop on trusted LAN (noVNC)
-          homepage.weight: "{{ steam_homepage_weight }}"
       no_log: true
 
 - name: Stop Steam
