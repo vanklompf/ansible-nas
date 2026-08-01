@@ -107,7 +107,7 @@
           homepage.weight: "60"
           homepage.name: Energy Optimizer
           homepage.icon: /images/energy-optimizer.svg
-          homepage.href: "{{ 'https://' + energy_optimizer_hostname + '.' + ansible_nas_domain if energy_optimizer_available_externally else 'http://' + ansible_nas_hostname + ':' + energy_optimizer_port }}"
+          homepage.href: "https://{{ energy_optimizer_hostname }}.{{ ansible_nas_domain }}"
           homepage.description: Solar and battery optimisation
         healthcheck:
           test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8320/healthz').status==200 else 1)"]

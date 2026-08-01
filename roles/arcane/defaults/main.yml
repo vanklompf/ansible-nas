@@ -9,7 +9,7 @@ arcane_data_directory: '{{ docker_home }}/arcane'
 arcane_port: '3552'
 arcane_hostname: arcane
 
-arcane_app_url: "{{ 'https://' + arcane_hostname + '.' + ansible_nas_domain if arcane_available_externally else 'http://localhost:' + arcane_port }}"
+arcane_app_url: "https://{{ arcane_hostname }}.{{ ansible_nas_domain }}"
 arcane_trusted_proxies: '172.16.0.0/12'
 
 # specs

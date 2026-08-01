@@ -13,7 +13,7 @@ immich_power_tools_port: "3035"
 immich_hostname: "immich"
 immich_power_tools_hostname: "immich-power-tools"
 immich_network_name: "immich"
-immich_app_url: "{{ 'https://' + immich_hostname + '.' + ansible_nas_domain if immich_available_externally else 'http://' + ansible_nas_hostname + ':' + immich_port }}"
+immich_app_url: "https://{{ immich_hostname }}.{{ ansible_nas_domain }}"
 
 # specs
 immich_postgres_memory: 1g
