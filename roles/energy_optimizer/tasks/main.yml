@@ -46,7 +46,7 @@
         build:
           path: "{{ energy_optimizer_source_directory }}"
           target: runtime
-          pull: true
+          pull: "{{ energy_optimizer_build_pull | bool }}"
       when: energy_optimizer_build_locally | bool
 
     - name: Resolve Energy Optimizer image reference
@@ -75,22 +75,21 @@
           EO_TZ: "{{ ansible_nas_timezone }}"
           EO_HA_URL: "{{ energy_optimizer_ha_url }}"
           EO_HA_TOKEN: "{{ energy_optimizer_ha_token }}"
-          EO_HA_VERIFY_SSL: "{{ energy_optimizer_ha_verify_ssl | string | lower }}"
           EO_PSTRYK_API_KEY: "{{ energy_optimizer_pstryk_api_key }}"
-          EO_MQTT_ENABLED: "{{ energy_optimizer_mqtt_enabled | string | lower }}"
           EO_MQTT_HOST: "{{ mosquitto_container_name }}"
           EO_MQTT_PORT: "1883"
           EO_MQTT_USERNAME: "{{ mqtt_user }}"
           EO_MQTT_PASSWORD: "{{ mqtt_password }}"
-          EO_BATTERY_CAPACITY_KWH: "{{ energy_optimizer_battery_capacity_kwh | string }}"
-          EO_BATTERY_MAX_CHARGE_KW: "{{ energy_optimizer_battery_max_charge_kw | string }}"
-          EO_BATTERY_MAX_DISCHARGE_KW: "{{ energy_optimizer_battery_max_discharge_kw | string }}"
-          EO_BATTERY_SOC_MIN_PCT: "{{ energy_optimizer_battery_soc_min_pct | string }}"
-          EO_BATTERY_SOC_MAX_PCT: "{{ energy_optimizer_battery_soc_max_pct | string }}"
-          EO_BATTERY_ROUND_TRIP_EFFICIENCY: "{{ energy_optimizer_battery_round_trip_efficiency | string }}"
-          EO_SITE_IMPORT_LIMIT_KW: "{{ energy_optimizer_site_import_limit_kw | string }}"
-          EO_SITE_EXPORT_LIMIT_KW: "{{ energy_optimizer_site_export_limit_kw | string }}"
-          EO_INVERTER_LIMIT_KW: "{{ energy_optimizer_inverter_limit_kw | string }}"
+          EO_EV_CONTROL_ENABLED: "{{ energy_optimizer_ev_control_enabled | string | lower }}"
+          EO_EV_SWITCH_ENTITY: "{{ energy_optimizer_ev_switch_entity | default(omit, true) }}"
+          EO_EV_POWER_ENTITY: "{{ energy_optimizer_ev_power_entity | default(omit, true) }}"
+          EO_EV_SOC_ENTITY: "{{ energy_optimizer_ev_soc_entity | default(omit, true) }}"
+          EO_EV_CHARGING_STATUS_ENTITY: "{{ energy_optimizer_ev_charging_status_entity | default(omit, true) }}"
+          EO_EV_CHARGING_ACTIVE_ENTITY: "{{ energy_optimizer_ev_charging_active_entity | default(omit, true) }}"
+          EO_EV_CHARGE_TO_100_ENTITY: "{{ energy_optimizer_ev_charge_to_100_entity | default(omit, true) }}"
+          EO_EV_FAULT_ENTITIES: "{{ energy_optimizer_ev_fault_entities | default(omit, true) }}"
+          EO_EV_MINIMUM_TARGET_SOC_PCT: "{{ energy_optimizer_ev_minimum_target_soc_pct | default(omit, true) }}"
+          EO_EV_DEPARTURE_HOUR: "{{ energy_optimizer_ev_departure_hour | default(omit, true) }}"
           EO_PV_LAT: "{{ energy_optimizer_pv_lat | string }}"
           EO_PV_LON: "{{ energy_optimizer_pv_lon | string }}"
           EO_PV_PLANES: "{{ energy_optimizer_pv_planes }}"
@@ -115,6 +114,7 @@
           retries: 3
           start_period: 20s
           timeout: 5s
+      no_log: true
   when: energy_optimizer_enabled | bool
 
 - name: Stop Energy Optimizer
