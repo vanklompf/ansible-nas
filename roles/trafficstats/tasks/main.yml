@@ -1,5 +1,5 @@
 ---
-- name: Start TrafficStats
+- name: Start TrafficStats (Jeż Security)
   block:
     - name: Create TrafficStats Directories
       ansible.builtin.file:
@@ -8,18 +8,114 @@
       with_items:
         - "{{ trafficstats_data_directory }}"
 
-    - name: Create TrafficStats Docker Container
+    - name: Ensure Homepage images directory exists
+      ansible.builtin.file:
+        path: "{{ homepage_images_directory }}"
+        state: directory
+        mode: "0755"
+
+    - name: Install Jeż Security Homepage icon
+      ansible.builtin.copy:
+        src: jez-security.png
+        dest: "{{ homepage_images_directory }}/jez-security.png"
+        mode: "0644"
+      register: trafficstats_homepage_icon
+
+    # Homepage only serves newly added /images files after a container restart.
+    - name: Restart Homepage to pick up Jeż Security icon
       community.docker.docker_container:
-        container_default_behavior: no_defaults
-        name: "{{ trafficstats_container_name }}"
-        image: "{{ trafficstats_image_name }}:{{ trafficstats_image_version }}"
-        pull: true
-        volumes:
-          - "{{ trafficstats_data_directory }}:/data:rw"
-          - "{{ trafficstats_camera_storage_path }}:/media:ro"
-        ports:
-          - "{{ trafficstats_port }}:8080"
-        env:
+        name: "{{ homepage_container_name | default('homepage') }}"
+        state: started
+        restart: true
+      when:
+        - trafficstats_homepage_icon is changed
+        - homepage_enabled | default(false) | bool
+
+    - name: Validate TrafficStats source checkout exists
+      ansible.builtin.stat:
+        path: "{{ trafficstats_source_directory }}/Dockerfile"
+      register: trafficstats_source_dockerfile
+      when: trafficstats_build_locally | bool
+
+    - name: Fail when TrafficStats source is missing
+      ansible.builtin.assert:
+        that:
+          - trafficstats_source_dockerfile.stat.exists | default(false)
+        fail_msg: >-
+          trafficstats_build_locally is true but
+          {{ trafficstats_source_directory }}/Dockerfile was not found.
+          Clone vanklompf/TrafficStats there or set trafficstats_source_directory.
+      when: trafficstats_build_locally | bool
+
+    - name: Build Jeż Security image from source
+      community.docker.docker_image:
+        name: "{{ trafficstats_local_image_name }}"
+        tag: "{{ trafficstats_local_image_version }}"
+        source: build
+        force_source: "{{ trafficstats_image_force_rebuild | bool }}"
+        build:
+          path: "{{ trafficstats_source_directory }}"
+          pull: true
+      when: trafficstats_build_locally | bool
+
+    - name: Resolve TrafficStats image reference
+      ansible.builtin.set_fact:
+        trafficstats_effective_image: >-
+          {{ (trafficstats_local_image_name ~ ':' ~ trafficstats_local_image_version)
+             if (trafficstats_build_locally | bool)
+             else (trafficstats_image_name ~ ':' ~ trafficstats_image_version) }}
+        trafficstats_effective_pull: >-
+          {{ false if (trafficstats_build_locally | bool)
+             else (trafficstats_image_pull | bool) }}
+
+    - name: Ensure TrafficStats OIDC client secret is persisted on host
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
+      vars:
+        _host_secret_file: "{{ trafficstats_oidc_client_secret_file }}"
+        _host_secret_generate_cmd: openssl rand -hex 32
+        _host_secret_effective_var: trafficstats_oidc_client_secret_effective
+      when: trafficstats_oidc_enabled | bool
+
+    - name: Ensure TrafficStats session secret is persisted on host
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
+      vars:
+        _host_secret_file: "{{ trafficstats_session_secret_file }}"
+        _host_secret_generate_cmd: openssl rand -hex 32
+        _host_secret_effective_var: trafficstats_session_secret_effective
+        _host_secret_container_name: "{{ trafficstats_container_name }}"
+        _host_secret_container_env_key: SESSION_SECRET
+      when: trafficstats_oidc_enabled | bool
+
+    - name: Manage TrafficStats OIDC authentik blueprint
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/authentik_app_blueprint.yml"
+      vars:
+        _authentik_app_blueprint_enabled: "{{ trafficstats_oidc_enabled | bool }}"
+        _authentik_app_blueprint_filename: trafficstats.yaml
+        _authentik_app_blueprint_slug: "{{ trafficstats_hostname }}"
+        _authentik_app_blueprint_name: "{{ trafficstats_oidc_display_name }}"
+        _authentik_app_blueprint_client_secret: "{{ trafficstats_oidc_client_secret_effective | default('') }}"
+        _authentik_app_blueprint_launch_url: "{{ trafficstats_app_url }}"
+        _authentik_app_blueprint_redirect_uris:
+          - "{{ trafficstats_app_url }}/auth/oidc/callback"
+
+    # trafficstats runs after the authentik role in nas.yml, so apply the
+    # blueprint here instead of only from authentik's startup tasks.
+    - name: Apply TrafficStats OIDC authentik blueprint
+      community.docker.docker_container_exec:
+        container: "{{ authentik_worker_container_name | default('authentik_worker') }}"
+        command: ak apply_blueprint /blueprints/managed/trafficstats.yaml
+      register: trafficstats_blueprint_apply
+      changed_when: trafficstats_blueprint_apply.rc == 0
+      until: trafficstats_blueprint_apply.rc == 0
+      retries: 12
+      delay: 10
+      when:
+        - trafficstats_oidc_enabled | bool
+        - authentik_enabled | default(false) | bool
+
+    - name: Create Jeż Security Docker Container
+      vars:
+        _trafficstats_env_base:
           DAHUA_HOST: "{{ trafficstats_dahua_host }}"
           DAHUA_PORT: "{{ trafficstats_dahua_port }}"
           DAHUA_USER: "{{ trafficstats_dahua_user }}"
@@ -29,9 +125,35 @@
           DAHUA_INTRUSION_IVS_NAME: "{{ trafficstats_intrusion_event }}"
           VIDEO_CACHE_MAX_GB: "{{ trafficstats_video_cache_max_gb }}"
           CITY: "{{ trafficstats_city }}"
+          ANALYSIS_BACKFILL_DAYS: "7"
+          OLLAMA_HOST: "{{ trafficstats_ollama_host }}"
+          OLLAMA_MODEL: "{{ trafficstats_ollama_model }}"
           TZ: "{{ ansible_nas_timezone }}"
           PUID: "{{ trafficstats_user_id }}"
           PGID: "{{ trafficstats_group_id }}"
+          OIDC_ENABLED: "false"
+        _trafficstats_env_oidc:
+          OIDC_ENABLED: "true"
+          OIDC_CLIENT_ID: "{{ trafficstats_hostname }}"
+          OIDC_CLIENT_SECRET: "{{ trafficstats_oidc_client_secret_effective | default('') }}"
+          OIDC_ISSUER_URL: "{{ trafficstats_oidc_issuer_url }}"
+          APP_URL: "{{ trafficstats_app_url }}"
+          SESSION_SECRET: "{{ trafficstats_session_secret_effective | default('') }}"
+          OIDC_AUTO_LOGIN: "{{ 'true' if trafficstats_oidc_auto_login | bool else 'false' }}"
+          OIDC_SCOPES: "openid email profile"
+      community.docker.docker_container:
+        container_default_behavior: no_defaults
+        name: "{{ trafficstats_container_name }}"
+        image: "{{ trafficstats_effective_image }}"
+        pull: "{{ trafficstats_effective_pull | bool }}"
+        volumes:
+          - "{{ trafficstats_data_directory }}:/data:rw"
+          - "{{ trafficstats_camera_storage_path }}:/media:ro"
+        ports:
+          - "{{ trafficstats_port }}:8080"
+        networks:
+          - name: "{{ trafficstats_ollama_network_name }}"
+        env: "{{ _trafficstats_env_base | combine(_trafficstats_env_oidc if trafficstats_oidc_enabled | bool else {}) }}"
         restart_policy: unless-stopped
         memory: "{{ trafficstats_memory }}"
         labels:
@@ -42,16 +164,22 @@
           traefik.http.routers.trafficstats.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.trafficstats.loadbalancer.server.port: "8080"
           homepage.group: Home
-          homepage.name: TrafficStats
-          homepage.icon: mdi-car-multiple
+          homepage.name: "{{ trafficstats_homepage_name }}"
+          homepage.icon: "{{ trafficstats_homepage_icon }}"
           homepage.href: "https://{{ trafficstats_hostname }}.{{ ansible_nas_domain }}"
-          homepage.description: "Vehicle traffic counter via Dahua IVS"
+          homepage.description: "{{ trafficstats_homepage_description }}"
   when: trafficstats_enabled is true
 
-- name: Stop TrafficStats
+- name: Stop TrafficStats (Jeż Security)
   block:
-    - name: Stop TrafficStats
+    - name: Stop Jeż Security container
       community.docker.docker_container:
         name: "{{ trafficstats_container_name }}"
         state: absent
+        
+    - name: Remove TrafficStats OIDC authentik blueprint
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/authentik_app_blueprint.yml"
+      vars:
+        _authentik_app_blueprint_enabled: false
+        _authentik_app_blueprint_filename: trafficstats.yaml
   when: trafficstats_enabled is false

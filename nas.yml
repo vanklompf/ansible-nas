@@ -569,7 +569,7 @@
     - role: trailbase
       tags: [trailbase]
     - role: trafficstats
-      tags: [trafficstats]
+      tags: [trafficstats, core]
     - role: transmission
       tags: [transmission]
     - role: trilium

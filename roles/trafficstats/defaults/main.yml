@@ -8,14 +8,43 @@ trafficstats_data_directory: "{{ docker_home }}/trafficstats"
 # network
 trafficstats_port: "3896"
 trafficstats_hostname: "trafficstats"
+trafficstats_app_url: "https://{{ trafficstats_hostname }}.{{ ansible_nas_domain }}"
+trafficstats_ollama_network_name: "{{ ollama_network_name | default('ollama') }}"
+trafficstats_ollama_host: "http://ollama:11434"
+trafficstats_ollama_model: "qwen3-vl:8b"
+
+# --- OIDC / SSO (e.g. authentik) --------------------------------------------
+# Application slug and client_id match trafficstats_hostname in authentik.
+trafficstats_oidc_enabled: false
+# Client secret is auto-generated and persisted on the host.
+trafficstats_oidc_client_secret_file: "{{ trafficstats_data_directory }}/.oidc_client_secret"
+trafficstats_session_secret_file: "{{ trafficstats_data_directory }}/.session_secret"
+trafficstats_oidc_issuer_url: "{{ authentik_oidc_issuer_base }}/{{ trafficstats_hostname }}/"
+# Send browsers straight to the IdP when unauthenticated.
+trafficstats_oidc_auto_login: false
+# Display name shown in authentik (slug/client_id stay on trafficstats_hostname).
+trafficstats_oidc_display_name: "Jeż Security"
 
 # specs
-trafficstats_memory: 512m
+trafficstats_memory: 4g
 
 # docker
-trafficstats_container_name: trafficstats
+trafficstats_container_name: jez-security
 trafficstats_image_name: "ghcr.io/vanklompf/trafficstats"
 trafficstats_image_version: "latest"
+trafficstats_image_pull: true
+
+# local build (skip GHCR and build the image on the NAS from the TrafficStats source tree)
+trafficstats_build_locally: false
+trafficstats_source_directory: "{{ code_root }}/TrafficStats"
+trafficstats_local_image_name: jez-security
+trafficstats_local_image_version: local
+trafficstats_image_force_rebuild: false
+
+# Homepage dashboard tile
+trafficstats_homepage_name: "Jeż Security"
+trafficstats_homepage_icon: /images/jez-security.png
+trafficstats_homepage_description: "Traffic & perimeter watch"
 
 # Dahua camera settings
 trafficstats_dahua_host: "192.168.1.108"
