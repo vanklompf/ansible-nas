@@ -1,2 +1,6 @@
 ---
-{{ homepage_services_yaml | to_nice_yaml }}
+{% set services = homepage_services_yaml %}
+{% if steam_enabled | default(false) | bool and steam_sunshine_enabled | default(true) | bool %}
+{% set services = services + [{'Applications': [steam_sunshine_homepage_services_entry | default({})]}] %}
+{% endif %}
+{{ services | to_nice_yaml }}
