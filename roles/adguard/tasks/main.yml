@@ -46,7 +46,7 @@
           homepage.icon: "adguard-home"
           homepage.href: "https://{{ adguard_hostname }}.{{ ansible_nas_domain }}"
           homepage.widget.type: adguard
-          homepage.widget.url: "http://{{ ansible_nas_hostname }}:{{ adguard_port }}"
+          homepage.widget.url: "http://127.0.0.1:{{ adguard_port }}"
           homepage.widget.username: "{{ adguard_username }}"
           homepage.widget.password: "{{ adguard_password }}"
   when: adguard_enabled is true

@@ -19,7 +19,7 @@
         src: jez-security.png
         dest: "{{ homepage_images_directory }}/jez-security.png"
         mode: "0644"
-      register: trafficstats_homepage_icon
+      register: trafficstats_homepage_icon_copy
 
     # Homepage only serves newly added /images files after a container restart.
     - name: Restart Homepage to pick up Jeż Security icon
@@ -28,7 +28,7 @@
         state: started
         restart: true
       when:
-        - trafficstats_homepage_icon is changed
+        - trafficstats_homepage_icon_copy is changed
         - homepage_enabled | default(false) | bool
 
     - name: Validate TrafficStats source checkout exists

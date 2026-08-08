@@ -27,4 +27,5 @@ entries:
       key: {{ authentik_homepage_api_key_effective | to_json }}
       user: !KeyOf homepage-api-user
       intent: api
+      expiring: false
       description: Homepage widget
