@@ -24,6 +24,11 @@ steam_mode: primary
 steam_shm_size: 2G
 steam_memory: 16g
 
+# Host IPC leaves Steam/CEF /dev/shm orphans after crashes/OOM. Clean unused
+# u<uid>-Shm_* / ValveIPC files daily at 02:00 and around container start/stop.
+steam_shm_cleanup_enabled: true
+steam_shm_cleanup_script_path: /usr/local/sbin/steam-shm-cleanup
+
 # Private noVNC administration UI. Host networking exposes this port directly.
 steam_web_ui_mode: vnc
 steam_web_ui_port: "9083"

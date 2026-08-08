@@ -57,6 +57,15 @@ All persistent data lives under `steam_data_directory` (`{{ docker_home }}/steam
 ## Updating safely
 
 Never track a rolling image in an enabled deployment. Pull and test a candidate image separately, update `steam_image_digest`, run check mode, deploy the narrow tag, and retain the previous digest for rollback.
+## Host IPC `/dev/shm` cleanup
+
+Upstream compose uses `ipc: host`. Steam/CEF can leave orphaned `/dev/shm/u<uid>-Shm_*` (and Valve IPC) files that keep consuming host RAM after crashes or OOM kills. With `steam_shm_cleanup_enabled` (default `true`), the role:
+
+1. Installs `/usr/local/sbin/steam-shm-cleanup` (skips files still open via `fuser`)
+2. Runs it before container start and after disable/stop
+3. Schedules a daily root cron job at 02:00
+
+Set `steam_shm_cleanup_enabled: false` to remove the script and cron.
 
 ## Security and stability notes
 

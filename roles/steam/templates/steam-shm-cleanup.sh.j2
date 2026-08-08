@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Managed by ansible-nas steam role.
+# Removes unused Steam/CEF shared-memory orphans from host /dev/shm when using ipc:host.
+set -euo pipefail
+
+UID_NUM="{{ steam_user_id }}"
+SHM_DIR="/dev/shm"
+deleted=0
+skipped=0
+
+shopt -s nullglob
+candidates=(
+  "${SHM_DIR}/u${UID_NUM}-Shm_"*
+  "${SHM_DIR}/u${UID_NUM}-ValveIPC"*
+)
+
+candidate_count={{ '${#candidates[@]}' }}
+if [ "${candidate_count}" -eq 0 ]; then
+  echo "steam-shm-cleanup: nothing to clean"
+  exit 0
+fi
+
+for path in "${candidates[@]}"; do
+  if command -v fuser >/dev/null 2>&1 && fuser -- "${path}" >/dev/null 2>&1; then
+    skipped=$((skipped + 1))
+    continue
+  fi
+  rm -f -- "${path}"
+  deleted=$((deleted + 1))
+done
+
+echo "steam-shm-cleanup: deleted=${deleted} skipped_in_use=${skipped}"
