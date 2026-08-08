@@ -154,6 +154,21 @@
       when: homeassistant_templates_src is not failed and homeassistant_templates_src.stat.isdir is defined and homeassistant_templates_src.stat.isdir
       register: homeassistant_config_templates
 
+    - name: Check if user defined Home Assistant custom component overlays exist
+      ansible.builtin.stat:
+        path: "{{ inventory_dir }}/homeassistant/custom_components"
+      register: homeassistant_custom_components_src
+      ignore_errors: true
+
+    - name: Copy user defined Home Assistant custom component overlays
+      ansible.builtin.copy:
+        src: "{{ inventory_dir }}/homeassistant/custom_components/"
+        dest: "{{ homeassistant_directory }}/custom_components/"
+        mode: '0644'
+        directory_mode: '0755'
+      when: homeassistant_custom_components_src is not failed and homeassistant_custom_components_src.stat.isdir is defined and homeassistant_custom_components_src.stat.isdir
+      register: homeassistant_config_custom_components
+
     - name: Check if user defined Home Assistant Lovelace directory exists
       ansible.builtin.stat:
         path: "{{ inventory_dir }}/homeassistant/lovelace"
@@ -231,7 +246,7 @@
           - "{{ homeassistant_directory }}:/config:rw"
         network_mode: host
         restart_policy: unless-stopped
-        restart: "{{ homeassistant_config is changed or (homeassistant_config_include_defaults is defined and homeassistant_config_include_defaults is changed) or (homeassistant_config_extra is defined and homeassistant_config_extra is changed) or (homeassistant_config_automations is defined and homeassistant_config_automations is changed) or (homeassistant_config_templates is defined and homeassistant_config_templates is changed) or (homeassistant_config_lovelace_default is defined and homeassistant_config_lovelace_default is changed) or (homeassistant_config_lovelace is defined and homeassistant_config_lovelace is changed) or (homeassistant_config_www is defined and homeassistant_config_www is changed) }}"
+        restart: "{{ homeassistant_config is changed or (homeassistant_config_include_defaults is defined and homeassistant_config_include_defaults is changed) or (homeassistant_config_extra is defined and homeassistant_config_extra is changed) or (homeassistant_config_automations is defined and homeassistant_config_automations is changed) or (homeassistant_config_templates is defined and homeassistant_config_templates is changed) or (homeassistant_config_custom_components is defined and homeassistant_config_custom_components is changed) or (homeassistant_config_lovelace_default is defined and homeassistant_config_lovelace_default is changed) or (homeassistant_config_lovelace is defined and homeassistant_config_lovelace is changed) or (homeassistant_config_www is defined and homeassistant_config_www is changed) }}"
         env:
           TZ: "{{ ansible_nas_timezone }}"
         labels:
