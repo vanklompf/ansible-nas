@@ -1,7 +1,9 @@
+{# Optional display name; defaults to the slug (hostname / client_id). #}
+{% set _authentik_app_name = _authentik_app_blueprint_name | default(_authentik_app_blueprint_slug) -%}
 # Managed by ansible-nas. Do not edit on the host.
 version: 1
 metadata:
-  name: {{ (_authentik_app_blueprint_slug ~ ' OIDC') | to_json }}
+  name: {{ (_authentik_app_name ~ ' OIDC') | to_json }}
   labels:
     blueprints.goauthentik.io/instantiate: "true"
 entries:
@@ -10,7 +12,7 @@ entries:
     identifiers:
       name: {{ _authentik_app_blueprint_slug | to_json }}
     attrs:
-      name: {{ _authentik_app_blueprint_slug | to_json }}
+      name: {{ _authentik_app_name | to_json }}
       client_type: confidential
       client_id: {{ _authentik_app_blueprint_slug | to_json }}
       client_secret: {{ _authentik_app_blueprint_client_secret | to_json }}
@@ -35,7 +37,7 @@ entries:
     identifiers:
       slug: {{ _authentik_app_blueprint_slug | to_json }}
     attrs:
-      name: {{ _authentik_app_blueprint_slug | to_json }}
+      name: {{ _authentik_app_name | to_json }}
       slug: {{ _authentik_app_blueprint_slug | to_json }}
       provider: !KeyOf {{ _authentik_app_blueprint_slug }}-provider
       meta_launch_url: {{ _authentik_app_blueprint_launch_url | to_json }}

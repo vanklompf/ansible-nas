@@ -286,6 +286,17 @@
       delay: 10
       when: immich_oidc_enabled | bool
 
+    - name: Apply Energy Optimizer OIDC authentik blueprint
+      community.docker.docker_container_exec:
+        container: "{{ authentik_worker_container_name }}"
+        command: ak apply_blueprint /blueprints/managed/energy-optimizer.yaml
+      register: authentik_blueprint_energy_optimizer_apply
+      changed_when: authentik_blueprint_energy_optimizer_apply.rc == 0
+      until: authentik_blueprint_energy_optimizer_apply.rc == 0
+      retries: 12
+      delay: 10
+      when: energy_optimizer_oidc_enabled | bool
+
     - name: Apply Homepage API authentik blueprint
       community.docker.docker_container_exec:
         container: "{{ authentik_worker_container_name }}"

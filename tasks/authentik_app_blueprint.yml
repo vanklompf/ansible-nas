@@ -12,6 +12,9 @@
 #   _authentik_app_blueprint_launch_url    - meta_launch_url shown in authentik
 #   _authentik_app_blueprint_redirect_uris - list of allowed redirect URIs
 #
+# Optional when enabled:
+#   _authentik_app_blueprint_name          - display name in authentik (defaults to slug)
+#
 # authentik_blueprints_directory is defined in the authentik role defaults. When
 # only an app tag runs (e.g. --tags immich), fall back to the same path formula.
 

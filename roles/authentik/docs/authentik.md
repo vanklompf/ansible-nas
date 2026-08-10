@@ -29,13 +29,17 @@ Set `authentik_blueprint_sso_admin_enabled: true` together with the shared
 from `sso_admin_password` when set, otherwise generated and persisted on the
 host at `{{ authentik_data_directory }}/.sso_admin_password`.
 
-### App OIDC blueprints (Immich, Arcane, Dawarich)
+### App OIDC blueprints (Immich, Arcane, Dawarich, Energy Optimizer, Jeż Security / TrafficStats)
 
-OAuth2 provider/application blueprints for Immich, Arcane, and Dawarich are
-owned by each app role. Enable `immich_oidc_enabled`, `arcane_oidc_enabled`, or
-`dawarich_oidc_enabled` on the respective role; the app role templates its
-blueprint into `{{ authentik_blueprints_directory }}`, and this role applies it
-with `ak apply_blueprint` after the worker starts.
+OAuth2 provider/application blueprints for Immich, Arcane, Dawarich, Energy
+Optimizer (PvOpti), and Jeż Security (TrafficStats) are owned by each app role.
+Enable `immich_oidc_enabled`, `arcane_oidc_enabled`, `dawarich_oidc_enabled`,
+`energy_optimizer_oidc_enabled`, or `trafficstats_oidc_enabled` on the
+respective role; the app role templates its blueprint into
+`{{ authentik_blueprints_directory }}`. Immich/Arcane/Dawarich/Energy Optimizer
+blueprints are applied by this role after the worker starts; TrafficStats
+(which runs later in `nas.yml`) applies its own blueprint from the trafficstats
+role.
 
 See each app's documentation for OIDC inventory variables and redirect URIs.
 
@@ -45,7 +49,8 @@ Set `authentik_blueprint_homepage_api_enabled: true` (default) to provision a de
 service account and API token for the Homepage widget via blueprint. The token key is
 generated and persisted on the host at `{{ authentik_homepage_api_key_file }}`. Set
 `authentik_homepage_api_key` in inventory only to seed an existing key once when
-migrating.
+migrating. The token is non-expiring (`expiring: false`) so the Homepage widget does
+not break when Authentik's default token lifetime elapses.
 
 ## Homepage widget
 
