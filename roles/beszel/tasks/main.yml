@@ -7,7 +7,7 @@
         image: "{{ beszel_image_name }}:{{ beszel_image_version }}"
         hostname: "{{ ansible_nas_hostname }}.{{ ansible_nas_domain }}"
         state: started
-        pull: true
+        pull: missing
         ports:
           - "{{ beszel_port }}:8090"
         volumes:
@@ -60,7 +60,7 @@
         hostname: "{{ ansible_nas_hostname }}.{{ ansible_nas_domain }}"
         network_mode: host
         state: started
-        pull: true
+        pull: missing
         volumes:
           - /var/run/docker.sock:/var/run/docker.sock:ro
         restart_policy: unless-stopped

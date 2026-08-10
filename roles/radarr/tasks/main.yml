@@ -18,7 +18,7 @@
       community.docker.docker_container:
         name: "{{ radarr_container_name }}"
         image: "{{ radarr_image_name }}:{{ radarr_image_version }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ radarr_movies_directory }}:/movies:rw"
           - "{{ radarr_download_directory }}:/downloads:rw"

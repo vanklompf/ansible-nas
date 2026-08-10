@@ -5,7 +5,7 @@
       community.docker.docker_container:
         name: "{{ code_server_container_name }}"
         image: linuxserver/code-server
-        pull: true
+        pull: missing
         volumes:
           - "{{ code_server_config_directory }}:/config"
           - "{{ code_server_projects_directory }}:/code:rw"

@@ -53,6 +53,7 @@
         image: "redis:{{ redis_image_version }}"
         state: started
         pull: missing
+
         volumes:
           - "{{ dawarich_directory }}/shared:/data"
         networks:
@@ -72,6 +73,7 @@
         image: "{{ dawarich_pg_image_name }}:{{ dawarich_pg_image_version }}"
         state: started
         pull: missing
+
         volumes:
           - "{{ dawarich_directory }}/data:/var/lib/postgresql/data"
           - "{{ dawarich_directory }}/shared:/var/shared"
@@ -110,7 +112,7 @@
         name: "{{ dawarich_app_container_name }}"
         image: "{{ dawarich_image_name }}:{{ dawarich_image_version }}"
         state: started
-        pull: true
+        pull: missing
         entrypoint: ["web-entrypoint.sh", "bin/rails", "server", "-p", "3000", "-b", "::"]
         volumes:
           - "{{ dawarich_directory }}/public:/var/app/public"
@@ -164,7 +166,7 @@
         name: "{{ dawarich_sidekiq_container_name }}"
         image: "{{ dawarich_image_name }}:{{ dawarich_image_version }}"
         state: started
-        pull: true
+        pull: missing
         entrypoint: ["sidekiq-entrypoint.sh", "sidekiq"]
         volumes:
           - "{{ dawarich_directory }}/public:/var/app/public"

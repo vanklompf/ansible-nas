@@ -14,7 +14,7 @@
       community.docker.docker_container:
         name: "{{ tautulli_container_name }}"
         image: "{{ tautulli_image_name }}:{{ tautulli_image_version }}"
-        pull: true
+        pull: missing
         container_default_behavior: no_defaults
         volumes:
           - "{{ tautulli_config_directory }}:/config:rw"

@@ -18,7 +18,7 @@
       community.docker.docker_container:
         name: "{{ sonarr_container_name }}"
         image: "{{ sonarr_image_name }}:{{ sonarr_image_version }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ sonarr_movies_directory }}:/movies:rw"
           - "{{ sonarr_download_directory }}:/downloads:rw"

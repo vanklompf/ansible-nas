@@ -15,7 +15,7 @@
         name: "{{ duplicacy_container_name }}"
         image: saspus/duplicacy-web:mini
         hostname: "{{ duplicacy_hostname }}"
-        pull: true
+        pull: missing
         ports:
           - "{{ duplicacy_port }}:3875"
         volumes:

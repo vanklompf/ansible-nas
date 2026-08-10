@@ -19,7 +19,7 @@
       community.docker.docker_container:
         name: "{{ gatus_container_name }}"
         image: "{{ gatus_image_name }}:{{ gatus_image_version }}"
-        pull: true
+        pull: missing
         ports:
           - "{{ gatus_port }}:8080"
         volumes:

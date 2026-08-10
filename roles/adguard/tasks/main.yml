@@ -15,7 +15,7 @@
         image: "{{ adguard_image_name }}:{{ adguard_image_version }}"
         hostname: "{{ ansible_nas_hostname }}.{{ ansible_nas_domain }}"
         state: started
-        pull: true
+        pull: missing
         ports:
           - "{{ ansible_nas_tailscale_ip }}:53:53/udp"
           - "{{ ansible_nas_tailscale_ip }}:53:53/tcp"

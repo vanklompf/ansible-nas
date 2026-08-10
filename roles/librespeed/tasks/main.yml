@@ -13,7 +13,7 @@
         container_default_behavior: no_defaults
         name: "{{ librespeed_container_name }}"
         image: "{{ librespeed_image_name }}:{{ librespeed_image_version }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ librespeed_data_directory }}:/config:rw"
         ports:

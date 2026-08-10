@@ -66,7 +66,7 @@
              else (trafficstats_image_name ~ ':' ~ trafficstats_image_version) }}
         trafficstats_effective_pull: >-
           {{ false if (trafficstats_build_locally | bool)
-             else (trafficstats_image_pull | bool) }}
+             else trafficstats_image_pull }}
 
     - name: Ensure TrafficStats OIDC client secret is persisted on host
       ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
@@ -145,7 +145,7 @@
         container_default_behavior: no_defaults
         name: "{{ trafficstats_container_name }}"
         image: "{{ trafficstats_effective_image }}"
-        pull: "{{ trafficstats_effective_pull | bool }}"
+        pull: "{{ trafficstats_effective_pull }}"
         volumes:
           - "{{ trafficstats_data_directory }}:/data:rw"
           - "{{ trafficstats_camera_storage_path }}:/media:ro"

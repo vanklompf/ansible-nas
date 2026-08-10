@@ -13,7 +13,7 @@
       community.docker.docker_container:
         name: "{{ ftp_server_container_name }}"
         image: "{{ ftp_server_image_name }}:{{ ftp_server_image_version }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ ftp_server_data_directory }}:/home/{{ ftp_server_user }}"
         ports:

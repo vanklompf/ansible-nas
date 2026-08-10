@@ -64,6 +64,7 @@
         name: "{{ immich_postgres_container_name }}"
         image: "{{ immich_postgres_image }}:{{ immich_postgres_tag }}"
         pull: missing
+
         volumes:
           - "{{ immich_data_directory }}/database:/var/lib/postgresql/data:rw"
         networks:
@@ -83,6 +84,7 @@
         name: "{{ immich_redis_container_name }}"
         image: "{{ immich_redis_image }}:{{ immich_redis_tag }}"
         pull: missing
+
         command: --save 60 1 --loglevel warning
         volumes:
           - "{{ immich_data_directory }}/redis:/data:rw"
@@ -108,7 +110,7 @@
       community.docker.docker_container:
         name: "{{ immich_server_container_name }}"
         image: "{{ immich_server_image }}:{{ immich_server_tag }}"
-        pull: true
+        pull: missing
         volumes: "{{ _immich_server_volumes }}"
         networks:
           - name: "{{ immich_network_name }}"
@@ -157,7 +159,7 @@
       community.docker.docker_container:
         name: "{{ immich_machinelearning_container_name }}"
         image: "{{ immich_machinelearning_image }}:{{ immich_machinelearning_tag }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ immich_data_directory }}/model-cache:/cache"
         networks:
@@ -179,7 +181,7 @@
           community.docker.docker_container:
             name: "{{ immich_power_tools_container_name }}"
             image: "{{ immich_power_tools_image }}:{{ immich_power_tools_tag }}"
-            pull: true
+            pull: missing
             networks:
               - name: "{{ immich_network_name }}"
             network_mode: "{{ immich_network_name }}"

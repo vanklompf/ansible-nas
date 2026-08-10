@@ -29,6 +29,7 @@
         name: "{{ seafile_db_container_name }}"
         image: "{{ seafile_db_image_name }}:{{ seafile_db_image_version }}"
         pull: missing
+
         networks:
           - name: "{{ seafile_network_name }}"
         network_mode: "{{ seafile_network_name }}"
@@ -51,6 +52,7 @@
         name: "{{ seafile_redis_container_name }}"
         image: "redis:{{ redis_image_version }}"
         pull: missing
+
         command:
           ['/bin/sh', '-c', 'redis-server --requirepass {{ seafile_redis_password }}']
         networks:
@@ -64,7 +66,7 @@
         container_default_behavior: no_defaults
         name: "{{ seafile_container_name }}"
         image: "{{ seafile_image_name }}:{{ seafile_image_version }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ seafile_data_directory }}/seafile:/shared:rw"
         ports:

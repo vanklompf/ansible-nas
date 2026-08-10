@@ -241,7 +241,7 @@
       community.docker.docker_container:
         name: "{{ homeassistant_container_name }}"
         image: "{{ homeassistant_image_name }}:{{ homeassistant_image_version }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ homeassistant_directory }}:/config:rw"
         network_mode: host
@@ -268,7 +268,7 @@
       community.docker.docker_container:
         name: "{{ mosquitto_container_name }}"
         image: "{{ mosquitto_image_name }}:{{ mosquitto_image_version }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ mosquitto_directory }}/config:/mosquitto/config:rw"
           - "{{ mosquitto_directory }}/data:/mosquitto/data:rw"
@@ -288,7 +288,7 @@
       community.docker.docker_container:
         name: "{{ zigbee2mqtt_container_name }}"
         image: "{{ zigbee2mqtt_image_name }}:{{ zigbee2mqtt_image_version }}"
-        pull: true
+        pull: missing
         volumes:
           - "/run/udev:/run/udev:ro"
           - "{{ zigbee2mqtt_directory }}:/app/data:rw"
@@ -322,7 +322,7 @@
       community.docker.docker_container:
         name: "{{ piper_container_name }}"
         image: "{{ piper_image_name }}:{{ piper_image_version }}"
-        pull: true
+        pull: missing
         command:
           - "--voice"
           - "{{ piper_voice }}"

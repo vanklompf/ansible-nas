@@ -85,7 +85,7 @@
         container_default_behavior: no_defaults
         name: '{{ arcane_container_name }}'
         image: '{{ arcane_image_name }}:{{ arcane_image_version }}'
-        pull: true
+        pull: missing
         volumes:
           - /var/run/docker.sock:/var/run/docker.sock
           - '{{ arcane_data_directory }}/data:/app/data:rw'
@@ -148,7 +148,7 @@
         container_default_behavior: no_defaults
         name: '{{ arcane_agent_container_name }}'
         image: '{{ arcane_agent_image_name }}:{{ arcane_agent_image_version }}'
-        pull: true
+        pull: missing
         state: started
         volumes:
           - /var/run/docker.sock:/var/run/docker.sock

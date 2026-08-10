@@ -20,6 +20,7 @@
         name: "{{ paperless_ng_container_name_redis }}"
         image: "redis:{{ redis_image_version }}"
         pull: missing
+
         restart_policy: unless-stopped
         memory: "{{ paperless_ng_redis_memory }}"
         networks:
@@ -31,6 +32,7 @@
         name: "{{ paperless_ng_container_name_gotenberg }}"
         image: thecodingmachine/gotenberg
         pull: missing
+
         restart_policy: unless-stopped
         memory: "{{ paperless_ng_gotenberg_memory }}"
 
@@ -44,6 +46,7 @@
         name: "{{ paperless_ng_container_name_tika }}"
         image: apache/tika
         pull: missing
+
         restart_policy: unless-stopped
         memory: "{{ paperless_ng_tika_memory }}"
         networks:
@@ -53,7 +56,7 @@
       community.docker.docker_container:
         name: "{{ paperless_ng_container_name_uiserver }}"
         image: paperlessngx/paperless-ngx:latest
-        pull: true
+        pull: missing
         restart_policy: unless-stopped
         volumes:
           - "{{ paperless_ng_data_directory }}:/usr/src/paperless/data"

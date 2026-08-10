@@ -27,7 +27,7 @@
       community.docker.docker_container:
         name: '{{ traefik_container_name }}'
         image: '{{ traefik_image_name }}:{{ traefik_image_version }}'
-        pull: true
+        pull: missing
         network_mode: host
         volumes:
           - "{{ traefik_data_directory }}/traefik.yml:/etc/traefik/traefik.yml:ro"

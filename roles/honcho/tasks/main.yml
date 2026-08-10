@@ -46,6 +46,7 @@
         image: "{{ honcho_postgres_image_name }}:{{ honcho_postgres_image_version }}"
         state: started
         pull: missing
+
         command: ["postgres", "-c", "max_connections=200"]
         volumes:
           - "{{ honcho_postgres_data_directory }}:/var/lib/postgresql/data"
@@ -72,6 +73,7 @@
         image: "redis:{{ redis_image_version }}"
         state: started
         pull: missing
+
         volumes:
           - "{{ honcho_redis_data_directory }}:/data"
         networks:
@@ -90,7 +92,7 @@
         name: "{{ honcho_container_name }}"
         image: "{{ honcho_image_name }}:{{ honcho_image_version }}"
         state: started
-        pull: true
+        pull: missing
         entrypoint:
           - sh
           - -c
@@ -129,7 +131,7 @@
         name: "{{ honcho_deriver_container_name }}"
         image: "{{ honcho_image_name }}:{{ honcho_image_version }}"
         state: started
-        pull: true
+        pull: missing
         command:
           - /app/.venv/bin/python
           - -m

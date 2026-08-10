@@ -13,7 +13,7 @@ energy_optimizer_hostname: pv
 energy_optimizer_container_name: energy-optimizer
 energy_optimizer_image_name: ghcr.io/vanklompf/energy-optimizer
 energy_optimizer_image_version: latest
-energy_optimizer_image_pull: true
+energy_optimizer_image_pull: missing
 
 # local build (skip GHCR and build the image on the NAS from the PvOpti source tree)
 energy_optimizer_build_locally: false

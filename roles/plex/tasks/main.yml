@@ -15,7 +15,7 @@
       community.docker.docker_container:
         name: "{{ plex_container_name }}"
         image: "{{ plex_image_name }}:{{ plex_image_version }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ plex_config_directory }}:/config:rw"
           - "{{ plex_logs }}:/opt/plex/Library/Application Support/Plex Media Server/Logs:rw"
@@ -67,7 +67,7 @@
             container_default_behavior: no_defaults
             name: "{{ plex_autoscan_container_name }}"
             image: "{{ plex_autoscan_image_name }}:{{ plex_autoscan_image_version }}"
-            pull: true
+            pull: missing
             volumes:
               - "{{ plex_config_directory }}/autoscan:/config:rw"
               - "{{ plex_movies_directory }}:/movies:{{ plex_movies_permissions }}"
@@ -104,7 +104,7 @@
             container_default_behavior: no_defaults
             name: "{{ plex_metamanager_container_name }}"
             image: "{{ plex_metamanager_image_name }}:{{ plex_metamanager_image_version }}"
-            pull: true
+            pull: missing
             volumes:
               - "{{ plex_config_directory }}/metamanager:/config:rw"
               - "{{ plex_movies_directory }}:/movies:{{ plex_movies_permissions }}"

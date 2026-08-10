@@ -46,7 +46,7 @@
           - "{{ homepage_port }}:3000"
         restart_policy: unless-stopped
         restart: "{{ homepage_config is changed }}"
-        pull: true
+        pull: missing
         memory: "{{ homepage_memory }}"
         network_mode: "host"
         labels:

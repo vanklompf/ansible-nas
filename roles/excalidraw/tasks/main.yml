@@ -6,7 +6,7 @@
         container_default_behavior: no_defaults
         name: "{{ excalidraw_container_name }}"
         image: "{{ excalidraw_image_name }}:{{ excalidraw_image_version }}"
-        pull: true
+        pull: missing
         ports:
           - "{{ excalidraw_port }}:80"
         env:

@@ -13,7 +13,7 @@
         container_default_behavior: no_defaults
         name: "{{ libretranslate_container_name }}"
         image: "{{ libretranslate_image_name }}:{{ libretranslate_image_version }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ libretranslate_data_directory }}/data:/app/data"
         ports:

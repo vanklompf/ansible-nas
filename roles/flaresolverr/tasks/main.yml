@@ -16,7 +16,7 @@
       community.docker.docker_container:
         name: "{{ flaresolverr_container_name }}"
         image: flaresolverr/flaresolverr
-        pull: true
+        pull: missing
         volumes:
           - "{{ flaresolverr_config_directory }}:/config:rw"
         ports:

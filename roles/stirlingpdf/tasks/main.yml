@@ -15,7 +15,7 @@
         container_default_behavior: no_defaults
         name: "{{ stirlingpdf_container_name }}"
         image: "{{ stirlingpdf_image_name }}:{{ stirlingpdf_image_version }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ stirlingpdf_data_directory }}/trainingData:/usr/share/tessdata" # Required for extra OCR languages
           - "{{ stirlingpdf_data_directory }}/extraConfigs:/configs"

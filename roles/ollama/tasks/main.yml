@@ -23,7 +23,7 @@
           - "{{ ollama_port }}:11434"
         networks:
           - name: "{{ ollama_network_name }}"
-        pull: true
+        pull: missing
         restart_policy: unless-stopped
         memory: "{{ ollama_memory }}"
 
@@ -64,7 +64,7 @@
           - "{{ ollama_webui_port }}:8080"
         env:
           OLLAMA_BASE_URL: "http://{{ ollama_container_name }}:11434"
-        pull: true
+        pull: missing
         restart_policy: unless-stopped
         memory: "{{ ollama_webui_memory }}"
         labels:

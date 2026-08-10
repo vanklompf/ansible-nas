@@ -51,7 +51,7 @@
         force_source: "{{ quartz_image_force_rebuild or (quartz_repo_checkout is defined and quartz_repo_checkout.changed) }}"
         build:
           path: "{{ quartz_source_directory }}"
-          pull: true
+          pull: missing
 
     - name: Create Quartz Docker Container
       community.docker.docker_container:

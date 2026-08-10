@@ -14,7 +14,7 @@
         container_default_behavior: no_defaults
         name: "{{ basen_container_name }}"
         image: "{{ basen_docker_image }}:{{ basen_docker_tag }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ basen_data_directory }}:/app/instance:rw"
         env:

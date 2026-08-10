@@ -57,14 +57,14 @@
              else (energy_optimizer_image_name ~ ':' ~ energy_optimizer_image_version) }}
         energy_optimizer_effective_pull: >-
           {{ false if (energy_optimizer_build_locally | bool)
-             else (energy_optimizer_image_pull | bool) }}
+             else energy_optimizer_image_pull }}
 
     - name: Create Energy Optimizer container
       community.docker.docker_container:
         name: "{{ energy_optimizer_container_name }}"
         image: "{{ energy_optimizer_effective_image }}"
         state: started
-        pull: "{{ energy_optimizer_effective_pull | bool }}"
+        pull: "{{ energy_optimizer_effective_pull }}"
         volumes:
           - "{{ energy_optimizer_data_directory }}:/data:rw"
         network_mode: "{{ homeassistant_network_name }}"

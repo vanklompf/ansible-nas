@@ -13,7 +13,7 @@
         container_default_behavior: no_defaults
         name: "{{ handbrake_container_name }}"
         image: "{{ handbrake_image_name }}:{{ handbrake_image_version }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ handbrake_data_directory }}/config:/config:rw"
           - "{{ samba_shares_root }}:/storage:ro"

@@ -64,7 +64,7 @@
       community.docker.docker_container:
         name: "{{ stats_influxdb_container_name }}"
         image: "{{ stats_influxdb_docker_image_name }}:{{ stats_influxdb_docker_image_version }}"
-        pull: true
+        pull: missing
         networks:
           - name: "{{ stats_network_name }}"
         network_mode: "{{ stats_network_name }}"
@@ -125,7 +125,7 @@
       community.docker.docker_container:
         name: "{{ stats_influxdb_explorer_container_name }}"
         image: "{{ stats_influxdb_explorer_docker_image_name }}:{{ stats_influxdb_explorer_docker_image_version }}"
-        pull: true
+        pull: missing
         networks:
           - name: "{{ stats_network_name }}"
         network_mode: "{{ stats_network_name }}"

@@ -102,7 +102,7 @@
       community.docker.docker_container:
         name: "{{ authentik_database_container_name }}"
         image: "{{ authentik_database_image_name }}:{{ authentik_database_image_tag }}"
-        pull: true
+        pull: missing
         volumes:
           - "{{ authentik_data_directory }}/database:/var/lib/postgresql/data:rw"
         networks:
@@ -151,7 +151,7 @@
       community.docker.docker_container:
         name: "{{ authentik_server_container_name }}"
         image: "{{ authentik_image_name }}:{{ authentik_image_tag }}"
-        pull: true
+        pull: missing
         command: server
         volumes:
           - "{{ authentik_data_directory }}/media:/media:rw"
@@ -199,7 +199,7 @@
       community.docker.docker_container:
         name: "{{ authentik_worker_container_name }}"
         image: "{{ authentik_image_name }}:{{ authentik_image_tag }}"
-        pull: true
+        pull: missing
         command: worker
         volumes:
           - "{{ authentik_data_directory }}/certs:/certs:rw"

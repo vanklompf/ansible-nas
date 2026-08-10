@@ -58,7 +58,7 @@
       community.docker.docker_container:
         name: "{{ stats_grafana_container_name }}"
         image: "{{ stats_grafana_docker_image_name }}:{{ stats_grafana_docker_image_version }}"
-        pull: true
+        pull: missing
         networks:
           - name: "{{ stats_network_name }}"
         network_mode: "{{ stats_network_name }}"

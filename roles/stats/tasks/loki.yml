@@ -27,7 +27,7 @@
       community.docker.docker_container:
         name: "{{ stats_loki_container_name }}"
         image: "{{ stats_loki_docker_image_name }}:{{ stats_loki_docker_image_version }}"
-        pull: true
+        pull: missing
         networks:
           - name: "{{ stats_network_name }}"
         network_mode: "{{ stats_network_name }}"
@@ -62,7 +62,7 @@
       community.docker.docker_container:
         name: "{{ stats_promtail_container_name }}"
         image: "{{ stats_promtail_docker_image_name }}:{{ stats_promtail_docker_image_version }}"
-        pull: true
+        pull: missing
         networks:
           - name: "{{ stats_network_name }}"
         network_mode: "{{ stats_network_name }}"

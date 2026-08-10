@@ -32,7 +32,7 @@ trafficstats_memory: 4g
 trafficstats_container_name: jez-security
 trafficstats_image_name: "ghcr.io/vanklompf/trafficstats"
 trafficstats_image_version: "latest"
-trafficstats_image_pull: true
+trafficstats_image_pull: missing
 
 # local build (skip GHCR and build the image on the NAS from the TrafficStats source tree)
 trafficstats_build_locally: false

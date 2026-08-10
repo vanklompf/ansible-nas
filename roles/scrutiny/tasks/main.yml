@@ -13,7 +13,7 @@
       community.docker.docker_container:
         name: "{{ scrutiny_container_name }}"
         image: "{{ scrutiny_image_name }}:{{ scrutiny_image_version }}"
-        pull: true
+        pull: missing
         capabilities:
           - SYS_RAWIO
           - SYS_ADMIN 

@@ -14,7 +14,7 @@
       community.docker.docker_container:
         name: "{{ netalertx_container_name }}"
         image: "{{ netalertx_image_name }}:{{ netalertx_image_version }}"
-        pull: true
+        pull: missing
         network_mode: host
         cap_drop:
           - ALL

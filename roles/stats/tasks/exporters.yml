@@ -12,7 +12,7 @@
           - name: "{{ stats_network_name }}"
         network_mode: "{{ stats_network_name }}"
         container_default_behavior: no_defaults
-        pull: true
+        pull: missing
         privileged: true
         ports:
           - "{{ stats_prometheus_smartctl_port }}:9902"
@@ -23,7 +23,7 @@
       community.docker.docker_container:
         name: "{{ stats_hddtemp_container_name }}"
         image: "{{ stats_hddtemp_docker_image_name }}:{{ stats_hddtemp_docker_image_tag }}"
-        pull: true
+        pull: missing
         privileged: true
         ports:
           - "{{ stats_hddtemp_port }}:7634"
@@ -43,7 +43,7 @@
           - name: "{{ stats_network_name }}"
         network_mode: "{{ stats_network_name }}"
         container_default_behavior: no_defaults
-        pull: true
+        pull: missing
         ports: "{{ stats_speedtest_exporter_port }}:9798"
         restart_policy: unless-stopped
         memory: "{{ stats_speedtest_exporter_memory }}"
