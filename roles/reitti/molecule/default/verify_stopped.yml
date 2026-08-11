@@ -1,0 +1,54 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+
+    - name: Try and stop and remove Reitti
+      community.docker.docker_container:
+        name: "{{ reitti_container_name }}"
+        state: absent
+      register: result_reitti
+
+    - name: Try and stop and remove Reitti Tile Cache
+      community.docker.docker_container:
+        name: "{{ reitti_tile_cache_container_name }}"
+        state: absent
+      register: result_tile_cache
+
+    - name: Try and stop and remove Reitti Photon
+      community.docker.docker_container:
+        name: "{{ reitti_photon_container_name }}"
+        state: absent
+      register: result_photon
+
+    - name: Try and stop and remove Reitti RabbitMQ
+      community.docker.docker_container:
+        name: "{{ reitti_rabbitmq_container_name }}"
+        state: absent
+      register: result_rabbitmq
+
+    - name: Try and stop and remove Reitti Redis
+      community.docker.docker_container:
+        name: "{{ reitti_redis_container_name }}"
+        state: absent
+      register: result_redis
+
+    - name: Try and stop and remove Reitti PostGIS
+      community.docker.docker_container:
+        name: "{{ reitti_postgis_container_name }}"
+        state: absent
+      register: result_postgis
+
+    - name: Check Reitti containers are stopped
+      ansible.builtin.assert:
+        that:
+          - not result_reitti.changed
+          - not result_tile_cache.changed
+          - not result_photon.changed
+          - not result_rabbitmq.changed
+          - not result_redis.changed
+          - not result_postgis.changed

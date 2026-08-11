@@ -1,0 +1,40 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Include vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+
+    - name: Try and stop and remove Dawarich Redis
+      community.docker.docker_container:
+        name: "{{ dawarich_redis_container_name }}"
+        state: absent
+      register: result_redis
+
+    - name: Try and stop and remove Dawarich Postgres
+      community.docker.docker_container:
+        name: "{{ dawarich_pg_container_name }}"
+        state: absent
+      register: result_pg
+
+    - name: Try and stop and remove Dawarich App
+      community.docker.docker_container:
+        name: "{{ dawarich_app_container_name }}"
+        state: absent
+      register: result_app
+
+    - name: Try and stop and remove Dawarich Sidekiq
+      community.docker.docker_container:
+        name: "{{ dawarich_sidekiq_container_name }}"
+        state: absent
+      register: result_sidekiq
+
+    - name: Check Dawarich containers are stopped
+      ansible.builtin.assert:
+        that:
+          - not result_redis.changed
+          - not result_pg.changed
+          - not result_app.changed
+          - not result_sidekiq.changed
