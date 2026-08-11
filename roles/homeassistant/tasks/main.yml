@@ -89,6 +89,7 @@
         - scenes.yaml
         - climate.yaml
         - input_booleans.yaml
+        - input_datetimes.yaml
         - input_numbers.yaml
         - sensors.yaml
       register: homeassistant_include_files_src
@@ -108,6 +109,8 @@
         - name: climate.yaml
           content: "[]\n"
         - name: input_booleans.yaml
+          content: "{}\n"
+        - name: input_datetimes.yaml
           content: "{}\n"
         - name: input_numbers.yaml
           content: "{}\n"
@@ -212,6 +215,7 @@
         name: "{{ homeassistant_influxdb_container_name }}"
         image: "{{ homeassistant_influxdb_image_name }}:{{ homeassistant_influxdb_image_version }}"
         pull: missing
+
         volumes:
           - "{{ homeassistant_influxdb_directory }}:/var/lib/influxdb2:rw"
         ports:

@@ -8,6 +8,19 @@ energy_optimizer_data_directory: "{{ docker_home }}/energy-optimizer"
 # network
 energy_optimizer_port: "8320"
 energy_optimizer_hostname: pv
+energy_optimizer_app_url: "https://{{ energy_optimizer_hostname }}.{{ ansible_nas_domain }}"
+
+# --- OIDC / SSO (e.g. authentik) --------------------------------------------
+# Application slug and client_id match energy_optimizer_hostname in authentik.
+energy_optimizer_oidc_enabled: false
+# Client secret is auto-generated and persisted on the host.
+energy_optimizer_oidc_client_secret_file: "{{ energy_optimizer_data_directory }}/.oidc_client_secret"
+energy_optimizer_session_secret_file: "{{ energy_optimizer_data_directory }}/.session_secret"
+energy_optimizer_oidc_issuer_url: "{{ authentik_oidc_issuer_base }}/{{ energy_optimizer_hostname }}/"
+# Send browsers straight to the IdP when unauthenticated.
+energy_optimizer_oidc_auto_login: false
+# Display name shown in authentik (slug/client_id stay on energy_optimizer_hostname).
+energy_optimizer_oidc_display_name: "Energy Optimizer"
 
 # docker
 energy_optimizer_container_name: energy-optimizer
@@ -28,7 +41,72 @@ energy_optimizer_mode: dry_run
 energy_optimizer_ha_url: "http://{{ ansible_nas_ip }}:{{ homeassistant_port }}"
 energy_optimizer_ha_token: ""
 energy_optimizer_pstryk_api_key: ""
+energy_optimizer_battery_soc_min_pct: "15"
+energy_optimizer_battery_hard_soc_min_pct: "0"
 energy_optimizer_ev_control_enabled: false
+energy_optimizer_ev_relay_settle_seconds: "5"
+energy_optimizer_ev_relay_verify_interval_seconds: "2"
+energy_optimizer_ev_relay_verify_timeout_seconds: "30"
+energy_optimizer_ev_relay_failure_backoff_minutes: "30"
+energy_optimizer_ev_forecast_surplus_factor: "0.8"
+energy_optimizer_ev_battery_full_soc_pct: "95"
+
+# Stationary battery control. These defaults are intentionally non-actuating.
+# Planner permissions are separate from the physical actuation gates below.
+energy_optimizer_battery_control_enabled: false
+energy_optimizer_battery_control_arm_token: ""
+energy_optimizer_battery_export_enabled: false
+energy_optimizer_battery_control_grid_charge_enabled: false
+energy_optimizer_battery_control_authorize_discharge: false
+energy_optimizer_battery_control_authorize_export: false
+energy_optimizer_battery_control_number_register_ack_reliable: false
+energy_optimizer_battery_control_supported_directions: '["FALLBACK","IDLE","CHARGE"]'
+energy_optimizer_battery_control_remote_ems_switch_entity: switch.sigen_plant_remote_ems_controlled_by_home_assistant
+energy_optimizer_battery_control_mode_select_entity: select.sigen_plant_remote_ems_control_mode
+energy_optimizer_battery_control_charge_limit_entity: number.sigen_plant_ess_max_charging_limit
+energy_optimizer_battery_control_discharge_limit_entity: number.sigen_plant_ess_max_discharging_limit
+energy_optimizer_battery_control_charge_cutoff_entity: number.sigen_plant_ess_charge_cut_off_state_of_charge
+energy_optimizer_battery_control_discharge_cutoff_entity: number.sigen_plant_ess_discharge_cut_off_state_of_charge
+energy_optimizer_battery_control_watchdog_health_entity: ""
+energy_optimizer_battery_control_watchdog_ack_entity: ""
+energy_optimizer_battery_control_mode_standby: Standby
+energy_optimizer_battery_control_mode_charge_grid_first: Command Charging (Grid First)
+energy_optimizer_battery_control_mode_charge_pv_first: Command Charging (PV First)
+energy_optimizer_battery_control_mode_discharge_pv_first: Command Discharging (PV First)
+energy_optimizer_battery_control_mode_discharge_ess_first: Command Discharging (ESS First)
+energy_optimizer_battery_control_mode_max_self_consumption: Maximum Self Consumption
+energy_optimizer_battery_control_command_mode: Command Charging (Grid First)
+energy_optimizer_battery_control_fallback_mode: Standby
+energy_optimizer_battery_control_require_remote_ems_off: true
+energy_optimizer_battery_control_local_charge_limit_kw: "8.8"
+energy_optimizer_battery_control_local_discharge_limit_kw: "9.6"
+energy_optimizer_battery_control_local_charge_cutoff_pct: "100"
+energy_optimizer_battery_control_local_discharge_cutoff_pct: "0"
+energy_optimizer_battery_control_max_grid_import_kw: "11.0"
+energy_optimizer_battery_control_max_grid_export_kw: "6.0"
+energy_optimizer_battery_control_max_charge_kw: "8.8"
+energy_optimizer_battery_control_max_discharge_kw: "9.6"
+energy_optimizer_battery_control_min_soc_pct: "15"
+energy_optimizer_battery_control_max_soc_pct: "98"
+energy_optimizer_battery_control_charge_cutoff_margin_pct: "0.5"
+energy_optimizer_battery_control_discharge_cutoff_margin_pct: "0.5"
+energy_optimizer_battery_control_cadence_seconds: "30"
+energy_optimizer_battery_control_max_plan_age_seconds: "900"
+energy_optimizer_battery_control_max_telemetry_age_seconds: "120"
+energy_optimizer_battery_control_command_settle_seconds: "2"
+energy_optimizer_battery_control_command_poll_seconds: "1"
+energy_optimizer_battery_control_command_timeout_seconds: "30"
+energy_optimizer_battery_control_physical_verify_timeout_seconds: "15"
+energy_optimizer_battery_control_heartbeat_interval_seconds: "15"
+energy_optimizer_battery_control_heartbeat_expiry_seconds: "60"
+energy_optimizer_battery_control_min_dwell_seconds: "60"
+energy_optimizer_battery_control_standby_neutral_band_kw: "0.12"
+energy_optimizer_battery_control_deadband_kw: "0.12"
+energy_optimizer_battery_control_max_power_step_kw: "0.5"
+energy_optimizer_battery_control_max_ramp_kw_per_s: "0.5"
+energy_optimizer_battery_control_retry_limit: "2"
+energy_optimizer_battery_control_lockout_duration_seconds: "3600"
+energy_optimizer_battery_control_activation_margin_pln_kwh: "0.05"
 
 # PV forecast (example coords; override lat/lon in inventory)
 # Forecast.Solar azimuth is measured from south: east is negative, west is positive.

@@ -37,6 +37,29 @@
           Clone vanklompf/PvOpti there or set energy_optimizer_source_directory.
       when: energy_optimizer_build_locally | bool
 
+    - name: Validate Energy Optimizer battery control activation gates
+      ansible.builtin.assert:
+        that:
+          - energy_optimizer_mode in ['dry_run', 'control']
+          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_enabled | bool)
+          - energy_optimizer_mode != 'control' or energy_optimizer_battery_control_arm_token == 'pvopti-battery-control-armed'
+          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_number_register_ack_reliable | bool)
+          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_require_remote_ems_off | bool)
+          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_remote_ems_switch_entity | length > 0)
+          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_mode_select_entity | length > 0)
+          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_charge_limit_entity | length > 0)
+          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_discharge_limit_entity | length > 0)
+          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_charge_cutoff_entity | length > 0)
+          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_discharge_cutoff_entity | length > 0)
+          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_watchdog_health_entity | length > 0)
+          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_watchdog_ack_entity | length > 0)
+          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_fallback_mode | length > 0)
+        fail_msg: >-
+          Unsafe PvOpti battery-control configuration. Control mode requires the independent
+          enable and arm-token gates, reliable register acknowledgement, exact entity and
+          watchdog mappings, and a verified fallback that leaves Remote EMS off.
+      no_log: true
+
     - name: Build Energy Optimizer image from PvOpti source
       community.docker.docker_image:
         name: "{{ energy_optimizer_local_image_name }}"
@@ -59,23 +82,73 @@
           {{ false if (energy_optimizer_build_locally | bool)
              else energy_optimizer_image_pull }}
 
+    - name: Ensure Energy Optimizer OIDC client secret is persisted on host
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
+      vars:
+        _host_secret_file: "{{ energy_optimizer_oidc_client_secret_file }}"
+        _host_secret_generate_cmd: openssl rand -hex 32
+        _host_secret_effective_var: energy_optimizer_oidc_client_secret_effective
+      when: energy_optimizer_oidc_enabled | bool
+
+    - name: Ensure Energy Optimizer session secret is persisted on host
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/ensure_host_secret.yml"
+      vars:
+        _host_secret_file: "{{ energy_optimizer_session_secret_file }}"
+        _host_secret_generate_cmd: openssl rand -hex 32
+        _host_secret_effective_var: energy_optimizer_session_secret_effective
+        _host_secret_container_name: "{{ energy_optimizer_container_name }}"
+        _host_secret_container_env_key: SESSION_SECRET
+      when: energy_optimizer_oidc_enabled | bool
+
+    - name: Manage Energy Optimizer OIDC authentik blueprint
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/authentik_app_blueprint.yml"
+      vars:
+        _authentik_app_blueprint_enabled: "{{ energy_optimizer_oidc_enabled | bool }}"
+        _authentik_app_blueprint_filename: energy-optimizer.yaml
+        _authentik_app_blueprint_slug: "{{ energy_optimizer_hostname }}"
+        _authentik_app_blueprint_name: "{{ energy_optimizer_oidc_display_name }}"
+        _authentik_app_blueprint_client_secret: "{{ energy_optimizer_oidc_client_secret_effective | default('') }}"
+        _authentik_app_blueprint_launch_url: "{{ energy_optimizer_app_url }}"
+        _authentik_app_blueprint_redirect_uris:
+          - "{{ energy_optimizer_app_url }}/auth/oidc/callback"
+
+    # energy_optimizer runs before authentik in nas.yml. On a full play the
+    # authentik role applies this blueprint after the worker starts. When only
+    # the energy_optimizer tag is used and the worker is already up, apply here.
+    - name: Check whether authentik worker is already running
+      community.docker.docker_container_info:
+        name: "{{ authentik_worker_container_name | default('authentik_worker') }}"
+      register: energy_optimizer_authentik_worker
+      failed_when: false
+      when:
+        - energy_optimizer_oidc_enabled | bool
+        - authentik_enabled | default(false) | bool
+
+    - name: Apply Energy Optimizer OIDC authentik blueprint
+      community.docker.docker_container_exec:
+        container: "{{ authentik_worker_container_name | default('authentik_worker') }}"
+        command: ak apply_blueprint /blueprints/managed/energy-optimizer.yaml
+      register: energy_optimizer_blueprint_apply
+      changed_when: energy_optimizer_blueprint_apply.rc == 0
+      until: energy_optimizer_blueprint_apply.rc == 0
+      retries: 12
+      delay: 10
+      when:
+        - energy_optimizer_oidc_enabled | bool
+        - authentik_enabled | default(false) | bool
+        - energy_optimizer_authentik_worker.Exists | default(false)
+        - energy_optimizer_authentik_worker.container.State.Running | default(false)
+
     - name: Create Energy Optimizer container
-      community.docker.docker_container:
-        name: "{{ energy_optimizer_container_name }}"
-        image: "{{ energy_optimizer_effective_image }}"
-        state: started
-        pull: "{{ energy_optimizer_effective_pull }}"
-        volumes:
-          - "{{ energy_optimizer_data_directory }}:/data:rw"
-        network_mode: "{{ homeassistant_network_name }}"
-        ports:
-          - "{{ energy_optimizer_port }}:8320"
-        env:
+      vars:
+        _energy_optimizer_env_base:
           EO_MODE: "{{ energy_optimizer_mode }}"
           EO_TZ: "{{ ansible_nas_timezone }}"
           EO_HA_URL: "{{ energy_optimizer_ha_url }}"
           EO_HA_TOKEN: "{{ energy_optimizer_ha_token }}"
           EO_PSTRYK_API_KEY: "{{ energy_optimizer_pstryk_api_key }}"
+          EO_BATTERY_SOC_MIN_PCT: "{{ energy_optimizer_battery_soc_min_pct }}"
+          EO_BATTERY_HARD_SOC_MIN_PCT: "{{ energy_optimizer_battery_hard_soc_min_pct }}"
           EO_MQTT_HOST: "{{ mosquitto_container_name }}"
           EO_MQTT_PORT: "1883"
           EO_MQTT_USERNAME: "{{ mqtt_user }}"
@@ -90,9 +163,92 @@
           EO_EV_FAULT_ENTITIES: "{{ energy_optimizer_ev_fault_entities | default(omit, true) }}"
           EO_EV_MINIMUM_TARGET_SOC_PCT: "{{ energy_optimizer_ev_minimum_target_soc_pct | default(omit, true) }}"
           EO_EV_DEPARTURE_HOUR: "{{ energy_optimizer_ev_departure_hour | default(omit, true) }}"
+          EO_EV_MIN_ON_MINUTES: "{{ energy_optimizer_ev_min_on_minutes | default(omit, true) }}"
+          EO_EV_MIN_OFF_MINUTES: "{{ energy_optimizer_ev_min_off_minutes | default(omit, true) }}"
+          EO_EV_RELAY_SETTLE_SECONDS: "{{ energy_optimizer_ev_relay_settle_seconds }}"
+          EO_EV_RELAY_VERIFY_INTERVAL_SECONDS: "{{ energy_optimizer_ev_relay_verify_interval_seconds }}"
+          EO_EV_RELAY_VERIFY_TIMEOUT_SECONDS: "{{ energy_optimizer_ev_relay_verify_timeout_seconds }}"
+          EO_EV_RELAY_FAILURE_BACKOFF_MINUTES: "{{ energy_optimizer_ev_relay_failure_backoff_minutes }}"
+          EO_EV_FORECAST_SURPLUS_FACTOR: "{{ energy_optimizer_ev_forecast_surplus_factor }}"
+          EO_EV_BATTERY_FULL_SOC_PCT: "{{ energy_optimizer_ev_battery_full_soc_pct }}"
+          EO_BATTERY_CONTROL_ENABLED: "{{ energy_optimizer_battery_control_enabled | string | lower }}"
+          EO_BATTERY_CONTROL_ARM_TOKEN: "{{ energy_optimizer_battery_control_arm_token }}"
+          EO_BATTERY_EXPORT_ENABLED: "{{ energy_optimizer_battery_export_enabled | string | lower }}"
+          EO_BATTERY_CONTROL_GRID_CHARGE_ENABLED: "{{ energy_optimizer_battery_control_grid_charge_enabled | string | lower }}"
+          EO_BATTERY_CONTROL_AUTHORIZE_DISCHARGE: "{{ energy_optimizer_battery_control_authorize_discharge | string | lower }}"
+          EO_BATTERY_CONTROL_AUTHORIZE_EXPORT: "{{ energy_optimizer_battery_control_authorize_export | string | lower }}"
+          EO_BATTERY_CONTROL_NUMBER_REGISTER_ACK_RELIABLE: "{{ energy_optimizer_battery_control_number_register_ack_reliable | string | lower }}"
+          EO_BATTERY_CONTROL_SUPPORTED_DIRECTIONS: "{{ energy_optimizer_battery_control_supported_directions }}"
+          EO_BATTERY_CONTROL_REMOTE_EMS_SWITCH_ENTITY: "{{ energy_optimizer_battery_control_remote_ems_switch_entity }}"
+          EO_BATTERY_CONTROL_MODE_SELECT_ENTITY: "{{ energy_optimizer_battery_control_mode_select_entity }}"
+          EO_BATTERY_CONTROL_CHARGE_LIMIT_ENTITY: "{{ energy_optimizer_battery_control_charge_limit_entity }}"
+          EO_BATTERY_CONTROL_DISCHARGE_LIMIT_ENTITY: "{{ energy_optimizer_battery_control_discharge_limit_entity }}"
+          EO_BATTERY_CONTROL_CHARGE_CUTOFF_ENTITY: "{{ energy_optimizer_battery_control_charge_cutoff_entity }}"
+          EO_BATTERY_CONTROL_DISCHARGE_CUTOFF_ENTITY: "{{ energy_optimizer_battery_control_discharge_cutoff_entity }}"
+          EO_BATTERY_CONTROL_WATCHDOG_HEALTH_ENTITY: "{{ energy_optimizer_battery_control_watchdog_health_entity }}"
+          EO_BATTERY_CONTROL_WATCHDOG_ACK_ENTITY: "{{ energy_optimizer_battery_control_watchdog_ack_entity }}"
+          EO_BATTERY_CONTROL_MODE_STANDBY: "{{ energy_optimizer_battery_control_mode_standby }}"
+          EO_BATTERY_CONTROL_MODE_CHARGE_GRID_FIRST: "{{ energy_optimizer_battery_control_mode_charge_grid_first }}"
+          EO_BATTERY_CONTROL_MODE_CHARGE_PV_FIRST: "{{ energy_optimizer_battery_control_mode_charge_pv_first }}"
+          EO_BATTERY_CONTROL_MODE_DISCHARGE_PV_FIRST: "{{ energy_optimizer_battery_control_mode_discharge_pv_first }}"
+          EO_BATTERY_CONTROL_MODE_DISCHARGE_ESS_FIRST: "{{ energy_optimizer_battery_control_mode_discharge_ess_first }}"
+          EO_BATTERY_CONTROL_MODE_MAX_SELF_CONSUMPTION: "{{ energy_optimizer_battery_control_mode_max_self_consumption }}"
+          EO_BATTERY_CONTROL_COMMAND_MODE: "{{ energy_optimizer_battery_control_command_mode }}"
+          EO_BATTERY_CONTROL_FALLBACK_MODE: "{{ energy_optimizer_battery_control_fallback_mode }}"
+          EO_BATTERY_CONTROL_REQUIRE_REMOTE_EMS_OFF: "{{ energy_optimizer_battery_control_require_remote_ems_off | string | lower }}"
+          EO_BATTERY_CONTROL_LOCAL_CHARGE_LIMIT_KW: "{{ energy_optimizer_battery_control_local_charge_limit_kw }}"
+          EO_BATTERY_CONTROL_LOCAL_DISCHARGE_LIMIT_KW: "{{ energy_optimizer_battery_control_local_discharge_limit_kw }}"
+          EO_BATTERY_CONTROL_LOCAL_CHARGE_CUTOFF_PCT: "{{ energy_optimizer_battery_control_local_charge_cutoff_pct }}"
+          EO_BATTERY_CONTROL_LOCAL_DISCHARGE_CUTOFF_PCT: "{{ energy_optimizer_battery_control_local_discharge_cutoff_pct }}"
+          EO_BATTERY_CONTROL_MAX_GRID_IMPORT_KW: "{{ energy_optimizer_battery_control_max_grid_import_kw }}"
+          EO_BATTERY_CONTROL_MAX_GRID_EXPORT_KW: "{{ energy_optimizer_battery_control_max_grid_export_kw }}"
+          EO_BATTERY_CONTROL_MAX_CHARGE_KW: "{{ energy_optimizer_battery_control_max_charge_kw }}"
+          EO_BATTERY_CONTROL_MAX_DISCHARGE_KW: "{{ energy_optimizer_battery_control_max_discharge_kw }}"
+          EO_BATTERY_CONTROL_MIN_SOC_PCT: "{{ energy_optimizer_battery_control_min_soc_pct }}"
+          EO_BATTERY_CONTROL_MAX_SOC_PCT: "{{ energy_optimizer_battery_control_max_soc_pct }}"
+          EO_BATTERY_CONTROL_CHARGE_CUTOFF_MARGIN_PCT: "{{ energy_optimizer_battery_control_charge_cutoff_margin_pct }}"
+          EO_BATTERY_CONTROL_DISCHARGE_CUTOFF_MARGIN_PCT: "{{ energy_optimizer_battery_control_discharge_cutoff_margin_pct }}"
+          EO_BATTERY_CONTROL_CADENCE_SECONDS: "{{ energy_optimizer_battery_control_cadence_seconds }}"
+          EO_BATTERY_CONTROL_MAX_PLAN_AGE_SECONDS: "{{ energy_optimizer_battery_control_max_plan_age_seconds }}"
+          EO_BATTERY_CONTROL_MAX_TELEMETRY_AGE_SECONDS: "{{ energy_optimizer_battery_control_max_telemetry_age_seconds }}"
+          EO_BATTERY_CONTROL_COMMAND_SETTLE_SECONDS: "{{ energy_optimizer_battery_control_command_settle_seconds }}"
+          EO_BATTERY_CONTROL_COMMAND_POLL_SECONDS: "{{ energy_optimizer_battery_control_command_poll_seconds }}"
+          EO_BATTERY_CONTROL_COMMAND_TIMEOUT_SECONDS: "{{ energy_optimizer_battery_control_command_timeout_seconds }}"
+          EO_BATTERY_CONTROL_PHYSICAL_VERIFY_TIMEOUT_SECONDS: "{{ energy_optimizer_battery_control_physical_verify_timeout_seconds }}"
+          EO_BATTERY_CONTROL_HEARTBEAT_INTERVAL_SECONDS: "{{ energy_optimizer_battery_control_heartbeat_interval_seconds }}"
+          EO_BATTERY_CONTROL_HEARTBEAT_EXPIRY_SECONDS: "{{ energy_optimizer_battery_control_heartbeat_expiry_seconds }}"
+          EO_BATTERY_CONTROL_MIN_DWELL_SECONDS: "{{ energy_optimizer_battery_control_min_dwell_seconds }}"
+          EO_BATTERY_CONTROL_STANDBY_NEUTRAL_BAND_KW: "{{ energy_optimizer_battery_control_standby_neutral_band_kw }}"
+          EO_BATTERY_CONTROL_DEADBAND_KW: "{{ energy_optimizer_battery_control_deadband_kw }}"
+          EO_BATTERY_CONTROL_MAX_POWER_STEP_KW: "{{ energy_optimizer_battery_control_max_power_step_kw }}"
+          EO_BATTERY_CONTROL_MAX_RAMP_KW_PER_S: "{{ energy_optimizer_battery_control_max_ramp_kw_per_s }}"
+          EO_BATTERY_CONTROL_RETRY_LIMIT: "{{ energy_optimizer_battery_control_retry_limit }}"
+          EO_BATTERY_CONTROL_LOCKOUT_DURATION_SECONDS: "{{ energy_optimizer_battery_control_lockout_duration_seconds }}"
+          EO_BATTERY_CONTROL_ACTIVATION_MARGIN_PLN_KWH: "{{ energy_optimizer_battery_control_activation_margin_pln_kwh }}"
           EO_PV_LAT: "{{ energy_optimizer_pv_lat | string }}"
           EO_PV_LON: "{{ energy_optimizer_pv_lon | string }}"
           EO_PV_PLANES: "{{ energy_optimizer_pv_planes }}"
+          OIDC_ENABLED: "false"
+        _energy_optimizer_env_oidc:
+          OIDC_ENABLED: "true"
+          OIDC_CLIENT_ID: "{{ energy_optimizer_hostname }}"
+          OIDC_CLIENT_SECRET: "{{ energy_optimizer_oidc_client_secret_effective | default('') }}"
+          OIDC_ISSUER_URL: "{{ energy_optimizer_oidc_issuer_url }}"
+          APP_URL: "{{ energy_optimizer_app_url }}"
+          SESSION_SECRET: "{{ energy_optimizer_session_secret_effective | default('') }}"
+          OIDC_AUTO_LOGIN: "{{ 'true' if energy_optimizer_oidc_auto_login | bool else 'false' }}"
+          OIDC_SCOPES: "openid email profile"
+      community.docker.docker_container:
+        name: "{{ energy_optimizer_container_name }}"
+        image: "{{ energy_optimizer_effective_image }}"
+        state: started
+        pull: "{{ energy_optimizer_effective_pull }}"
+        volumes:
+          - "{{ energy_optimizer_data_directory }}:/data:rw"
+        network_mode: "{{ homeassistant_network_name }}"
+        ports:
+          - "{{ energy_optimizer_port }}:8320"
+        env: "{{ _energy_optimizer_env_base | combine(_energy_optimizer_env_oidc if energy_optimizer_oidc_enabled | bool else {}) }}"
         restart_policy: unless-stopped
         memory: "{{ energy_optimizer_memory }}"
         labels:
@@ -118,7 +274,15 @@
   when: energy_optimizer_enabled | bool
 
 - name: Stop Energy Optimizer
-  community.docker.docker_container:
-    name: "{{ energy_optimizer_container_name }}"
-    state: absent
+  block:
+    - name: Stop Energy Optimizer container
+      community.docker.docker_container:
+        name: "{{ energy_optimizer_container_name }}"
+        state: absent
+
+    - name: Remove Energy Optimizer OIDC authentik blueprint
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/authentik_app_blueprint.yml"
+      vars:
+        _authentik_app_blueprint_enabled: false
+        _authentik_app_blueprint_filename: energy-optimizer.yaml
   when: not (energy_optimizer_enabled | bool)
