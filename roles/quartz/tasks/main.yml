@@ -51,7 +51,9 @@
         force_source: "{{ quartz_image_force_rebuild or (quartz_repo_checkout is defined and quartz_repo_checkout.changed) }}"
         build:
           path: "{{ quartz_source_directory }}"
-          pull: missing
+          # community.docker.docker_image expects a boolean for build.pull.
+          # This role builds only from the local knowledge-base checkout.
+          pull: false
 
     - name: Create Quartz Docker Container
       community.docker.docker_container:
