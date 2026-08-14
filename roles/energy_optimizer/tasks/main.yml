@@ -44,6 +44,7 @@
           - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_enabled | bool)
           - energy_optimizer_mode != 'control' or energy_optimizer_battery_control_arm_token == 'pvopti-battery-control-armed'
           - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_number_register_ack_reliable | bool)
+          - energy_optimizer_mode != 'control' or energy_optimizer_battery_control_number_register_ack_evidence_id == 'ha-2026.8.1+sigen-overlay-fd238d2-f17b7bbc66d33513b0dec66223ad90d2e9e9d7dad3d1cbc489d8409a448f5101+grid-charge-0.5kw'
           - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_require_remote_ems_off | bool)
           - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_remote_ems_switch_entity | length > 0)
           - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_mode_select_entity | length > 0)
@@ -178,6 +179,7 @@
           EO_BATTERY_CONTROL_AUTHORIZE_DISCHARGE: "{{ energy_optimizer_battery_control_authorize_discharge | string | lower }}"
           EO_BATTERY_CONTROL_AUTHORIZE_EXPORT: "{{ energy_optimizer_battery_control_authorize_export | string | lower }}"
           EO_BATTERY_CONTROL_NUMBER_REGISTER_ACK_RELIABLE: "{{ energy_optimizer_battery_control_number_register_ack_reliable | string | lower }}"
+          EO_BATTERY_CONTROL_NUMBER_REGISTER_ACK_EVIDENCE_ID: "{{ energy_optimizer_battery_control_number_register_ack_evidence_id }}"
           EO_BATTERY_CONTROL_SUPPORTED_DIRECTIONS: "{{ energy_optimizer_battery_control_supported_directions }}"
           EO_BATTERY_CONTROL_REMOTE_EMS_SWITCH_ENTITY: "{{ energy_optimizer_battery_control_remote_ems_switch_entity }}"
           EO_BATTERY_CONTROL_MODE_SELECT_ENTITY: "{{ energy_optimizer_battery_control_mode_select_entity }}"
