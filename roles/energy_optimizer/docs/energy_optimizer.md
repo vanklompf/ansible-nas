@@ -2,9 +2,10 @@
 
 Homepage: [https://github.com/vanklompf/PvOpti](https://github.com/vanklompf/PvOpti)
 
-Dry-run solar/battery optimisation for a Sigen + Pstryk site, with optional EV/PHEV
-charger relay control. Recommendations go to Home Assistant over MQTT. Sigen battery
-control stays off; EV relay control is opt-in.
+Solar/battery optimisation for a Sigen + Pstryk site, with optional EV/PHEV charger
+relay control. Recommendations go to Home Assistant over MQTT. Battery and EV
+actuation are independently opt-in; image defaults cover Sigen Hybrid 6.0 TP2
+limits, entity IDs, and control timings.
 
 ## Usage
 
@@ -16,22 +17,40 @@ energy_optimizer_battery_soc_min_pct: "15"       # protected operating reserve
 energy_optimizer_battery_hard_soc_min_pct: "0"  # Sigen/BMS usable-empty point
 ```
 
-## Stationary battery control rollout
-
-The role exposes PvOpti's complete stationary-battery control contract, but defaults and the
-current site inventory remain in `dry_run` shadow mode. Battery actuation, grid charging, and
-export are independently disabled, the arm token is empty, and unreliable Sigenergy number
-register acknowledgement remains a hard blocker. The disabled Home Assistant watchdog draft
-must pass physical failure-mode validation before control mode is permitted.
-
-Ansible rejects `energy_optimizer_mode: control` unless the enable and exact arm-token gates,
-reliable number-register acknowledgement, entity/watchdog mappings, and verified Remote-EMS-off
-fallback are all configured.
-Do not enable export during a charge-only rollout stage.
-
 UI: [http://ansible_nas_host_or_ip:8320](http://ansible_nas_host_or_ip:8320), or
 `https://{{ energy_optimizer_hostname }}.{{ ansible_nas_domain }}` when
 `energy_optimizer_available_externally` is true.
+
+## Stationary battery control
+
+Live inverter writes require both `energy_optimizer_mode: control` and
+`energy_optimizer_battery_control_enabled: true`. Direction flags are separate
+feature switches and stay off by default:
+
+```yaml
+energy_optimizer_mode: control
+energy_optimizer_battery_control_enabled: true
+energy_optimizer_battery_control_grid_charge_enabled: true   # grid-import charge
+energy_optimizer_battery_control_authorize_discharge: true   # discharge to house
+energy_optimizer_battery_export_enabled: true                # export to grid
+energy_optimizer_battery_control_supported_directions: '["FALLBACK","IDLE","CHARGE","DISCHARGE"]'
+energy_optimizer_battery_control_watchdog_health_entity: binary_sensor.pvopti_battery_control_watchdog_ready
+energy_optimizer_battery_control_watchdog_ack_entity: input_datetime.pvopti_battery_control_last_heartbeat
+```
+
+Ansible rejects `mode: control` unless the independent enable gate is on and the
+HA watchdog entities are set. Sigen entity IDs, restore limits, and timings use
+image defaults and are not re-declared by this role. Do not enable discharge or
+export until those directions have been physically verified.
+
+`energy_optimizer_battery_control_min_soc_pct` sets the control-side operating reserve
+that PvOpti writes into the inverter discharge cut-off during a discharge command. Empty
+keeps the image default (15%). It must stay at or above the planner reserve
+(`energy_optimizer_battery_soc_min_pct`); lower it toward that reserve to give attended
+discharge/export commissioning room, and raise it back for unattended operation.
+
+Planner flags inside PvOpti (`EO_ALLOW_GRID_CHARGING`, `EO_ALLOW_BATTERY_EXPORT`)
+are not actuation gates and are not set by this role.
 
 ## OIDC / SSO (authentik)
 
@@ -48,9 +67,8 @@ energy_optimizer_oidc_auto_login: true
 ```
 
 MQTT uses the homeassistant Docker network (`mosquitto_container_name`) with
-`mqtt_user` / `mqtt_password`. Battery and site/inverter limits use image defaults
-(Sigen Hybrid 6.0 TP2). Set PV lat/lon/planes in inventory; Forecast.Solar azimuth is
-degrees from south (east negative, west positive).
+`mqtt_user` / `mqtt_password`. Set PV lat/lon/planes in inventory; Forecast.Solar
+azimuth is degrees from south (east negative, west positive).
 
 ## EV control (optional)
 
@@ -61,9 +79,7 @@ the Mercedes over additional stationary-battery charging and may start before li
 surplus arrives when conservative same-day PV surplus is forecast. Guaranteed departure
 charging may consume the stationary-battery operating reserve down to the configured hard
 floor; ordinary household discharge, opportunistic charging, and economic export preserve
-that reserve. Normal opportunistic charging never adds grid demand. Relay commands wait for
-the configured settle period and are then polled until
-the verification timeout; an ambiguous ON is forced OFF and enters a retry backoff.
+that reserve. Normal opportunistic charging never adds grid demand.
 
 ```yaml
 energy_optimizer_ev_control_enabled: true
@@ -78,7 +94,8 @@ energy_optimizer_ev_minimum_target_soc_pct: "50"
 energy_optimizer_ev_departure_hour: "9"
 ```
 
-Undefined `energy_optimizer_ev_*` vars are omitted from the container env.
+Undefined `energy_optimizer_ev_*` vars (other than `ev_control_enabled`) are omitted
+from the container env so image defaults apply.
 
 ## Local build
 

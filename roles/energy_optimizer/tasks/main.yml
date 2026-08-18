@@ -42,24 +42,15 @@
         that:
           - energy_optimizer_mode in ['dry_run', 'control']
           - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_enabled | bool)
-          - energy_optimizer_mode != 'control' or energy_optimizer_battery_control_arm_token == 'pvopti-battery-control-armed'
-          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_number_register_ack_reliable | bool)
-          - energy_optimizer_mode != 'control' or energy_optimizer_battery_control_number_register_ack_evidence_id == 'ha-2026.8.1+sigen-overlay-fd238d2-f17b7bbc66d33513b0dec66223ad90d2e9e9d7dad3d1cbc489d8409a448f5101+grid-charge-0.5kw'
-          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_require_remote_ems_off | bool)
-          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_remote_ems_switch_entity | length > 0)
-          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_mode_select_entity | length > 0)
-          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_charge_limit_entity | length > 0)
-          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_discharge_limit_entity | length > 0)
-          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_charge_cutoff_entity | length > 0)
-          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_discharge_cutoff_entity | length > 0)
-          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_watchdog_health_entity | length > 0)
-          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_watchdog_ack_entity | length > 0)
-          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_fallback_mode | length > 0)
+          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_watchdog_health_entity | default('') | length > 0)
+          - energy_optimizer_mode != 'control' or (energy_optimizer_battery_control_watchdog_ack_entity | default('') | length > 0)
+          - not (energy_optimizer_battery_control_authorize_discharge | bool) or ('DISCHARGE' in energy_optimizer_battery_control_supported_directions)
+          - not (energy_optimizer_battery_export_enabled | bool) or (energy_optimizer_battery_control_authorize_discharge | bool)
         fail_msg: >-
-          Unsafe PvOpti battery-control configuration. Control mode requires the independent
-          enable and arm-token gates, reliable register acknowledgement, exact entity and
-          watchdog mappings, and a verified fallback that leaves Remote EMS off.
-      no_log: true
+          Unsafe PvOpti battery-control configuration. Control mode requires
+          energy_optimizer_battery_control_enabled and the independent HA
+          watchdog health/ack entity IDs. Discharge authorization requires
+          DISCHARGE in the supported directions, and export requires discharge.
 
     - name: Build Energy Optimizer image from PvOpti source
       community.docker.docker_image:
@@ -166,67 +157,22 @@
           EO_EV_DEPARTURE_HOUR: "{{ energy_optimizer_ev_departure_hour | default(omit, true) }}"
           EO_EV_MIN_ON_MINUTES: "{{ energy_optimizer_ev_min_on_minutes | default(omit, true) }}"
           EO_EV_MIN_OFF_MINUTES: "{{ energy_optimizer_ev_min_off_minutes | default(omit, true) }}"
-          EO_EV_RELAY_SETTLE_SECONDS: "{{ energy_optimizer_ev_relay_settle_seconds }}"
-          EO_EV_RELAY_VERIFY_INTERVAL_SECONDS: "{{ energy_optimizer_ev_relay_verify_interval_seconds }}"
-          EO_EV_RELAY_VERIFY_TIMEOUT_SECONDS: "{{ energy_optimizer_ev_relay_verify_timeout_seconds }}"
-          EO_EV_RELAY_FAILURE_BACKOFF_MINUTES: "{{ energy_optimizer_ev_relay_failure_backoff_minutes }}"
-          EO_EV_FORECAST_SURPLUS_FACTOR: "{{ energy_optimizer_ev_forecast_surplus_factor }}"
-          EO_EV_BATTERY_FULL_SOC_PCT: "{{ energy_optimizer_ev_battery_full_soc_pct }}"
+          EO_EV_RELAY_SETTLE_SECONDS: "{{ energy_optimizer_ev_relay_settle_seconds | default(omit, true) }}"
+          EO_EV_RELAY_VERIFY_INTERVAL_SECONDS: "{{ energy_optimizer_ev_relay_verify_interval_seconds | default(omit, true) }}"
+          EO_EV_RELAY_VERIFY_TIMEOUT_SECONDS: "{{ energy_optimizer_ev_relay_verify_timeout_seconds | default(omit, true) }}"
+          EO_EV_RELAY_FAILURE_BACKOFF_MINUTES: "{{ energy_optimizer_ev_relay_failure_backoff_minutes | default(omit, true) }}"
+          EO_EV_FORECAST_SURPLUS_FACTOR: "{{ energy_optimizer_ev_forecast_surplus_factor | default(omit, true) }}"
+          EO_EV_BATTERY_FULL_SOC_PCT: "{{ energy_optimizer_ev_battery_full_soc_pct | default(omit, true) }}"
           EO_BATTERY_CONTROL_ENABLED: "{{ energy_optimizer_battery_control_enabled | string | lower }}"
-          EO_BATTERY_CONTROL_ARM_TOKEN: "{{ energy_optimizer_battery_control_arm_token }}"
           EO_BATTERY_EXPORT_ENABLED: "{{ energy_optimizer_battery_export_enabled | string | lower }}"
           EO_BATTERY_CONTROL_GRID_CHARGE_ENABLED: "{{ energy_optimizer_battery_control_grid_charge_enabled | string | lower }}"
           EO_BATTERY_CONTROL_AUTHORIZE_DISCHARGE: "{{ energy_optimizer_battery_control_authorize_discharge | string | lower }}"
-          EO_BATTERY_CONTROL_AUTHORIZE_EXPORT: "{{ energy_optimizer_battery_control_authorize_export | string | lower }}"
-          EO_BATTERY_CONTROL_NUMBER_REGISTER_ACK_RELIABLE: "{{ energy_optimizer_battery_control_number_register_ack_reliable | string | lower }}"
-          EO_BATTERY_CONTROL_NUMBER_REGISTER_ACK_EVIDENCE_ID: "{{ energy_optimizer_battery_control_number_register_ack_evidence_id }}"
           EO_BATTERY_CONTROL_SUPPORTED_DIRECTIONS: "{{ energy_optimizer_battery_control_supported_directions }}"
-          EO_BATTERY_CONTROL_REMOTE_EMS_SWITCH_ENTITY: "{{ energy_optimizer_battery_control_remote_ems_switch_entity }}"
-          EO_BATTERY_CONTROL_MODE_SELECT_ENTITY: "{{ energy_optimizer_battery_control_mode_select_entity }}"
-          EO_BATTERY_CONTROL_CHARGE_LIMIT_ENTITY: "{{ energy_optimizer_battery_control_charge_limit_entity }}"
-          EO_BATTERY_CONTROL_DISCHARGE_LIMIT_ENTITY: "{{ energy_optimizer_battery_control_discharge_limit_entity }}"
-          EO_BATTERY_CONTROL_CHARGE_CUTOFF_ENTITY: "{{ energy_optimizer_battery_control_charge_cutoff_entity }}"
-          EO_BATTERY_CONTROL_DISCHARGE_CUTOFF_ENTITY: "{{ energy_optimizer_battery_control_discharge_cutoff_entity }}"
-          EO_BATTERY_CONTROL_WATCHDOG_HEALTH_ENTITY: "{{ energy_optimizer_battery_control_watchdog_health_entity }}"
-          EO_BATTERY_CONTROL_WATCHDOG_ACK_ENTITY: "{{ energy_optimizer_battery_control_watchdog_ack_entity }}"
-          EO_BATTERY_CONTROL_MODE_STANDBY: "{{ energy_optimizer_battery_control_mode_standby }}"
-          EO_BATTERY_CONTROL_MODE_CHARGE_GRID_FIRST: "{{ energy_optimizer_battery_control_mode_charge_grid_first }}"
-          EO_BATTERY_CONTROL_MODE_CHARGE_PV_FIRST: "{{ energy_optimizer_battery_control_mode_charge_pv_first }}"
-          EO_BATTERY_CONTROL_MODE_DISCHARGE_PV_FIRST: "{{ energy_optimizer_battery_control_mode_discharge_pv_first }}"
-          EO_BATTERY_CONTROL_MODE_DISCHARGE_ESS_FIRST: "{{ energy_optimizer_battery_control_mode_discharge_ess_first }}"
-          EO_BATTERY_CONTROL_MODE_MAX_SELF_CONSUMPTION: "{{ energy_optimizer_battery_control_mode_max_self_consumption }}"
-          EO_BATTERY_CONTROL_COMMAND_MODE: "{{ energy_optimizer_battery_control_command_mode }}"
-          EO_BATTERY_CONTROL_FALLBACK_MODE: "{{ energy_optimizer_battery_control_fallback_mode }}"
-          EO_BATTERY_CONTROL_REQUIRE_REMOTE_EMS_OFF: "{{ energy_optimizer_battery_control_require_remote_ems_off | string | lower }}"
-          EO_BATTERY_CONTROL_LOCAL_CHARGE_LIMIT_KW: "{{ energy_optimizer_battery_control_local_charge_limit_kw }}"
-          EO_BATTERY_CONTROL_LOCAL_DISCHARGE_LIMIT_KW: "{{ energy_optimizer_battery_control_local_discharge_limit_kw }}"
-          EO_BATTERY_CONTROL_LOCAL_CHARGE_CUTOFF_PCT: "{{ energy_optimizer_battery_control_local_charge_cutoff_pct }}"
-          EO_BATTERY_CONTROL_LOCAL_DISCHARGE_CUTOFF_PCT: "{{ energy_optimizer_battery_control_local_discharge_cutoff_pct }}"
-          EO_BATTERY_CONTROL_MAX_GRID_IMPORT_KW: "{{ energy_optimizer_battery_control_max_grid_import_kw }}"
-          EO_BATTERY_CONTROL_MAX_GRID_EXPORT_KW: "{{ energy_optimizer_battery_control_max_grid_export_kw }}"
-          EO_BATTERY_CONTROL_MAX_CHARGE_KW: "{{ energy_optimizer_battery_control_max_charge_kw }}"
-          EO_BATTERY_CONTROL_MAX_DISCHARGE_KW: "{{ energy_optimizer_battery_control_max_discharge_kw }}"
-          EO_BATTERY_CONTROL_MIN_SOC_PCT: "{{ energy_optimizer_battery_control_min_soc_pct }}"
-          EO_BATTERY_CONTROL_MAX_SOC_PCT: "{{ energy_optimizer_battery_control_max_soc_pct }}"
-          EO_BATTERY_CONTROL_CHARGE_CUTOFF_MARGIN_PCT: "{{ energy_optimizer_battery_control_charge_cutoff_margin_pct }}"
-          EO_BATTERY_CONTROL_DISCHARGE_CUTOFF_MARGIN_PCT: "{{ energy_optimizer_battery_control_discharge_cutoff_margin_pct }}"
-          EO_BATTERY_CONTROL_CADENCE_SECONDS: "{{ energy_optimizer_battery_control_cadence_seconds }}"
-          EO_BATTERY_CONTROL_MAX_PLAN_AGE_SECONDS: "{{ energy_optimizer_battery_control_max_plan_age_seconds }}"
-          EO_BATTERY_CONTROL_MAX_TELEMETRY_AGE_SECONDS: "{{ energy_optimizer_battery_control_max_telemetry_age_seconds }}"
-          EO_BATTERY_CONTROL_COMMAND_SETTLE_SECONDS: "{{ energy_optimizer_battery_control_command_settle_seconds }}"
-          EO_BATTERY_CONTROL_COMMAND_POLL_SECONDS: "{{ energy_optimizer_battery_control_command_poll_seconds }}"
-          EO_BATTERY_CONTROL_COMMAND_TIMEOUT_SECONDS: "{{ energy_optimizer_battery_control_command_timeout_seconds }}"
-          EO_BATTERY_CONTROL_PHYSICAL_VERIFY_TIMEOUT_SECONDS: "{{ energy_optimizer_battery_control_physical_verify_timeout_seconds }}"
-          EO_BATTERY_CONTROL_HEARTBEAT_INTERVAL_SECONDS: "{{ energy_optimizer_battery_control_heartbeat_interval_seconds }}"
-          EO_BATTERY_CONTROL_HEARTBEAT_EXPIRY_SECONDS: "{{ energy_optimizer_battery_control_heartbeat_expiry_seconds }}"
-          EO_BATTERY_CONTROL_MIN_DWELL_SECONDS: "{{ energy_optimizer_battery_control_min_dwell_seconds }}"
-          EO_BATTERY_CONTROL_STANDBY_NEUTRAL_BAND_KW: "{{ energy_optimizer_battery_control_standby_neutral_band_kw }}"
-          EO_BATTERY_CONTROL_DEADBAND_KW: "{{ energy_optimizer_battery_control_deadband_kw }}"
-          EO_BATTERY_CONTROL_MAX_POWER_STEP_KW: "{{ energy_optimizer_battery_control_max_power_step_kw }}"
-          EO_BATTERY_CONTROL_MAX_RAMP_KW_PER_S: "{{ energy_optimizer_battery_control_max_ramp_kw_per_s }}"
-          EO_BATTERY_CONTROL_RETRY_LIMIT: "{{ energy_optimizer_battery_control_retry_limit }}"
-          EO_BATTERY_CONTROL_LOCKOUT_DURATION_SECONDS: "{{ energy_optimizer_battery_control_lockout_duration_seconds }}"
-          EO_BATTERY_CONTROL_ACTIVATION_MARGIN_PLN_KWH: "{{ energy_optimizer_battery_control_activation_margin_pln_kwh }}"
+          EO_BATTERY_CONTROL_DISCHARGE_COMMAND_MODE: "{{ energy_optimizer_battery_control_discharge_command_mode | default(omit, true) }}"
+          EO_BATTERY_CONTROL_EXPORT_COMMAND_MODE: "{{ energy_optimizer_battery_control_export_command_mode | default(omit, true) }}"
+          EO_BATTERY_CONTROL_MIN_SOC_PCT: "{{ energy_optimizer_battery_control_min_soc_pct | default(omit, true) }}"
+          EO_BATTERY_CONTROL_WATCHDOG_HEALTH_ENTITY: "{{ energy_optimizer_battery_control_watchdog_health_entity | default(omit, true) }}"
+          EO_BATTERY_CONTROL_WATCHDOG_ACK_ENTITY: "{{ energy_optimizer_battery_control_watchdog_ack_entity | default(omit, true) }}"
           EO_PV_LAT: "{{ energy_optimizer_pv_lat | string }}"
           EO_PV_LON: "{{ energy_optimizer_pv_lon | string }}"
           EO_PV_PLANES: "{{ energy_optimizer_pv_planes }}"
