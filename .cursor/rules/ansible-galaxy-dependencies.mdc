@@ -39,5 +39,5 @@ Roughly quarterly, or when touching `requirements.yml`, `nas.yml` requirements r
 ```bash
 ansible-galaxy collection list
 ansible-galaxy role list
-cd /mnt/nas/media/code/ansible-nas && ansible-galaxy collection install -r requirements.yml --upgrade  # user-local only
+cd /mnt/nas/media/code/HomeLab/ansible-nas && ansible-galaxy collection install -r requirements.yml --upgrade  # user-local only
 ```
