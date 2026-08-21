@@ -55,7 +55,7 @@
         force_source: "{{ trafficstats_image_force_rebuild | bool }}"
         build:
           path: "{{ trafficstats_source_directory }}"
-          pull: true
+          pull: "{{ trafficstats_image_build_pull | bool }}"
       when: trafficstats_build_locally | bool
 
     - name: Resolve TrafficStats image reference
