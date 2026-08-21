@@ -29,6 +29,13 @@ steam_memory: 16g
 steam_shm_cleanup_enabled: true
 steam_shm_cleanup_script_path: /usr/local/sbin/steam-shm-cleanup
 
+# Upstream start-dumb-udev.sh restarts Xorg when Sunshine virtual inputs appear.
+# Sunshine creates those devices at process start, so the restart latch never
+# holds and Xorg/desktop/Sunshine crash-loop. Overlay keeps input-node sync and
+# skips the Xorg restart. Set true only to restore the image script.
+steam_udev_xorg_restart_enabled: false
+steam_udev_script_path: /usr/local/sbin/steam-start-dumb-udev
+
 # Private noVNC administration UI. Host networking exposes this port directly.
 steam_web_ui_mode: vnc
 steam_web_ui_port: "9083"
@@ -99,6 +106,15 @@ steam_security_opts:
   - apparmor:unconfined
 steam_ulimits:
   - nofile:1024:524288
+
+steam_container_volumes:
+  - "{{ steam_home_directory }}:/home/default:rw"
+  - "{{ steam_games_directory }}:/mnt/games:rw"
+  - "{{ steam_sockets_directory }}/.X11-unix:/tmp/.X11-unix:rw"
+  - "{{ steam_sockets_directory }}/pulse:/tmp/pulse:rw"
+
+steam_udev_overlay_volumes:
+  - "{{ steam_udev_script_path }}:/usr/bin/start-dumb-udev.sh:ro"
 
 steam_env:
   TZ: "{{ ansible_nas_timezone }}"

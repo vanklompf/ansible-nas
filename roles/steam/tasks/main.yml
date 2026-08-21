@@ -124,6 +124,22 @@
         (steam_shm_cleanup_before_start.stdout | default('')) is search('deleted=[1-9]')
       when: steam_shm_cleanup_enabled | bool
 
+    - name: Install Steam udev overlay script
+      ansible.builtin.template:
+        src: steam-start-dumb-udev.sh.j2
+        dest: "{{ steam_udev_script_path }}"
+        owner: root
+        group: root
+        mode: "0755"
+      register: steam_udev_script
+      when: not (steam_udev_xorg_restart_enabled | bool)
+
+    - name: Remove Steam udev overlay when restoring upstream script
+      ansible.builtin.file:
+        path: "{{ steam_udev_script_path }}"
+        state: absent
+      when: steam_udev_xorg_restart_enabled | bool
+
     - name: Create Steam Docker container
       community.docker.docker_container:
         container_default_behavior: no_defaults
@@ -132,6 +148,7 @@
         image: "{{ steam_image_name }}@{{ steam_image_digest }}"
         pull: missing
         state: started
+        recreate: "{{ steam_udev_script.changed | default(false) }}"
         restart_policy: unless-stopped
         network_mode: host
         ipc_mode: host
@@ -144,11 +161,7 @@
         security_opts: "{{ steam_security_opts }}"
         devices: "{{ steam_base_devices + steam_gpu_devices }}"
         device_cgroup_rules: "{{ steam_device_cgroup_rules }}"
-        volumes:
-          - "{{ steam_home_directory }}:/home/default:rw"
-          - "{{ steam_games_directory }}:/mnt/games:rw"
-          - "{{ steam_sockets_directory }}/.X11-unix:/tmp/.X11-unix:rw"
-          - "{{ steam_sockets_directory }}/pulse:/tmp/pulse:rw"
+        volumes: "{{ steam_container_volumes + ((steam_udev_xorg_restart_enabled | bool) | ternary([], steam_udev_overlay_volumes)) }}"
         env: "{{ steam_env }}"
         labels:
           traefik.enable: "false"
@@ -183,6 +196,11 @@
         (steam_shm_cleanup_after_stop.stdout | default('')) is search('deleted=[1-9]')
       failed_when: false
       when: steam_shm_cleanup_enabled | bool
+
+    - name: Remove leftover Steam udev overlay script
+      ansible.builtin.file:
+        path: "{{ steam_udev_script_path }}"
+        state: absent
 
     - name: Remove Steam /dev/shm cleanup script
       ansible.builtin.file:

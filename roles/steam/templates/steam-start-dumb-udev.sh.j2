@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# Managed by ansible-nas steam role.
+# Overlay for /usr/bin/start-dumb-udev.sh in josh5/steam-headless.
+#
+# Upstream restarts Xorg the first time Sunshine/passthrough input devices
+# appear, then clears that latch when the devices disappear. Sunshine creates
+# those devices at startup, so restarting Xorg kills Sunshine, the latch
+# resets, and the desktop stack crash-loops. Keep input-node sync; do not
+# restart Xorg.
+set -e
+
+# CATCH TERM SIGNAL:
+_term() {
+    kill -TERM "${sync_pid:-}" 2>/dev/null
+    kill -TERM "${dumb_udev_pid:-}" 2>/dev/null
+    kill -TERM "${udevd_pid:-}" 2>/dev/null
+}
+trap _term SIGTERM SIGINT
+
+sync_input_nodes() {
+    mkdir -p /dev/input
+
+    for sys in /sys/class/input/*/dev; do
+        [[ -f "${sys}" ]] || continue
+
+        node=$(basename "$(dirname "${sys}")")
+        path="/dev/input/${node}"
+        [[ -e "${path}" ]] && continue
+
+        IFS=: read -r major minor < "${sys}"
+        mknod "${path}" c "${major}" "${minor}" 2>/dev/null || continue
+        chmod 0660 "${path}" 2>/dev/null || true
+        chgrp input "${path}" 2>/dev/null || true
+    done
+}
+
+# EXECUTE PROCESS:
+# If a real udev daemon can be started in this restricted environment, prefer
+# that over dumb-udev. This gives us /run/udev/control and keeps the existing
+# Xorg startup ordering intact, even when /sys is mounted read-only.
+if command -v udevd &>/dev/null; then
+    unshare --net udevd --daemon &>/dev/null || true
+else
+    unshare --net /lib/systemd/systemd-udevd --daemon &>/dev/null || true
+fi
+
+if pgrep -x systemd-udevd >/dev/null 2>&1; then
+    udevd_pid=$(pgrep -xo systemd-udevd || true)
+fi
+
+dumb-udev &
+dumb_udev_pid=$!
+
+while true; do
+    sync_input_nodes
+    sleep 1
+done &
+sync_pid=$!
+
+# WAIT FOR CHILD PROCESS:
+wait "$dumb_udev_pid"

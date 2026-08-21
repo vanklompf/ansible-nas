@@ -1,26 +1,12 @@
 # Steam
 
-Deploys [Steam Headless](https://github.com/Steam-Headless/docker-steam-headless) as a GPU-accelerated Steam and Sunshine game-streaming host intended only for trusted networks.
+Homepage: [https://github.com/Steam-Headless/docker-steam-headless](https://github.com/Steam-Headless/docker-steam-headless)
 
-The role is opt-in, is not part of the `core` deployment set, and requires an exact image digest before it can be enabled. It uses host networking and the broad capabilities required by the upstream container, so it must be treated as host-trusted software rather than as a security boundary. Host networking exposes listeners on every host interface; credentials alone do not make those listeners private.
+GPU-accelerated Steam and Sunshine (Moonlight) host. Opt-in, not in `core`. Uses host networking, host IPC, and broad capabilities — treat it as host-trusted software, not a security boundary. Restrict listeners to trusted LAN/Tailscale.
 
-## Pre-deployment checks
+## Usage
 
-1. Identify the GPU and exact device nodes on the target host.
-2. Map the correct `/dev/dri/card*` and `/dev/dri/renderD*` nodes.
-3. Confirm `/dev/fuse` and `/dev/uinput` exist.
-4. Select and test an image, then store its `sha256:` manifest digest.
-5. Put the noVNC/Sunshine password in an Ansible Vault-backed variable.
-6. Review host firewall policy and set `steam_host_network_acknowledged: true` only after the service is restricted to trusted LAN/Tailscale clients.
-7. Ensure these listeners are unused and allowed only on trusted interfaces:
-
-   - noVNC: TCP `9083` (selected to avoid the existing Traefik dashboard on `8083`)
-   - Sunshine: TCP `47984`, `47989`, `47990`, `48010`; UDP `47998`, `47999`, `48000`, `48002`, `48010`
-   - Steam Remote Play: UDP `27031-27036`; TCP `27036-27037`
-
-The role checks the union of these ports with `ss` before the first container start. This detects conflicts but does not configure a firewall. Because the container uses host networking, firewall enforcement must happen on the host or upstream network.
-
-## Minimum configuration
+Requires a tested image digest, GPU device nodes, a Vault-backed password, and `steam_host_network_acknowledged: true` after a firewall review.
 
 ```yaml
 steam_enabled: true
@@ -33,11 +19,15 @@ steam_gpu_devices:
   - /dev/dri/renderD128:/dev/dri/renderD128
 ```
 
-`steam_password` is used for both the noVNC web UI (`USER_PASSWORD`) and Sunshine administration (`SUNSHINE_PASS`).
+`steam_password` is both noVNC (`USER_PASSWORD`) and Sunshine admin (`SUNSHINE_PASS`). Log into Steam (including 2FA) in the UI; do not store Steam credentials in Ansible.
 
-## Deployment
+Confirm `/dev/fuse`, `/dev/uinput`, and the mapped DRI nodes exist. The role checks required ports with `ss` before first start (conflicts only — it does not configure a firewall). Host networking exposes listeners on every interface; firewall enforcement must happen on the host or upstream network.
 
-After reviewing host-specific values and explicitly approving deployment, use only the narrow role tag:
+| Service | Ports |
+| --- | --- |
+| noVNC | TCP `9083` (avoids Traefik on `8083`) |
+| Sunshine | TCP `47984`, `47989`, `47990`, `48010`; UDP `47998`–`48000`, `48002`, `48010` |
+| Steam Remote Play | UDP `27031`–`27036`; TCP `27036`–`27037` |
 
 ```bash
 ansible-playbook -i <inventory> nas.yml --tags steam --check
@@ -46,31 +36,20 @@ ansible-playbook -i <inventory> nas.yml --tags steam
 
 Do not add this role to `core` until it has been proven stable on the target GPU and driver combination.
 
-## Persistent paths
+Data lives under `steam_data_directory` (`{{ docker_home }}/steam`): `home/` → `/home/default` (profile, Sunshine, Proton), `games/` → `/mnt/games` (add as a Steam library), `sockets/` (X11, PulseAudio).
 
-All persistent data lives under `steam_data_directory` (`{{ docker_home }}/steam` by default):
+## Updates
 
-- `home/` backs `/home/default` and stores the Steam profile, Sunshine configuration, pairing state, Proton prefixes, and caches.
-- `games/` backs `/mnt/games` and should be added as a Steam library.
-- `sockets/` keeps X11 and PulseAudio sockets.
+Never track a rolling tag. Pull and test a candidate, pin `steam_image_digest`, check-mode, then deploy `--tags steam`. Keep the previous digest for rollback. Driver, Xorg, Steam, and Sunshine changes are hardware-specific.
 
-## Updating safely
-
-Never track a rolling image in an enabled deployment. Pull and test a candidate image separately, update `steam_image_digest`, run check mode, deploy the narrow tag, and retain the previous digest for rollback.
 ## Host IPC `/dev/shm` cleanup
 
-Upstream compose uses `ipc: host`. Steam/CEF can leave orphaned `/dev/shm/u<uid>-Shm_*` (and Valve IPC) files that keep consuming host RAM after crashes or OOM kills. With `steam_shm_cleanup_enabled` (default `true`), the role:
+Host IPC can leave orphaned `/dev/shm/u<uid>-Shm_*` and Valve IPC files after crashes or OOM. With `steam_shm_cleanup_enabled` (default `true`), the role installs `/usr/local/sbin/steam-shm-cleanup`, runs it around start/stop, and schedules a daily 02:00 cron. Set `false` to remove the script and cron.
 
-1. Installs `/usr/local/sbin/steam-shm-cleanup` (skips files still open via `fuser`)
-2. Runs it before container start and after disable/stop
-3. Schedules a daily root cron job at 02:00
+## Sunshine udev overlay
 
-Set `steam_shm_cleanup_enabled: false` to remove the script and cron.
+Upstream `start-dumb-udev.sh` restarts Xorg when Sunshine virtual inputs appear. Sunshine creates those devices at start, so Xorg/desktop/Sunshine crash-loop. With `steam_udev_xorg_restart_enabled` (default `false`), the role bind-mounts `/usr/local/sbin/steam-start-dumb-udev` over the image script: input-node sync stays, the Xorg restart does not. Set `true` only to restore the upstream script after a fix.
 
-## Security and stability notes
+## Security
 
-The upstream template requires host networking, host IPC, `NET_ADMIN`, `SYS_ADMIN`, `SYS_NICE`, unconfined seccomp/AppArmor, GPU access, `/dev/fuse`, `/dev/uinput`, and input-device cgroup access. Keep noVNC and Sunshine administration restricted by host/network firewall policy. Do not store Steam credentials in Ansible; enter Steam credentials and 2FA interactively through the trusted-network UI.
-
-The container creation task uses `no_log: true` because the noVNC/Sunshine password is passed as environment variables. That value remains visible through `docker inspect` to users with Docker-daemon access, so Docker access must be treated as root- and secret-equivalent.
-
-Automatic image updates are not recommended. Driver, Xorg, Steam, Sunshine, and input changes can cause hardware-specific regressions; pinning the tested digest is mandatory in this role.
+The container needs `NET_ADMIN`, `SYS_ADMIN`, `SYS_NICE`, unconfined seccomp/AppArmor, GPU, `/dev/fuse`, `/dev/uinput`, and input cgroup access. The create task uses `no_log: true` because the password is in env vars; `docker inspect` still shows it, so Docker access is root-equivalent.
