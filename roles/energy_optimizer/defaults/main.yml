@@ -34,7 +34,8 @@ energy_optimizer_source_directory: "{{ code_root }}/PvOpti"
 energy_optimizer_local_image_name: energy-optimizer
 energy_optimizer_local_image_version: local
 energy_optimizer_image_force_rebuild: false
-energy_optimizer_build_pull: true
+# Reuse cached base images unless an explicit refresh is requested.
+energy_optimizer_build_pull: false
 
 # application wiring — battery/EV/site tunables live in the image; only pass
 # site secrets, location, and the actuation gates here.

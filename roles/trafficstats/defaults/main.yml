@@ -41,7 +41,8 @@ trafficstats_source_directory: "{{ code_root }}/TrafficStats"
 trafficstats_local_image_name: jez-security
 trafficstats_local_image_version: local
 trafficstats_image_force_rebuild: false
-trafficstats_image_build_pull: true
+# Reuse cached base images unless an explicit refresh is requested.
+trafficstats_image_build_pull: false
 
 # Homepage dashboard tile
 trafficstats_homepage_name: "Jeż Security"

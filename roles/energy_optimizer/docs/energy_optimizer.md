@@ -106,7 +106,7 @@ the NAS:
 energy_optimizer_build_locally: true
 energy_optimizer_source_directory: "{{ code_root }}/PvOpti"
 energy_optimizer_image_force_rebuild: false  # true = rebuild every run
-energy_optimizer_build_pull: true            # false if Docker Hub throttles
+energy_optimizer_build_pull: false           # true = refresh base images
 ```
 
 Builds the Dockerfile `runtime` stage as `energy-optimizer:local` (`pull: false`).
