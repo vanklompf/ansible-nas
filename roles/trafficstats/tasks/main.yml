@@ -125,6 +125,7 @@
           DAHUA_INTRUSION_IVS_NAME: "{{ trafficstats_intrusion_event }}"
           VIDEO_CACHE_MAX_GB: "{{ trafficstats_video_cache_max_gb }}"
           CITY: "{{ trafficstats_city }}"
+          ANALYSIS_ENABLED: "{{ 'true' if trafficstats_analysis_enabled | bool else 'false' }}"
           ANALYSIS_BACKFILL_DAYS: "7"
           OLLAMA_HOST: "{{ trafficstats_ollama_host }}"
           OLLAMA_MODEL: "{{ trafficstats_ollama_model }}"

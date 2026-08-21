@@ -12,6 +12,7 @@ trafficstats_app_url: "https://{{ trafficstats_hostname }}.{{ ansible_nas_domain
 trafficstats_ollama_network_name: "{{ ollama_network_name | default('ollama') }}"
 trafficstats_ollama_host: "http://ollama:11434"
 trafficstats_ollama_model: "qwen3-vl:8b"
+trafficstats_analysis_enabled: true
 
 # --- OIDC / SSO (e.g. authentik) --------------------------------------------
 # Application slug and client_id match trafficstats_hostname in authentik.

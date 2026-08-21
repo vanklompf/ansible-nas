@@ -53,3 +53,10 @@ Jeż Security can require OpenID Connect login (for example the bundled
    straight to Authentik. `/api/health` remains public for container health
    checks. All available variables are listed in
    `roles/trafficstats/defaults/main.yml`.
+
+## LLM video analysis
+
+Intrusion events are analyzed by a local Ollama vision model unless
+`trafficstats_analysis_enabled` is `false`. When disabled, the container
+still starts; the analysis worker, startup backfill, and on-demand
+triggers are skipped. Existing stored analyses remain visible in the UI.
