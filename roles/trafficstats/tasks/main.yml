@@ -124,6 +124,8 @@
           DAHUA_IVS_NAMES: "{{ trafficstats_traffic_event }}"
           DAHUA_INTRUSION_IVS_NAME: "{{ trafficstats_intrusion_event }}"
           VIDEO_CACHE_MAX_GB: "{{ trafficstats_video_cache_max_gb }}"
+          VIDEO_LAN_CIDRS: "{{ trafficstats_video_lan_cidrs }}"
+          VIDEO_HW_ACCEL: "{{ trafficstats_hw_accel }}"
           CITY: "{{ trafficstats_city }}"
           ANALYSIS_ENABLED: "{{ 'true' if trafficstats_analysis_enabled | bool else 'false' }}"
           ANALYSIS_BACKFILL_DAYS: "7"
@@ -154,6 +156,8 @@
           - "{{ trafficstats_port }}:8080"
         networks:
           - name: "{{ trafficstats_ollama_network_name }}"
+        devices: "{{ trafficstats_devices | default([]) }}"
+        groups: "{{ trafficstats_groups | default([]) }}"
         env: "{{ _trafficstats_env_base | combine(_trafficstats_env_oidc if trafficstats_oidc_enabled | bool else {}) }}"
         restart_policy: unless-stopped
         memory: "{{ trafficstats_memory }}"

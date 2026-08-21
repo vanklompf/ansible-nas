@@ -60,3 +60,17 @@ Intrusion events are analyzed by a local Ollama vision model unless
 `trafficstats_analysis_enabled` is `false`. When disabled, the container
 still starts; the analysis worker, startup backfill, and on-demand
 triggers are skipped. Existing stored analyses remain visible in the UI.
+
+## Replay quality
+
+On the LAN, intrusion video is remuxed without re-encoding so the player keeps
+camera resolution, and the player shows an "Original quality" badge. That remux
+is cheap and large, so it is served from a throwaway temp file and never
+cached. Remote clients get the 720p H.264 transcode, which is cached and
+served as a complete file so the seek bar has a real duration. Intel QSV is
+used when available. The role maps `/dev/dri` and the host `render`
+group (GID 109) by default; set `trafficstats_devices` / `trafficstats_groups`
+to `[]` on hosts without a GPU. Override the auto-detected camera `/24` with
+`trafficstats_video_lan_cidrs` (comma-separated CIDRs, for example extra VLANs
+or a VPN). Hairpin NAT without split DNS can make a home browser look remote;
+the UI still offers a Play original / Play 720p toggle.

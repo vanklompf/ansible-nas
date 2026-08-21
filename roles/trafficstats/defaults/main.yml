@@ -62,6 +62,17 @@ trafficstats_traffic_event: "CarDetection"
 trafficstats_intrusion_event: "Intrusion"
 trafficstats_camera_storage_path: "/media/kamera_front"
 trafficstats_video_cache_max_gb: "20"
+# Comma-separated CIDRs that get original-quality (no re-encode) replay.
+# Empty: Jeż Security derives the camera host's /24 plus loopback.
+trafficstats_video_lan_cidrs: ""
+# Intel QSV: auto probes at startup and falls back to software.
+trafficstats_hw_accel: "auto"
+# Host GPU for QSV. Empty list skips device mapping (software encode only).
+trafficstats_devices:
+  - /dev/dri:/dev/dri
+# Supplementary GIDs so appuser can open the render node (host `render` group).
+trafficstats_groups:
+  - "109"
 
 # Optional: city name for sunrise/sunset (lat, lon and timezone looked up automatically).
 # When set, events are only recorded between sunrise and sunset at that location.
