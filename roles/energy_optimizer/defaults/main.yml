@@ -55,14 +55,13 @@ energy_optimizer_battery_control_grid_charge_enabled: false
 energy_optimizer_battery_control_authorize_discharge: false
 energy_optimizer_battery_control_supported_directions: '["FALLBACK","IDLE","CHARGE"]'
 # Sigenergy discharge command modes. Empty keeps the image defaults ("Command
-# Discharging (PV First)" for house load, "Command Discharging (ESS First)" for
-# export). Override only to swap modes during attended commissioning.
+# Discharging (PV First)" for house load, "Command Discharging (ESS First)" at
+# night export, PV First when PV is producing). Override only to swap modes.
 energy_optimizer_battery_control_discharge_command_mode: ""
 energy_optimizer_battery_control_export_command_mode: ""
 # Control-side operating reserve written to the inverter discharge cut-off during a
-# discharge command. Empty keeps the image default (15%). Relax it toward the site
-# operating reserve (energy_optimizer_battery_soc_min_pct) for attended commissioning so
-# discharge checkpoints have room; it must stay >= that reserve.
+# discharge command. Empty keeps the image default (15%). Must stay >=
+# energy_optimizer_battery_soc_min_pct. HpeNas sets both to 2% as site policy.
 energy_optimizer_battery_control_min_soc_pct: ""
 energy_optimizer_battery_control_watchdog_health_entity: ""
 energy_optimizer_battery_control_watchdog_ack_entity: ""

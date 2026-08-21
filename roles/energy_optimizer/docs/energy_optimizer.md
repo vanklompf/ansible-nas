@@ -40,14 +40,13 @@ energy_optimizer_battery_control_watchdog_ack_entity: input_datetime.pvopti_batt
 
 Ansible rejects `mode: control` unless the independent enable gate is on and the
 HA watchdog entities are set. Sigen entity IDs, restore limits, and timings use
-image defaults and are not re-declared by this role. Do not enable discharge or
-export until those directions have been physically verified.
+image defaults and are not re-declared by this role. Charge, discharge, and
+export are characterized; HpeNas runs them live. See PvOpti `docs/OPERATIONS.md`.
 
 `energy_optimizer_battery_control_min_soc_pct` sets the control-side operating reserve
 that PvOpti writes into the inverter discharge cut-off during a discharge command. Empty
 keeps the image default (15%). It must stay at or above the planner reserve
-(`energy_optimizer_battery_soc_min_pct`); lower it toward that reserve to give attended
-discharge/export commissioning room, and raise it back for unattended operation.
+(`energy_optimizer_battery_soc_min_pct`). HpeNas runs both at 2% as site policy.
 
 Planner flags inside PvOpti (`EO_ALLOW_GRID_CHARGING`, `EO_ALLOW_BATTERY_EXPORT`)
 are not actuation gates and are not set by this role.
