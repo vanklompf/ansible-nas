@@ -1,0 +1,10 @@
+---
+description: Pin service image versions in AnsibleNasConfigs, never in ansible-nas roles
+alwaysApply: true
+---
+
+# Pin image versions in config, not roles
+
+When updating AdGuard, Authentik, Dawarich, or any other ansible-nas app, change the image tag only in AnsibleNasConfigs inventory (`HpeNas/group_vars/nas/main.yml` or the matching host inventory).
+
+Do not change `*_image_version`, `*_image_tag`, or similar pins in `roles/*/defaults/main.yml`. Role defaults stay as the generic/upstream fallback (`latest` or the role's original default). Site-specific versions live in config.
